@@ -34,7 +34,7 @@ const Data = Record({
   // productList: List([]),
   productList: productListTest,
   eventList: List([]),
-  bodyTopAmount: 0
+  bodyTopAmount: 3000
 })
 
 export default new Store(new Data())

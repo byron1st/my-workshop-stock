@@ -8,8 +8,8 @@ import BodyList from './body.list'
 export default class Body extends Component {
   render () {
     return (
-      <div>
-        <BodyTop amount={this.props.bodyTopAmount}/>
+      <div className='body' id='body'>
+        <BodyTop amount={this.props.bodyTopAmount} productList={this.props.productList}/>
         <BodyList eventList={this.props.eventList}/>
       </div>
     )
@@ -17,5 +17,6 @@ export default class Body extends Component {
 }
 Body.propTypes = {
   bodyTopAmount: PropTypes.number.isRequired,
-  eventList: PropTypes.array.isRequired
+  eventList: PropTypes.array.isRequired,
+  productList: PropTypes.array.isRequired
 }

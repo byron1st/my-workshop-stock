@@ -22,9 +22,9 @@ function wrapUp () {
 
 function createMainWindow () {
   mainWindow = new BrowserWindow({
-    width: 500,
-    height: 600,
-    minWidth: 500,
+    width: 700,
+    height: 800,
+    minWidth: 700,
     minHeight: 600
   })
   mainWindow.loadURL('file://' + __dirname + '/../mainwindow/index.html')

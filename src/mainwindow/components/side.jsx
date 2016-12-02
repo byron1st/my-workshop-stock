@@ -8,6 +8,9 @@ export default class Side extends Component {
       <div className='ui visible right sidebar inverted vertical menu'>
         <div className='ui center aligned large header inverted'>Stock</div>
         <div className='ui segment inverted'>
+          <button className='ui fluid compact button'>Add a product</button>
+        </div>
+        <div className='ui segment inverted'>
           <div className='ui relaxed middle aligned divided inverted list'>
             {this._getProductListView(this.props.productList)}
           </div>

@@ -3,6 +3,8 @@
 
 import React, {Component, PropTypes} from 'react'
 
+import * as util from '../../util/util'
+
 export default class BodyTop extends Component {
   componentDidMount () {
     $('select.dropdown').dropdown()
@@ -55,21 +57,9 @@ class AmountInputForm extends Component {
     return (
       <div className='three wide field'>
         <label>Amount</label>
-        <input type='text' value={this._getCurrencyValue(this.props.amount)} onChange={this._onChange}/>
+        <input type='text' value={util.getCurrencyValue(this.props.amount)} onChange={this._onChange}/>
       </div>
     )
-  }
-  _getCurrencyValue (amount) {
-    let converted = amount.toString()
-
-    let idx = converted.indexOf('.')
-    if (idx === -1) idx = converted.length
-    for (idx -= 3; idx > 0; idx -= 3) {
-      let left = converted.substring(0, idx)
-      let right = converted.substring(idx)
-      converted = left + ',' + right
-    }
-    return converted
   }
   _onChange (e) {
     console.log(e) //TODO: add dispatcher.
@@ -100,10 +90,7 @@ class DateInputForm extends Component {
     $('#datePicker').calendar({ 
       type: 'date',
       formatter: {
-        date: (date) => {
-          let dateObj = new Date(date)
-          return dateObj.getFullYear() + '.' + (dateObj.getMonth() + 1) + '.' + dateObj.getDate()
-        }
+        date: (date) => util.getDateString(new Date(date))
       }
     })
   }

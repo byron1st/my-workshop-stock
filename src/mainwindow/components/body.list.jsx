@@ -93,5 +93,4 @@ class SearchBar extends Component {
   }
 }
 SearchBar.propTypes = {
-  productNameList: PropTypes.array.isRequired
 }

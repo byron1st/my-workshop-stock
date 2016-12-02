@@ -3,6 +3,8 @@
 import React, {Component, PropTypes} from 'react'
 
 import * as util from '../../util/util'
+import dispatcher from '../../util/flux/dispatcher'
+import * as eventActions from '../flux/actions.event'
 
 export default class BodyList extends Component {
   render () {
@@ -23,7 +25,7 @@ export default class BodyList extends Component {
     )
   }
   _getEventListView (eventList) {
-    return eventList.map(event => {
+    return eventList.map((event, index) => {
       let icon, amount
       if (event.amount < 0) {
         icon = <i className='shipping icon'></i>
@@ -38,7 +40,7 @@ export default class BodyList extends Component {
         productName={event.productName}
         amount={amount}
         date={new Date(event.date)}
-        id={event.id} />
+        index={index} />
     })
   }
 }
@@ -58,10 +60,13 @@ class Event extends Component {
                   <div className='date'>
                     {util.getDateString(new Date(this.props.date))}
                   </div>
-                  &nbsp;<i className='remove icon' id={this.props.id}></i>
+                  &nbsp;<i className='remove icon' onClick={() => this._delete(this.props.index)}></i>
                 </div>
               </div>
             </div>)
+  }
+  _delete (index) {
+    dispatcher.dispatch(eventActions.DELETE_EVENT, index)
   }
 }
 Event.propTypes = {
@@ -69,7 +74,7 @@ Event.propTypes = {
   productName: PropTypes.string.isRequired,
   amount: PropTypes.number.isRequired,
   date: PropTypes.object.isRequired,
-  id: PropTypes.number.isRequired
+  index: PropTypes.number.isRequired
 }
 
 class SearchBar extends Component {

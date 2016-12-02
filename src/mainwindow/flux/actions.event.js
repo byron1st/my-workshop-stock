@@ -2,6 +2,7 @@
 'use strict'
 
 import {Map} from 'immutable'
+import {remote} from 'electron'
 
 import dispatcher from '../../util/flux/dispatcher'
 import store from './store.main'
@@ -12,12 +13,14 @@ let ipc = {}
 
 export const UPDATE_NEWEVENT_FIELD = 'update-newevent-field'
 export const ADD_NEWEVENT = 'add-newevent'
+export const DELETE_EVENT = 'delete-event'
 
 export function initialize (ipcModule) {
   ipc = ipcModule
   ipc //TODO: should be deleted.
   dispatcher.register(UPDATE_NEWEVENT_FIELD, updateNewEventField)
   dispatcher.register(ADD_NEWEVENT, addNewEvent)
+  dispatcher.register(DELETE_EVENT, deleteEvent)
 }
 
 /**
@@ -89,4 +92,26 @@ function addNewEvent (newEventObj) {
   store.setInValue(['newEvent', 'amount'], 0)
   store.setValue('eventList', eventList)
   store.emitChange()
+}
+
+/**
+ * Delete an event
+ *
+ * @param      {number}  eventId  The event identifier
+ */
+function deleteEvent (eventIndex) {
+  remote.dialog.showMessageBox({
+    type: 'question',
+    buttons: ['OK', 'Cancel'],
+    defaultId: 1,
+    message: 'Will you delete this event?',
+    cancelId: 1
+  }, (index) => {
+    if (index === 1) {
+      return
+    } else {
+      store.setValue('eventList', store.getValue('eventList').delete(eventIndex))
+      store.emitChange()
+    }
+  })
 }

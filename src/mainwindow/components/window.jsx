@@ -10,7 +10,7 @@ export default class Window extends Component {
     return (
       <div>
         <Side productList={this.props.store.productList}/>
-        <Body bodyTopAmount={this.props.store.bodyTopAmount} eventList={this.props.store.eventList} productList={this.props.store.productList}/>
+        <Body eventList={this.props.store.eventList} newEvent={this.props.store.newEvent} productList={this.props.store.productList}/>
       </div>
     )
   }

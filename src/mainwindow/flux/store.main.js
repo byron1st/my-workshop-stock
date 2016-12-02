@@ -56,13 +56,20 @@ const e3 = new Map({
 })
 const eventListTest = List([e1, e2, e3])
 
+const defaultEventValue = new Map({
+  date: new Date(),
+  amount: 0,
+  productId: '',
+  productName: '',
+  type: 'sale'
+})
+
 const Data = Record({
   // productList: List([]),
   // eventList: List([]),
-  // bodyTopAmount: 0
   productList: productListTest,
   eventList: eventListTest,
-  bodyTopAmount: 3000
+  newEvent: defaultEventValue
 })
 
 export default new Store(new Data())

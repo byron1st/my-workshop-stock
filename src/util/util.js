@@ -28,3 +28,13 @@ export function getCurrencyValue (amount) {
   }
   return converted
 }
+
+/**
+ * Determines if numeric.
+ *
+ * @param      {string}   n       Number string
+ * @return     {boolean}  True if numeric, False otherwise.
+ */
+export function isNumeric (n) {
+  return ((!isNaN(parseFloat(n)) && isFinite(n)) || n === '')
+}

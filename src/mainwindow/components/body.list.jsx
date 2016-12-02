@@ -69,7 +69,7 @@ Event.propTypes = {
   productName: PropTypes.string.isRequired,
   amount: PropTypes.number.isRequired,
   date: PropTypes.object.isRequired,
-  id: PropTypes.string.isRequired
+  id: PropTypes.number.isRequired
 }
 
 class SearchBar extends Component {

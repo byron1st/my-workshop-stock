@@ -23,10 +23,13 @@ export default class BodyTop extends Component {
               <DateInputForm />
             </div>
           </div>
-          <button className='ui fluid compact button'>Add</button>
+          <button className='ui fluid compact button' onClick={() => this._addNewEvent()}>Add</button>
         </div>
       </div>
     )
+  }
+  _addNewEvent () {
+    dispatcher.dispatch(eventActions.ADD_NEWEVENT, this.props.newEvent)
   }
 }
 BodyTop.propTypes = {
@@ -37,7 +40,7 @@ BodyTop.propTypes = {
 class ProductInputForm extends Component {
   render () {
     return (
-      <div className='six wide field'>
+      <div className='six wide field' id='productInputForm'>
         <label>Product</label>
         <select className='ui search dropdown' onChange={this._selectProduct}>
           <option value=''>Search a product</option>
@@ -50,6 +53,7 @@ class ProductInputForm extends Component {
     return productList.map(product => <option value={product.id} key={product.id}>{product.name}</option>)
   }
   _selectProduct (e) {
+    $('#productInputForm').removeClass('error')
     dispatcher.dispatch(eventActions.UPDATE_NEWEVENT_FIELD, { field: 'productId', value: e.target.value})
   }
 }
@@ -60,13 +64,14 @@ ProductInputForm.propTypes = {
 class AmountInputForm extends Component {
   render () {
     return (
-      <div className='three wide field'>
+      <div className='three wide field' id='amountInputForm'>
         <label>Amount</label>
         <input type='text' value={util.getCurrencyValue(this.props.amount)} onChange={this._changeAmount}/>
       </div>
     )
   }
   _changeAmount (e) {
+    $('#amountInputForm').removeClass('error')
     dispatcher.dispatch(eventActions.UPDATE_NEWEVENT_FIELD, { field: 'amount', value: e.target.value})
   }
 }

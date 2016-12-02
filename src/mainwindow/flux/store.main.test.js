@@ -3,25 +3,25 @@
 import {List, Map} from 'immutable'
 
 const p1 = new Map({
-  id: 'id1',
+  id: 1,
   name: '제품 1',
   amount: 100,
   editable: false
 })
 const p2 = new Map({
-  id: 'id2',
+  id: 2,
   name: '제품 asdf 1',
   amount: 200,
   editable: true
 })
 const p3 = new Map({
-  id: 'id3',
+  id: 3,
   name: '제품 kkkk 1',
   amount: -100,
   editable: false
 })
 const p4 = new Map({
-  id: 'id4',
+  id: 4,
   name: '제품 1 yyyyoaijsdofi',
   amount: 100,
   editable: false
@@ -29,26 +29,26 @@ const p4 = new Map({
 export const productList = List([p1, p2, p3, p4])
 
 const e1 = new Map({
-  id: 'e1',
+  id: 11,
   date: new Date(2016, 1, 3),
   amount: 100,
-  productId: 'id1',
+  productId: 1,
   productName: '제품 1',
   editable: false
 })
 const e2 = new Map({
-  id: 'e2',
+  id: 22,
   date: new Date(2016, 1, 3),
   amount: 3200,
-  productId: 'id1',
+  productId: 1,
   productName: '제품 1',
   editable: false
 })
 const e3 = new Map({
-  id: 'e3',
+  id: 33,
   date: new Date(2016, 1, 3),
   amount: -100,
-  productId: 'id1',
+  productId: 1,
   productName: '제품 1',
   editable: false
 })

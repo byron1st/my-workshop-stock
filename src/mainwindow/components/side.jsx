@@ -5,6 +5,7 @@ import React, {Component, PropTypes} from 'react'
 
 import dispatcher from '../../util/flux/dispatcher'
 import * as productActions from '../flux/actions.product'
+import * as util from '../../util/util'
 
 export default class Side extends Component {
   render () {
@@ -52,7 +53,7 @@ export default class Side extends Component {
                   {itemContentView}
                 </div>
                 <div className='extra'>
-                   <span>{product.amount}</span>
+                   <span>{util.getCurrencyValue(product.amount)}</span>
                 </div>
               </div>)
     })

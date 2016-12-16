@@ -1,6 +1,10 @@
+/*global $*/
 'use strict'
 
 import React, {Component, PropTypes} from 'react'
+
+import dispatcher from '../../util/flux/dispatcher'
+import * as productActions from '../flux/actions.product'
 
 export default class Side extends Component {
   render () {
@@ -8,7 +12,8 @@ export default class Side extends Component {
       <div className='ui visible right sidebar inverted vertical menu'>
         <div className='ui center aligned large header inverted'>Stock</div>
         <div className='ui segment inverted'>
-          <button className='ui fluid compact button'>Add a product</button>
+          <button className='ui fluid compact button' onClick={this._openNewProductModal}>Add a product</button>
+          <NewProductModal isValidNameForProduct={this.props.isValidNameForProduct}/>
         </div>
         <div className='ui segment inverted'>
           <div className='ui relaxed middle aligned divided inverted list'>
@@ -44,7 +49,61 @@ export default class Side extends Component {
               </div>)
     })
   }
+  _openNewProductModal () {
+    $('#newProductModal').modal('show')
+    $('#newProductName').val('')
+  }
 }
 Side.propTypes = {
-  productList: PropTypes.array.isRequired
+  productList: PropTypes.array.isRequired,
+  isValidNameForProduct: PropTypes.bool.isRequired
+}
+
+class NewProductModal extends Component {
+  componentDidMount () {
+    $('#newProductModal').modal({
+      closable: false
+    })
+  }
+  componentDidUpdate () {
+    if (this.props.isValidNameForProduct) {
+      $('#modalNameForm').removeClass('error')
+      $('#modalCreateBtn').removeClass('disabled')
+    } else {
+      $('#modalNameForm').addClass('error')
+      $('#modalCreateBtn').addClass('disabled')
+    }
+  }
+  render () {
+    return (
+      <div className='ui small modal' id='newProductModal'>
+        <div className='header'>Add a New Product</div>
+        <div className='content'>
+          <div className='ui form' id='modalNameForm'>
+            <div className='field'>
+              <label>Name</label>
+              <input type='text' id='newProductName' onChange={this._checkName}/>     
+            </div>
+            <div className='ui error message'>
+              <div className='header'>Duplicated Name</div>
+              <p>There is the same name in the list.</p>
+            </div>
+          </div>
+        </div>
+        <div className='actions'>
+          <div className='ui approve primary button' onClick={this._addNewProduct} id='modalCreateBtn'>Create</div>
+          <div className='ui cancel button'>Cancel</div>
+        </div>
+      </div>
+    )
+  }
+  _addNewProduct () {
+    dispatcher.dispatch(productActions.ADD_NEWPRODUCT, { name: $('#newProductName').val() })
+  }
+  _checkName (e) {
+    dispatcher.dispatch(productActions.ISVALIDNAME_FOR_PRODUCT, e.target.value)
+  }
+}
+NewProductModal.propTypes = {
+  isValidNameForProduct: PropTypes.bool.isRequired
 }

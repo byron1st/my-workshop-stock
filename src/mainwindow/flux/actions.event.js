@@ -89,6 +89,7 @@ function addNewEvent (newEventObj) {
       }
     })
 
+  refineProductAmount(event.get('productId'), event.get('amount'))
   store.setInValue(['newEvent', 'amount'], 0)
   store.setValue('eventList', eventList)
   store.emitChange()
@@ -110,8 +111,20 @@ function deleteEvent (eventIndex) {
     if (index === 1) {
       return
     } else {
+      let willBeDeletedEvent = store.getValue('eventList').get(eventIndex)
+      refineProductAmount(willBeDeletedEvent.get('productId'), (-1 * willBeDeletedEvent.get('amount')))
       store.setValue('eventList', store.getValue('eventList').delete(eventIndex))
       store.emitChange()
     }
   })
+}
+
+function refineProductAmount (productId, changedValue) {
+  let productList = store.getValue('productList')
+  let productIdx = productList.findKey(product => product.get('id') === productId)
+  if (productIdx !== undefined) {
+    let originalProduct = productList.get(productIdx)
+    let changedProduct = originalProduct.set('amount', originalProduct.get('amount') + changedValue)
+    store.setValue('productList', productList.set(productIdx, changedProduct))
+  }
 }

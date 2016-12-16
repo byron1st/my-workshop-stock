@@ -26,6 +26,14 @@ export default class Store extends EventEmitter {
     return this.data.getIn(keysList)
   }
 
+  setValue (key, value) {
+    this.data = this.data.set(key, value)
+  }
+
+  setInValue (keysList, value) {
+    this.data = this.data.setIn(keysList, value)
+  }
+
   emitChange () {
     this.emit(CHANGE_EVENT)
   }

@@ -9,8 +9,11 @@ export default class Window extends Component {
   render () {
     return (
       <div>
-        <Side productList={this.props.store.productList}/>
-        <Body bodyTopAmount={this.props.store.bodyTopAmount} eventList={this.props.store.eventList} productList={this.props.store.productList}/>
+        <Side productList={this.props.store.productList} isValidNameForProduct={this.props.store.isValidNameForProduct}/>
+        <Body eventList={this.props.store.eventList}
+          newEvent={this.props.store.newEvent}
+          productList={this.props.store.productList}
+          searchTerm={this.props.store.searchTerm}/>
       </div>
     )
   }

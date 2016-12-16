@@ -6,6 +6,7 @@ import React, {Component} from 'react'
 import ReactDOM from 'react-dom'
 
 import store from './flux/store.main'
+import initActions from './flux/actions'
 
 import Window from './components/window'
 
@@ -15,6 +16,7 @@ class Container extends Component {
     this.state = {}
   }
   componentWillMount () {
+    initActions()
     store.addChangeListener(this._updateState.bind(this))
     store.emitChange()
   }

@@ -3,9 +3,17 @@
 import React, {Component, PropTypes} from 'react'
 
 import * as util from '../../util/util'
+import dispatcher from '../../util/flux/dispatcher'
+import * as eventActions from '../flux/actions.event'
 
 export default class BodyList extends Component {
   render () {
+    let eventList
+    if (this.props.searchTerm) {
+      eventList = this.props.eventList.filter(event => event.productName.includes(this.props.searchTerm))
+    } else {
+      eventList = this.props.eventList
+    }
     return (
       <div id='bodyList'>
         <h4 className='ui horizontal divider header'>
@@ -15,7 +23,7 @@ export default class BodyList extends Component {
           <div className='ui container'>
             <SearchBar/>
             <div className='ui feed'>
-              {this._getEventListView(this.props.eventList)}
+              {this._getEventListView(eventList)}
             </div>
           </div>
         </div>
@@ -23,7 +31,7 @@ export default class BodyList extends Component {
     )
   }
   _getEventListView (eventList) {
-    return eventList.map(event => {
+    return eventList.map((event, index) => {
       let icon, amount
       if (event.amount < 0) {
         icon = <i className='shipping icon'></i>
@@ -38,12 +46,13 @@ export default class BodyList extends Component {
         productName={event.productName}
         amount={amount}
         date={new Date(event.date)}
-        id={event.id} />
+        index={index} />
     })
   }
 }
 BodyList.propTypes = {
-  eventList: PropTypes.array.isRequired
+  eventList: PropTypes.array.isRequired,
+  searchTerm: PropTypes.string.isRequired
 }
 
 class Event extends Component {
@@ -58,10 +67,13 @@ class Event extends Component {
                   <div className='date'>
                     {util.getDateString(new Date(this.props.date))}
                   </div>
-                  &nbsp;<i className='remove icon' id={this.props.id}></i>
+                  &nbsp;<i className='remove icon' onClick={() => this._delete(this.props.index)}></i>
                 </div>
               </div>
             </div>)
+  }
+  _delete (index) {
+    dispatcher.dispatch(eventActions.DELETE_EVENT, index)
   }
 }
 Event.propTypes = {
@@ -69,7 +81,7 @@ Event.propTypes = {
   productName: PropTypes.string.isRequired,
   amount: PropTypes.number.isRequired,
   date: PropTypes.object.isRequired,
-  id: PropTypes.string.isRequired
+  index: PropTypes.number.isRequired
 }
 
 class SearchBar extends Component {
@@ -89,9 +101,8 @@ class SearchBar extends Component {
     )
   }
   _search(e) {
-    console.log(e.target.value)
+    dispatcher.dispatch(eventActions.SEARCH_PRODUCTNAME, e.target.value)
   }
 }
 SearchBar.propTypes = {
-  productNameList: PropTypes.array.isRequired
 }

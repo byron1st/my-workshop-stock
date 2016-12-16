@@ -9,14 +9,15 @@ export default class Body extends Component {
   render () {
     return (
       <div id='body'>
-        <BodyTop amount={this.props.bodyTopAmount} productList={this.props.productList}/>
-        <BodyList eventList={this.props.eventList}/>
+        <BodyTop newEvent={this.props.newEvent} productList={this.props.productList}/>
+        <BodyList eventList={this.props.eventList} searchTerm={this.props.searchTerm}/>
       </div>
     )
   }
 }
 Body.propTypes = {
-  bodyTopAmount: PropTypes.number.isRequired,
   eventList: PropTypes.array.isRequired,
-  productList: PropTypes.array.isRequired
+  newEvent: PropTypes.object.isRequired,
+  productList: PropTypes.array.isRequired,
+  searchTerm: PropTypes.string.isRequired
 }

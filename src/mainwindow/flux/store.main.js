@@ -12,7 +12,8 @@ const Data = Record({
   productList: test.productList,
   eventList: test.eventList,
   newEvent: c.defaultEventValue,
-  isValidNameForProduct: true
+  isValidNameForProduct: true,
+  searchTerm: ''
 })
 
 export default new Store(new Data())

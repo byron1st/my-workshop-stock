@@ -10,7 +10,7 @@ export default class Body extends Component {
     return (
       <div id='body'>
         <BodyTop newEvent={this.props.newEvent} productList={this.props.productList}/>
-        <BodyList eventList={this.props.eventList}/>
+        <BodyList eventList={this.props.eventList} searchTerm={this.props.searchTerm}/>
       </div>
     )
   }
@@ -18,5 +18,6 @@ export default class Body extends Component {
 Body.propTypes = {
   eventList: PropTypes.array.isRequired,
   newEvent: PropTypes.object.isRequired,
-  productList: PropTypes.array.isRequired
+  productList: PropTypes.array.isRequired,
+  searchTerm: PropTypes.string.isRequired
 }

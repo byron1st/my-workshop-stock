@@ -10,7 +10,10 @@ export default class Window extends Component {
     return (
       <div>
         <Side productList={this.props.store.productList} isValidNameForProduct={this.props.store.isValidNameForProduct}/>
-        <Body eventList={this.props.store.eventList} newEvent={this.props.store.newEvent} productList={this.props.store.productList}/>
+        <Body eventList={this.props.store.eventList}
+          newEvent={this.props.store.newEvent}
+          productList={this.props.store.productList}
+          searchTerm={this.props.store.searchTerm}/>
       </div>
     )
   }

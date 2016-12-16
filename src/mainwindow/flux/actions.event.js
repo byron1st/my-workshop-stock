@@ -14,6 +14,7 @@ let ipc = {}
 export const UPDATE_NEWEVENT_FIELD = 'update-newevent-field'
 export const ADD_NEWEVENT = 'add-newevent'
 export const DELETE_EVENT = 'delete-event'
+export const SEARCH_PRODUCTNAME = 'search-productname'
 
 export function initialize (ipcModule) {
   ipc = ipcModule
@@ -21,6 +22,7 @@ export function initialize (ipcModule) {
   dispatcher.register(UPDATE_NEWEVENT_FIELD, updateNewEventField)
   dispatcher.register(ADD_NEWEVENT, addNewEvent)
   dispatcher.register(DELETE_EVENT, deleteEvent)
+  dispatcher.register(SEARCH_PRODUCTNAME, searchProductName)
 }
 
 /**
@@ -117,6 +119,11 @@ function deleteEvent (eventIndex) {
       store.emitChange()
     }
   })
+}
+
+function searchProductName (searchTerm) {
+  store.setValue('searchTerm', searchTerm)
+  store.emitChange()
 }
 
 function refineProductAmount (productId, changedValue) {

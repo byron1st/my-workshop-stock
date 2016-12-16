@@ -8,6 +8,12 @@ import * as eventActions from '../flux/actions.event'
 
 export default class BodyList extends Component {
   render () {
+    let eventList
+    if (this.props.searchTerm) {
+      eventList = this.props.eventList.filter(event => event.productName.includes(this.props.searchTerm))
+    } else {
+      eventList = this.props.eventList
+    }
     return (
       <div id='bodyList'>
         <h4 className='ui horizontal divider header'>
@@ -17,7 +23,7 @@ export default class BodyList extends Component {
           <div className='ui container'>
             <SearchBar/>
             <div className='ui feed'>
-              {this._getEventListView(this.props.eventList)}
+              {this._getEventListView(eventList)}
             </div>
           </div>
         </div>
@@ -45,7 +51,8 @@ export default class BodyList extends Component {
   }
 }
 BodyList.propTypes = {
-  eventList: PropTypes.array.isRequired
+  eventList: PropTypes.array.isRequired,
+  searchTerm: PropTypes.string.isRequired
 }
 
 class Event extends Component {
@@ -94,7 +101,7 @@ class SearchBar extends Component {
     )
   }
   _search(e) {
-    console.log(e.target.value)
+    dispatcher.dispatch(eventActions.SEARCH_PRODUCTNAME, e.target.value)
   }
 }
 SearchBar.propTypes = {

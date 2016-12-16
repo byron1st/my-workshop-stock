@@ -46,6 +46,9 @@ export default class Side extends Component {
           }}>
             <i className='edit icon'></i>
           </a>
+          <a href='#' onClick={() => {
+            dispatcher.dispatch(productActions.REMOVE_PRODUCT, product.id)
+          }}><i className='ui right floated remove icon'></i></a>
         </div>
       }
       return (<div className='item' key={product.id}>

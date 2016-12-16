@@ -2,6 +2,7 @@
 'use strict'
 
 import {Map} from 'immutable'
+import {remote} from 'electron'
 
 import dispatcher from '../../util/flux/dispatcher'
 import store from './store.main'
@@ -14,6 +15,7 @@ export const ADD_NEWPRODUCT = 'add-newproduct'
 export const ISVALIDNAME_FOR_PRODUCT = 'isvalidname-for-product'
 export const TOGGLE_PRODUCT_EDITABLE = 'toggle-product-editable'
 export const SAVE_PRODUCT_NAME = 'save-product-name'
+export const REMOVE_PRODUCT = 'remove-product'
 
 export function initialize (ipcModule) {
   ipc = ipcModule
@@ -22,6 +24,7 @@ export function initialize (ipcModule) {
   dispatcher.register(ISVALIDNAME_FOR_PRODUCT, checkName)
   dispatcher.register(TOGGLE_PRODUCT_EDITABLE, toggleProductEditable)
   dispatcher.register(SAVE_PRODUCT_NAME, saveProductName)
+  dispatcher.register(REMOVE_PRODUCT, removeProduct)
 }
 
 function addNewProduct (newProductObj) {
@@ -85,6 +88,28 @@ function saveProductName (arg) {
     store.setValue('productList', productList.set(productIdx, toggledProduct))
     store.setValue('eventList', eventList.asImmutable())
     store.emitChange()
+  }
+}
+
+function removeProduct (productId) {
+  let productList = store.getValue('productList')
+  let productIdx = productList.findKey(product => product.get('id') === productId)
+  if (productIdx !== undefined) {
+    remote.dialog.showMessageBox({
+      type: 'question',
+      buttons: ['OK', 'Cancel'],
+      defaultId: 1,
+      message: 'Will you delete this product? Every related event will be deleted together.',
+      cancelId: 1
+    }, (index) => {
+      if (index === 1) {
+        return
+      } else {
+        store.setValue('productList', store.getValue('productList').delete(productIdx))
+        store.setValue('eventList', store.getValue('eventList').filterNot(event => event.get('productId') === productId))
+        store.emitChange()
+      }
+    })
   }
 }
 

@@ -17,7 +17,14 @@ export function getDateString (date) {
  * @return     {string} currency string value
  */
 export function getCurrencyValue (amount) {
-  let converted = amount.toString()
+  let isNegative = amount < 0
+  let converted
+  if (isNegative) {
+    let notNegativeAmount = amount * -1
+    converted = notNegativeAmount.toString()
+  } else {
+    converted = amount.toString()
+  }
 
   let idx = converted.indexOf('.')
   if (idx === -1) idx = converted.length
@@ -26,7 +33,12 @@ export function getCurrencyValue (amount) {
     let right = converted.substring(idx)
     converted = left + ',' + right
   }
-  return converted
+
+  if (isNegative) {
+    return '-' + converted
+  } else {
+    return converted  
+  }
 }
 
 /**

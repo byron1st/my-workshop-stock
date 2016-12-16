@@ -29,14 +29,22 @@ export default class Side extends Component {
       if (product.editable) {
         itemContentView = <div className='product' id={product.id}>
           <div className='ui mini icon input'>
-            <input type='text' defaultValue={product.name} id={product.id}/>
+            <input type='text' defaultValue={product.name} id={'input' + product.id}/>
           </div>
-          <a href='#'><i className='checkmark box icon'></i></a>
+          <a href='#' onClick={() => {
+            let arg = { productId: product.id, name: $('#input' + product.id).val() }
+            dispatcher.dispatch(productActions.SAVE_PRODUCT_NAME, arg)
+          }}><i className='checkmark box icon'></i></a>
         </div>
         
       } else {
         itemContentView = <div className='product' id={product.id}>
-          {product.name} <a href='#'><i className='edit icon'></i></a>
+          {product.name} <a href='#' onClick={() => {
+            let arg = { productId: product.id, editable: true }
+            dispatcher.dispatch(productActions.TOGGLE_PRODUCT_EDITABLE, arg)
+          }}>
+            <i className='edit icon'></i>
+          </a>
         </div>
       }
       return (<div className='item' key={product.id}>

@@ -8,9 +8,6 @@ import dispatcher from '../../util/flux/dispatcher'
 import * as eventActions from '../flux/actions.event'
 
 export default class BodyTop extends Component {
-  componentDidMount () {
-    $('select.dropdown').dropdown()
-  }
   render () {
     return (
       <div className='ui padded segment'>
@@ -38,6 +35,13 @@ BodyTop.propTypes = {
 }
 
 class ProductInputForm extends Component {
+  // TODO: it's not working.
+  // componentDidMount () {
+  //   $('select.dropdown').dropdown()
+  // }
+  // componentDidUpdate () {
+  //   $('select.dropdown').dropdown()
+  // }
   render () {
     return (
       <div className='six wide field' id='productInputForm'>

@@ -12,12 +12,16 @@ let ipc = {}
 
 export const ADD_NEWPRODUCT = 'add-newproduct'
 export const ISVALIDNAME_FOR_PRODUCT = 'isvalidname-for-product'
+export const TOGGLE_PRODUCT_EDITABLE = 'toggle-product-editable'
+export const SAVE_PRODUCT_NAME = 'save-product-name'
 
 export function initialize (ipcModule) {
   ipc = ipcModule
   ipc //TODO: should be deleted.
   dispatcher.register(ADD_NEWPRODUCT, addNewProduct)
   dispatcher.register(ISVALIDNAME_FOR_PRODUCT, checkName)
+  dispatcher.register(TOGGLE_PRODUCT_EDITABLE, toggleProductEditable)
+  dispatcher.register(SAVE_PRODUCT_NAME, saveProductName)
 }
 
 function addNewProduct (newProductObj) {
@@ -41,6 +45,47 @@ function addNewProduct (newProductObj) {
 function checkName (name) {
   store.setValue('isValidNameForProduct', isValidNameForProduct(name))
   store.emitChange()
+}
+
+/**
+ * Toggle the editable of a product
+ *
+ * @param      {object}  arg     {productId: string, editable: bool}
+ */
+function toggleProductEditable (arg) {
+  let productList = store.getValue('productList')
+  let productIdx = productList.findKey(product => product.get('id') === arg.productId)
+  if (productIdx !== undefined) {
+    let toggledProduct = productList.get(productIdx).set('editable', arg.editable)
+    store.setValue('productList', productList.set(productIdx, toggledProduct))
+    store.emitChange()
+  }
+}
+
+/**
+ * Saves a product name.
+ *
+ * @param      {object}  arg     {productId: string, name: string}
+ */
+function saveProductName (arg) {
+  let productList = store.getValue('productList')
+  let productIdx = productList.findKey(product => product.get('id') === arg.productId)
+  if (productIdx !== undefined) {
+    let toggledProduct = productList.get(productIdx).withMutations(product => {
+      product.set('editable', false).set('name', arg.name)
+    })
+
+    let eventList = store.getValue('eventList').asMutable()
+    for (let i = 0; i < eventList.size; i++) {
+      if (eventList.get(i).get('productId') === arg.productId) {
+        eventList.set(i, eventList.get(i).set('productName', arg.name))
+      }
+    }
+    
+    store.setValue('productList', productList.set(productIdx, toggledProduct))
+    store.setValue('eventList', eventList.asImmutable())
+    store.emitChange()
+  }
 }
 
 function isValidNameForProduct (name) {

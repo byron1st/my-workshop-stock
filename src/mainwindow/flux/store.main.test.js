@@ -12,7 +12,7 @@ const p2 = new Map({
   id: 2,
   name: '제품 asdf 1',
   amount: 200,
-  editable: true
+  editable: false
 })
 const p3 = new Map({
   id: 3,

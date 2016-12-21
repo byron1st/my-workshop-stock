@@ -13,7 +13,7 @@ export default function generateId (kind) {
 
   let id
   do {
-    id = Math.random()
+    id = Math.floor(Math.random() * (100000 - 1)) + 1
   } while (idList.indexOf(id) !== -1)
 
   idList.push(id)

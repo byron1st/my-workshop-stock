@@ -2,3 +2,6 @@ dist
 node_modules
 compiled
 yarn.lock
+bower_components
+test/resource/db
+app

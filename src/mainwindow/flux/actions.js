@@ -1,5 +1,7 @@
 'use strict'
 
+import Immutable from 'immutable'
+
 import dispatcher from '../../util/flux/dispatcher'
 import store from './store.main'
 import * as eventActions from './actions.event'
@@ -14,7 +16,7 @@ export default function initActions (ipcModule) {
 }
 
 function initializeStore (arg) {
-  store.setValue('productList', arg.productList)
-  store.setValue('eventList', arg.eventList)
+  store.setValue('productList', Immutable.fromJS(arg.productList))
+  store.setValue('eventList', Immutable.fromJS(arg.eventList))
   store.emitChange()
 }

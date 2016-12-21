@@ -11,8 +11,15 @@ const baseDBPathForTest = path.normalize('./test/resource')
 const dbPathForTest = path.join(baseDBPathForTest, 'db')
 const dbPathForProduction = path.join(app.getPath('userData'), 'db')
 
+let dbPath = ''
 let mainWindow = null
 let closeConfirmed = false
+
+if (testMode) {
+  dbPath = dbPathForTest
+} else {
+  dbPath = dbPathForProduction
+}
 
 app.on('ready', initialize)
 app.on('will-quit', wrapUp)
@@ -62,29 +69,23 @@ function prepareTestData () {
   if (fs.readdirSync(dbPathForTest).length === 0) {
     let testDBData = JSON.parse(fs.readFileSync(path.join(baseDBPathForTest, 'db.test.json')).toString())
     testDBData.event.forEach(event => event.date = new Date(2016, 1, 3))
-    saveDBFile(dbPathForTest, testDBData)
+    saveDBFile(testDBData)
   }
 }
 
 function getInitData () {
-  let dbPath
-  if (testMode) {
-    dbPath = dbPathForTest
-  } else {
-    dbPath = dbPathForProduction
-  }
-
   let dbFile = fs.readdirSync(dbPath).reduce((prev, next) => {
-    if (prev < next) {
+    if (prev > next) {
       return prev
     } else {
       return next
     }
   })
+  console.log(dbFile)
   return JSON.parse(fs.readFileSync(path.join(dbPath, dbFile)).toString())
 }
 
-function saveDBFile (dbPath, data) {
+function saveDBFile (data) {
   let newDBFilePath = 'db_' + Date.now() + '.json'
   fs.writeFileSync(path.join(dbPath, newDBFilePath), JSON.stringify(data))
 }

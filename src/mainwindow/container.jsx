@@ -46,7 +46,11 @@ ipcRenderer.on(ch.EXIT, () => {
     cancelId: 1
   }, index => {
     if (index === 0) {
-      ipcRenderer.send(ch.EXIT_CONFIRMED)
+      let storeData = store.getData()
+      ipcRenderer.send(ch.EXIT_CONFIRMED, {
+        product: storeData.productList,
+        event: storeData.eventList
+      })
     }
   })
 })

@@ -28,8 +28,9 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-ipcMain.on(ch.EXIT_CONFIRMED, () => {
+ipcMain.on(ch.EXIT_CONFIRMED, (event, store) => {
   closeConfirmed = true
+  saveDBFile(store)
   app.quit()
 })
 

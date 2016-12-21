@@ -9,7 +9,7 @@ import * as ch from '../util/ipc.channels'
 
 const baseDBPathForTest = path.normalize('./test/resource')
 const dbPathForTest = path.join(baseDBPathForTest, 'db')
-const dbPathForProduction = path.join(app.getPath('userData'), 'db')
+const dbPathForProduction = path.join(app.getPath('userData'))
 const dbFileListLength = 5
 
 let dbPath = ''
@@ -21,6 +21,10 @@ if (testMode) {
   dbPath = dbPathForTest
 } else {
   dbPath = dbPathForProduction
+}
+
+if (!testMode && !fs.existsSync(dbPath)) {
+  fs.mkdirSync(dbPath)
 }
 
 app.on('ready', initialize)
@@ -65,7 +69,10 @@ function createMainWindow (initStore) {
       mainWindow.webContents.send(ch.EXIT)
     }
   })
-  mainWindow.webContents.openDevTools()
+
+  if (testMode) {
+    mainWindow.webContents.openDevTools()
+  }
 }
 
 function prepareTestData () {
@@ -84,6 +91,15 @@ function getInitData () {
       return -1
     }
   })
+
+  if (dbFileList.length === 0) {
+    // run at first time
+    return {
+      product: [],
+      event: []
+    }
+  }
+
   return JSON.parse(fs.readFileSync(path.join(dbPath, dbFileList[0])).toString())
 }
 

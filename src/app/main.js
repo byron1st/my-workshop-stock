@@ -6,6 +6,7 @@ import fs from 'fs'
 
 import testMode from './app.mode'
 import * as ch from '../util/ipc.channels'
+import * as c from '../util/const'
 
 const baseDBPathForTest = path.normalize('./test/resource')
 const dbPathForTest = path.join(baseDBPathForTest, 'db')
@@ -69,7 +70,11 @@ function createMainWindow (initStore) {
   mainWindow.loadURL('file://' + __dirname + '/../mainwindow/index.html')
   mainWindow.productList = initStore.product
   mainWindow.eventList = initStore.event
-  mainWindow.initLocale = app.getLocale()
+  let locale = app.getLocale()
+  if (c.supportLocales.indexOf(locale) === -1) {
+    locale = 'en'
+  }
+  mainWindow.initLocale = locale
   mainWindow.on('closed', () => mainWindow = null)
   mainWindow.on('close', event => {
     if (!closeConfirmed) {

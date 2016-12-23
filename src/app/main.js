@@ -62,6 +62,7 @@ function createMainWindow (initStore) {
   mainWindow.loadURL('file://' + __dirname + '/../mainwindow/index.html')
   mainWindow.productList = initStore.product
   mainWindow.eventList = initStore.event
+  mainWindow.initLocale = 'en' //TODO: 나중에 OS 설정에서 가져오도록 변경.
   mainWindow.on('closed', () => mainWindow = null)
   mainWindow.on('close', event => {
     if (!closeConfirmed) {

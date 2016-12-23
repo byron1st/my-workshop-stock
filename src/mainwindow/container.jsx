@@ -23,7 +23,8 @@ class Container extends Component {
     store.addChangeListener(this._updateState.bind(this))
     dispatcher.dispatch(INITIALIZE_STORE, {
       productList: remote.getCurrentWindow().productList,
-      eventList: remote.getCurrentWindow().eventList
+      eventList: remote.getCurrentWindow().eventList,
+      locale: remote.getCurrentWindow().initLocale
     })
   }
   render () {

@@ -5,6 +5,8 @@
 import React, {Component} from 'react'
 import ReactDOM from 'react-dom'
 import {remote, ipcRenderer} from 'electron'
+import path from 'path'
+import fs from 'fs'
 
 import store from './flux/store.main'
 import dispatcher from '../util/flux/dispatcher'
@@ -17,6 +19,7 @@ class Container extends Component {
   constructor () {
     super()
     this.state = {}
+    this.text = {}
   }
   componentWillMount () {
     initActions()
@@ -26,6 +29,12 @@ class Container extends Component {
       eventList: remote.getCurrentWindow().eventList,
       locale: remote.getCurrentWindow().initLocale
     })
+    this.text = this._loadLocale(remote.getCurrentWindow().initLocale)
+  }
+  componentWillUpdate(_, nextState) {
+    if (nextState.locale !== this.state.locale) {
+      this.text = this._loadLocale(nextState.locale)
+    }
   }
   render () {
     console.log(this.state)
@@ -35,6 +44,9 @@ class Container extends Component {
   }
   _updateState () {
     this.setState(store.getData())
+  }
+  _loadLocale (locale) {
+    return JSON.parse(fs.readFileSync(path.join(__dirname, '/../../../locales', locale + '.json')))
   }
 }
 

@@ -18,5 +18,6 @@ export default function initActions (ipcModule) {
 function initializeStore (arg) {
   store.setValue('productList', Immutable.fromJS(arg.productList))
   store.setValue('eventList', Immutable.fromJS(arg.eventList))
+  store.setValue('locale', arg.locale)
   store.emitChange()
 }

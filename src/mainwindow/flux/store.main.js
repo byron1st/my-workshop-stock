@@ -10,7 +10,8 @@ const Data = Record({
   eventList: List([]),
   newEvent: c.defaultEventValue,
   isValidNameForProduct: true,
-  searchTerm: ''
+  searchTerm: '',
+  locale: ''
 })
 
 export default new Store(new Data())

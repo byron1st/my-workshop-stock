@@ -62,6 +62,7 @@ function createMainWindow (initStore) {
   mainWindow.loadURL('file://' + __dirname + '/../mainwindow/index.html')
   mainWindow.productList = initStore.product
   mainWindow.eventList = initStore.event
+  mainWindow.initLocale = app.getLocale()
   mainWindow.on('closed', () => mainWindow = null)
   mainWindow.on('close', event => {
     if (!closeConfirmed) {

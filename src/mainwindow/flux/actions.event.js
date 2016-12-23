@@ -100,22 +100,22 @@ function addNewEvent (newEventObj) {
 /**
  * Delete an event
  *
- * @param      {number}  eventId  The event identifier
+ * @param      {object}  arg     {eventIndex: number, text: object}
  */
-function deleteEvent (eventIndex) {
+function deleteEvent (arg) {
   remote.dialog.showMessageBox({
     type: 'question',
-    buttons: ['OK', 'Cancel'],
+    buttons: [arg.text['OK'], arg.text['Cancel']],
     defaultId: 1,
-    message: 'Will you delete this event?',
+    message: arg.text['Will you delete this event?'],
     cancelId: 1
   }, (index) => {
     if (index === 1) {
       return
     } else {
-      let willBeDeletedEvent = store.getValue('eventList').get(eventIndex)
+      let willBeDeletedEvent = store.getValue('eventList').get(arg.eventIndex)
       refineProductAmount(willBeDeletedEvent.get('productId'), (-1 * willBeDeletedEvent.get('amount')))
-      store.setValue('eventList', store.getValue('eventList').delete(eventIndex))
+      store.setValue('eventList', store.getValue('eventList').delete(arg.eventIndex))
       store.emitChange()
     }
   })

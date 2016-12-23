@@ -1,0 +1,22 @@
+{
+  "Add a New Product": "Add a New Product",
+  "Name": "Name",
+  "Duplicated Name": "Duplicated Name",
+  "There is the same name in the list.": "There is the same name in the list.",
+  "OK": "OK",
+  "Cancel": "Cancel",
+  "Create": "Create",
+  "Add": "Add",
+  "Product": "Product",
+  "Search a product": "Search a product",
+  "Amount": "Amount",
+  "Type": "Type",
+  "Sale": "Sale",
+  "Production": "Production",
+  "Date": "Date",
+  "History": "History",
+  "Stock": "Stock",
+  "Will you delete this product? Every related event will be deleted together.": "Will you delete this product? Every related event will be deleted together.",
+  "Will you delete this event?": "Will you delete this event?",
+  "Will you quit the program?": "Will you quit the program?"
+}

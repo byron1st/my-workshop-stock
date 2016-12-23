@@ -9,15 +9,19 @@ export default class Window extends Component {
   render () {
     return (
       <div>
-        <Side productList={this.props.store.productList} isValidNameForProduct={this.props.store.isValidNameForProduct}/>
+        <Side productList={this.props.store.productList}
+          isValidNameForProduct={this.props.store.isValidNameForProduct}
+          text={this.props.text}/>
         <Body eventList={this.props.store.eventList}
           newEvent={this.props.store.newEvent}
           productList={this.props.store.productList}
-          searchTerm={this.props.store.searchTerm}/>
+          searchTerm={this.props.store.searchTerm}
+          text={this.props.text}/>
       </div>
     )
   }
 }
 Window.propTypes = {
-  store: PropTypes.object.isRequired
+  store: PropTypes.object.isRequired,
+  text: PropTypes.object.isRequired
 }

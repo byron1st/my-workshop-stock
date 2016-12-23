@@ -1,3 +1,18 @@
 {
-  
+  "Add a New Product": "Add a New Product",
+  "Name": "Name",
+  "Duplicated Name": "Duplicated Name",
+  "There is the same name in the list.": "There is the same name in the list.",
+  "Cancel": "Cancel",
+  "Create": "Create",
+  "Add": "Add",
+  "Product": "Product",
+  "Search a product": "Search a product",
+  "Amount": "Amount",
+  "Type": "Type",
+  "Sale": "Sale",
+  "Production": "Production",
+  "Date": "Date",
+  "History": "History",
+  "Stock": "Stock"
 }

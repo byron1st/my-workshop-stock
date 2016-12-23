@@ -1,0 +1,18 @@
+{
+  "Add a New Product": "새로운 제품 추가",
+  "Name": "이름",
+  "Duplicated Name": "중복된 이름",
+  "There is the same name in the list.": "이미 존재하는 이름입니다.",
+  "Cancel": "취소",
+  "Create": "생성",
+  "Add": "추가",
+  "Product": "제품",
+  "Search a product": "제품을 검색하세요",
+  "Amount": "수량",
+  "Type": "타입",
+  "Sale": "판매",
+  "Production": "생산",
+  "Date": "날짜",
+  "History": "기록",
+  "Stock": "재고"
+}

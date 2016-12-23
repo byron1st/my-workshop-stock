@@ -14,13 +14,13 @@ export default class BodyTop extends Component {
         <div className='ui container'>
           <div className='ui form'>
             <div className='fields'>
-              <ProductInputForm productList={this.props.productList}/>
-              <AmountInputForm amount={this.props.newEvent.amount}/>
-              <TypeInputForm />
-              <DateInputForm />
+              <ProductInputForm productList={this.props.productList} text={this.props.text}/>
+              <AmountInputForm amount={this.props.newEvent.amount} text={this.props.text}/>
+              <TypeInputForm text={this.props.text}/>
+              <DateInputForm text={this.props.text}/>
             </div>
           </div>
-          <button className='ui fluid compact button' onClick={() => this._addNewEvent()}>Add</button>
+          <button className='ui fluid compact button' onClick={() => this._addNewEvent()}>{this.props.text['Add']}</button>
         </div>
       </div>
     )
@@ -31,7 +31,8 @@ export default class BodyTop extends Component {
 }
 BodyTop.propTypes = {
   newEvent: PropTypes.object.isRequired,
-  productList: PropTypes.array.isRequired
+  productList: PropTypes.array.isRequired,
+  text: PropTypes.object.isRequired
 }
 
 class ProductInputForm extends Component {
@@ -45,9 +46,9 @@ class ProductInputForm extends Component {
   render () {
     return (
       <div className='six wide field' id='productInputForm'>
-        <label>Product</label>
+        <label>{this.props.text['Product']}</label>
         <select className='ui search dropdown' onChange={this._selectProduct}>
-          <option value=''>Search a product</option>
+          <option value=''>{this.props.text['Search a product']}</option>
           {this._getOptions(this.props.productList)}
         </select>
       </div>
@@ -62,14 +63,15 @@ class ProductInputForm extends Component {
   }
 }
 ProductInputForm.propTypes = {
-  productList: PropTypes.array.isRequired
+  productList: PropTypes.array.isRequired,
+  text: PropTypes.object.isRequired
 }
 
 class AmountInputForm extends Component {
   render () {
     return (
       <div className='three wide field' id='amountInputForm'>
-        <label>Amount</label>
+        <label>{this.props.text['Amount']}</label>
         <input type='text' value={util.getCurrencyValue(this.props.amount)} onChange={this._changeAmount}/>
       </div>
     )
@@ -80,17 +82,18 @@ class AmountInputForm extends Component {
   }
 }
 AmountInputForm.propTypes = {
-  amount: PropTypes.number.isRequired
+  amount: PropTypes.number.isRequired,
+  text: PropTypes.object.isRequired
 }
 
 class TypeInputForm extends Component {
   render () {
     return (
       <div className='three wide field'>
-        <label>Type</label>
+        <label>{this.props.text['Type']}</label>
         <select className='ui selection compact dropdown' onChange={this._changeType}>
-          <option value='sale'>Sale</option>
-          <option value='production'>Prod.</option>
+          <option value='sale'>{this.props.text['Sale']}</option>
+          <option value='production'>{this.props.text['Production']}</option>
         </select>
       </div>
     )
@@ -100,6 +103,7 @@ class TypeInputForm extends Component {
   }
 }
 TypeInputForm.propTypes = {
+  text: PropTypes.object.isRequired
 }
 
 class DateInputForm extends Component {
@@ -118,7 +122,7 @@ class DateInputForm extends Component {
   render () {
     return (
       <div className='four wide field'>
-        <label>Date</label>
+        <label>{this.props.text['Date']}</label>
         <div className='ui calendar' id='datePicker'>
           <div className='ui input left icon'>
             <i className='calendar icon'></i>
@@ -130,4 +134,5 @@ class DateInputForm extends Component {
   }
 }
 DateInputForm.propTypes = {
+  text: PropTypes.object.isRequired
 }

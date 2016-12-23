@@ -17,11 +17,11 @@ export default class BodyList extends Component {
     return (
       <div id='bodyList'>
         <h4 className='ui horizontal divider header'>
-          History
+          {this.props.text['History']}
         </h4>
         <div className='ui padded segment'>
           <div className='ui container'>
-            <SearchBar/>
+            <SearchBar text={this.props.text}/>
             <div className='ui feed'>
               {this._getEventListView(eventList)}
             </div>
@@ -46,13 +46,15 @@ export default class BodyList extends Component {
         productName={event.productName}
         amount={amount}
         date={new Date(event.date)}
-        index={index} />
+        index={index}
+        text={this.props.text}/>
     })
   }
 }
 BodyList.propTypes = {
   eventList: PropTypes.array.isRequired,
-  searchTerm: PropTypes.string.isRequired
+  searchTerm: PropTypes.string.isRequired,
+  text: PropTypes.object.isRequired
 }
 
 class Event extends Component {
@@ -67,13 +69,13 @@ class Event extends Component {
                   <div className='date'>
                     {util.getDateString(new Date(this.props.date))}
                   </div>
-                  &nbsp;<i className='remove icon' onClick={() => this._delete(this.props.index)}></i>
+                  &nbsp;<i className='remove icon' onClick={() => this._delete(this.props.index, this.props.text)}></i>
                 </div>
               </div>
             </div>)
   }
-  _delete (index) {
-    dispatcher.dispatch(eventActions.DELETE_EVENT, index)
+  _delete (index, text) {
+    dispatcher.dispatch(eventActions.DELETE_EVENT, {eventIndex: index, text: text})
   }
 }
 Event.propTypes = {
@@ -81,7 +83,8 @@ Event.propTypes = {
   productName: PropTypes.string.isRequired,
   amount: PropTypes.number.isRequired,
   date: PropTypes.object.isRequired,
-  index: PropTypes.number.isRequired
+  index: PropTypes.number.isRequired,
+  text: PropTypes.object.isRequired
 }
 
 class SearchBar extends Component {
@@ -105,4 +108,5 @@ class SearchBar extends Component {
   }
 }
 SearchBar.propTypes = {
+  text: PropTypes.object.isRequired
 }

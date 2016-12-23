@@ -66,7 +66,7 @@ gulp.task('del:package', ['test'], () => {
   return del.sync([PACKAGE_DEST])
 })
 
-gulp.task('copy:public', ['copy:semantic', 'copy:bower'])
+gulp.task('copy:public', ['copy:semantic', 'copy:bower', 'copy:locales'])
 
 gulp.task('copy:semantic', ['del:package'], () => {
   return gulp.src(['semantic/**/*'])
@@ -76,6 +76,11 @@ gulp.task('copy:semantic', ['del:package'], () => {
 gulp.task('copy:bower', ['del:package'], () => {
   return gulp.src(['bower_components/**/*'])
     .pipe(gulp.dest(PACKAGE_DEST + '/bower_components'))
+})
+
+gulp.task('copy:locales', ['del:package'], () => {
+  return gulp.src(['locales/**/*'])
+    .pipe(gulp.dest(PACKAGE_DEST + '/locales'))
 })
 
 gulp.task('copy:compiled', ['del:package'], () => {

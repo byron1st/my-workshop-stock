@@ -11,20 +11,20 @@ export default class Side extends Component {
   render () {
     return (
       <div className='ui visible right sidebar inverted vertical menu'>
-        <div className='ui center aligned large header inverted'>Stock</div>
+        <div className='ui center aligned large header inverted'>{this.props.text['Stock']}</div>
         <div className='ui segment inverted'>
-          <button className='ui fluid compact button' onClick={this._openNewProductModal}>Add a product</button>
-          <NewProductModal isValidNameForProduct={this.props.isValidNameForProduct}/>
+          <button className='ui fluid compact button' onClick={this._openNewProductModal}>{this.props.text['Add a New Product']}</button>
+          <NewProductModal isValidNameForProduct={this.props.isValidNameForProduct} text={this.props.text}/>
         </div>
         <div className='ui segment inverted'>
           <div className='ui relaxed middle aligned divided inverted list'>
-            {this._getProductListView(this.props.productList)}
+            {this._getProductListView(this.props.productList, this.props.text)}
           </div>
         </div>
       </div>
     )
   }
-  _getProductListView (productList) {
+  _getProductListView (productList, text) {
     return productList.map(product => {
       let itemContentView
       if (product.editable) {
@@ -47,7 +47,7 @@ export default class Side extends Component {
             <i className='edit icon'></i>
           </a>
           <a href='#' onClick={() => {
-            dispatcher.dispatch(productActions.REMOVE_PRODUCT, product.id)
+            dispatcher.dispatch(productActions.REMOVE_PRODUCT, {productId: product.id, text: text})
           }}><i className='ui right floated remove icon'></i></a>
         </div>
       }
@@ -68,7 +68,8 @@ export default class Side extends Component {
 }
 Side.propTypes = {
   productList: PropTypes.array.isRequired,
-  isValidNameForProduct: PropTypes.bool.isRequired
+  isValidNameForProduct: PropTypes.bool.isRequired,
+  text: PropTypes.object.isRequired
 }
 
 class NewProductModal extends Component {
@@ -89,22 +90,22 @@ class NewProductModal extends Component {
   render () {
     return (
       <div className='ui small modal' id='newProductModal'>
-        <div className='header'>Add a New Product</div>
+        <div className='header'>{this.props.text['Add a New Product']}</div>
         <div className='content'>
           <div className='ui form' id='modalNameForm'>
             <div className='field'>
-              <label>Name</label>
+              <label>{this.props.text['Name']}</label>
               <input type='text' id='newProductName' onChange={this._checkName}/>     
             </div>
             <div className='ui error message'>
-              <div className='header'>Duplicated Name</div>
-              <p>There is the same name in the list.</p>
+              <div className='header'>{this.props.text['Duplicated Name']}</div>
+              <p>{this.props.text['There is the same name in the list.']}</p>
             </div>
           </div>
         </div>
         <div className='actions'>
-          <div className='ui approve primary button' onClick={this._addNewProduct} id='modalCreateBtn'>Create</div>
-          <div className='ui cancel button'>Cancel</div>
+          <div className='ui approve primary button' onClick={this._addNewProduct} id='modalCreateBtn'>{this.props.text['Create']}</div>
+          <div className='ui cancel button'>{this.props.text['Cancel']}</div>
         </div>
       </div>
     )
@@ -117,5 +118,6 @@ class NewProductModal extends Component {
   }
 }
 NewProductModal.propTypes = {
-  isValidNameForProduct: PropTypes.bool.isRequired
+  isValidNameForProduct: PropTypes.bool.isRequired,
+  text: PropTypes.object.isRequired
 }

@@ -1,6 +1,6 @@
 'use strict'
 
-import {app, BrowserWindow, ipcMain} from 'electron'
+import {app, BrowserWindow, ipcMain/*, autoUpdater*/} from 'electron'
 import path from 'path'
 import fs from 'fs'
 
@@ -11,6 +11,11 @@ const baseDBPathForTest = path.normalize('./test/resource')
 const dbPathForTest = path.join(baseDBPathForTest, 'db')
 const dbPathForProduction = path.join(app.getPath('userData'))
 const dbFileListLength = 5
+
+// import os from 'os'
+// const platform = os.platform() + '_' + os.arch()
+// const version = app.getVersion()
+// autoUpdater.setFeedURL('https://lit-bayou-78984.herokuapp.com/update/'+platform+'/'+version)
 
 let dbPath = ''
 let dbFileList = []
@@ -41,6 +46,8 @@ ipcMain.on(ch.EXIT_CONFIRMED, (event, store) => {
 })
 
 function initialize () {
+  // let isUpdate = autoUpdater.checkForUpdates()
+  // console.log(isUpdate)
   if (testMode) {
     prepareTestData()
   }

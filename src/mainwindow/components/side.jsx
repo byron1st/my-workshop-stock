@@ -18,13 +18,13 @@ export default class Side extends Component {
         </div>
         <div className='ui segment inverted'>
           <div className='ui relaxed middle aligned divided inverted list'>
-            {this._getProductListView(this.props.productList)}
+            {this._getProductListView(this.props.productList, this.props.text)}
           </div>
         </div>
       </div>
     )
   }
-  _getProductListView (productList) {
+  _getProductListView (productList, text) {
     return productList.map(product => {
       let itemContentView
       if (product.editable) {
@@ -47,7 +47,7 @@ export default class Side extends Component {
             <i className='edit icon'></i>
           </a>
           <a href='#' onClick={() => {
-            dispatcher.dispatch(productActions.REMOVE_PRODUCT, product.id)
+            dispatcher.dispatch(productActions.REMOVE_PRODUCT, {productId: product.id, text: text})
           }}><i className='ui right floated remove icon'></i></a>
         </div>
       }

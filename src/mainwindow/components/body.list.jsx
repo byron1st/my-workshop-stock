@@ -69,13 +69,13 @@ class Event extends Component {
                   <div className='date'>
                     {util.getDateString(new Date(this.props.date))}
                   </div>
-                  &nbsp;<i className='remove icon' onClick={() => this._delete(this.props.index)}></i>
+                  &nbsp;<i className='remove icon' onClick={() => this._delete(this.props.index, this.props.text)}></i>
                 </div>
               </div>
             </div>)
   }
-  _delete (index) {
-    dispatcher.dispatch(eventActions.DELETE_EVENT, index)
+  _delete (index, text) {
+    dispatcher.dispatch(eventActions.DELETE_EVENT, {eventIndex: index, text: text})
   }
 }
 Event.propTypes = {

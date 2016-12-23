@@ -30,6 +30,23 @@ class Container extends Component {
       locale: remote.getCurrentWindow().initLocale
     })
     this.text = this._loadLocale(remote.getCurrentWindow().initLocale)
+    ipcRenderer.on(ch.EXIT, () => {
+      remote.dialog.showMessageBox({
+        type: 'question',
+        buttons: [this.text['OK'], this.text['Cancel']],
+        defaultId: 1,
+        message: this.text['Will you quit the program?'],
+        cancelId: 1
+      }, index => {
+        if (index === 0) {
+          let storeData = store.getData()
+          ipcRenderer.send(ch.EXIT_CONFIRMED, {
+            product: storeData.productList,
+            event: storeData.eventList
+          })
+        }
+      })
+    })
   }
   componentWillUpdate(_, nextState) {
     if (nextState.locale !== this.state.locale) {
@@ -50,21 +67,4 @@ class Container extends Component {
   }
 }
 
-ipcRenderer.on(ch.EXIT, () => {
-  remote.dialog.showMessageBox({
-    type: 'question',
-    buttons: ['OK', 'Cancel'],
-    defaultId: 1,
-    message: 'Will you quit the program?',
-    cancelId: 1
-  }, index => {
-    if (index === 0) {
-      let storeData = store.getData()
-      ipcRenderer.send(ch.EXIT_CONFIRMED, {
-        product: storeData.productList,
-        event: storeData.eventList
-      })
-    }
-  })
-})
 ReactDOM.render(<Container />, document.getElementById('react-container'))

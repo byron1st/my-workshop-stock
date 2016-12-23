@@ -91,22 +91,27 @@ function saveProductName (arg) {
   }
 }
 
-function removeProduct (productId) {
+/**
+ * Removes a product.
+ *
+ * @param      {object}  arg     {productId: number, text: object}
+ */
+function removeProduct (arg) {
   let productList = store.getValue('productList')
-  let productIdx = productList.findKey(product => product.get('id') === productId)
+  let productIdx = productList.findKey(product => product.get('id') === arg.productId)
   if (productIdx !== undefined) {
     remote.dialog.showMessageBox({
       type: 'question',
-      buttons: ['OK', 'Cancel'],
+      buttons: [arg.text['OK'], arg.text['Cancel']],
       defaultId: 1,
-      message: 'Will you delete this product? Every related event will be deleted together.',
+      message: arg.text['Will you delete this product? Every related event will be deleted together.'],
       cancelId: 1
     }, (index) => {
       if (index === 1) {
         return
       } else {
         store.setValue('productList', store.getValue('productList').delete(productIdx))
-        store.setValue('eventList', store.getValue('eventList').filterNot(event => event.get('productId') === productId))
+        store.setValue('eventList', store.getValue('eventList').filterNot(event => event.get('productId') === arg.productId))
         store.emitChange()
       }
     })

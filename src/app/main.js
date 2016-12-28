@@ -1,10 +1,11 @@
 'use strict'
 
-import {app, BrowserWindow, ipcMain/*, autoUpdater*/} from 'electron'
+import {app, BrowserWindow, ipcMain, Menu/*, autoUpdater*/} from 'electron'
 import path from 'path'
 import fs from 'fs'
 
 import testMode from './app.mode'
+import menu from './menu'
 import * as ch from '../util/ipc.channels'
 import * as c from '../util/const'
 
@@ -53,6 +54,7 @@ function initialize () {
     prepareTestData()
   }
   let initStore = getInitData()
+  Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
   createMainWindow(initStore)
 }
 

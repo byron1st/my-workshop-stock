@@ -34,19 +34,20 @@ export default class Side extends Component {
     return productList.map(product => {
       let itemContentView
       if (product.editable) {
-        itemContentView = <div className='product' id={product.id}>
+        itemContentView = <div className='product'>
           <i className='move icon product-move-handle'></i>
           <div className='ui mini icon input'>
             <input type='text' defaultValue={product.name} id={'input' + product.id}/>
           </div>
           <a href='#' onClick={() => {
+            console.log($('#product-list').sortable('toArray'))
             let arg = { productId: product.id, name: $('#input' + product.id).val() }
             dispatcher.dispatch(productActions.SAVE_PRODUCT_NAME, arg)
           }}><i className='checkmark box icon'></i></a>
         </div>
         
       } else {
-        itemContentView = <div className='product' id={product.id}>
+        itemContentView = <div className='product'>
           {product.name} <a href='#' onClick={() => {
             let arg = { productId: product.id, editable: true }
             dispatcher.dispatch(productActions.TOGGLE_PRODUCT_EDITABLE, arg)
@@ -58,7 +59,7 @@ export default class Side extends Component {
           }}><i className='ui right floated remove icon'></i></a>
         </div>
       }
-      return (<div className='item' key={product.id}>
+      return (<div className='item' key={product.id} id={product.id}>
                 <div className='middle aligned content'>
                   {itemContentView}
                 </div>

@@ -43,7 +43,8 @@ export default class Side extends Component {
               let arg = {
                 productId: product.id,
                 name: $('#input' + product.id).val(),
-                productOrder: $('#product-list').sortable('toArray')
+                productOrder: $('#product-list').sortable('toArray'),
+                text: text
               }
               dispatcher.dispatch(productActions.SAVE_PRODUCT_NAME, arg)
             }}><i className='checkmark icon'></i></div>

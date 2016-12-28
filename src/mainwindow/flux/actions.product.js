@@ -70,11 +70,15 @@ function toggleProductEditable (arg) {
 /**
  * Saves a product name.
  *
- * @param      {object}  arg     {productId: number, name: string, productOrder: array<number>}
+ * @param      {object}  arg     {productId: number, name: string, productOrder: array<number>, text: object}
  */
 function saveProductName (arg) {
   let product = store.getValue('productSet').get(arg.productId)
   if (product !== undefined) {
+    if (product.get('name') !== arg.name && !isValidNameForProduct(arg.name)) {
+      return remote.dialog.showErrorBox(arg.text['Duplicated Name'], arg.text['There is the same name in the list.'])
+    }
+
     let toggledProduct = product.withMutations(product => {
       product.set('editable', false).set('name', arg.name)
     })

@@ -24,36 +24,38 @@ export default class Side extends Component {
         </div>
         <div className='ui segment inverted'>
           <div className='ui relaxed middle aligned divided inverted list' id='product-list'>
-            {this._getProductListView(this.props.productList, this.props.text)}
+            {this._getProductListView(this.props.productSet, this.props.productOrder, this.props.text)}
           </div>
         </div>
       </div>
     )
   }
-  _getProductListView (productList, text) {
-    return productList.map(product => {
+  _getProductListView (productSet, productOrder, text) {
+    return productOrder.map(id => {
+      let product = productSet[id]
       let itemContentView
       if (product.editable) {
         itemContentView = <div className='product'>
           <i className='move icon product-move-handle'></i>
-          <div className='ui mini icon input'>
+          <div className='ui inverted action small input'>
             <input type='text' defaultValue={product.name} id={'input' + product.id}/>
+            <div className='ui icon button' onClick={() => {
+              let arg = {
+                productId: product.id,
+                name: $('#input' + product.id).val(),
+                productOrder: $('#product-list').sortable('toArray')
+              }
+              dispatcher.dispatch(productActions.SAVE_PRODUCT_NAME, arg)
+            }}><i className='checkmark icon'></i></div>
           </div>
-          <a href='#' onClick={() => {
-            console.log($('#product-list').sortable('toArray'))
-            let arg = { productId: product.id, name: $('#input' + product.id).val() }
-            dispatcher.dispatch(productActions.SAVE_PRODUCT_NAME, arg)
-          }}><i className='checkmark box icon'></i></a>
         </div>
         
       } else {
         itemContentView = <div className='product'>
-          {product.name} <a href='#' onClick={() => {
+          <a href='#' onClick={() => {
             let arg = { productId: product.id, editable: true }
             dispatcher.dispatch(productActions.TOGGLE_PRODUCT_EDITABLE, arg)
-          }}>
-            <i className='edit icon'></i>
-          </a>
+          }}><i className='edit icon'></i></a> {product.name}
           <a href='#' onClick={() => {
             dispatcher.dispatch(productActions.REMOVE_PRODUCT, {productId: product.id, text: text})
           }}><i className='ui right floated remove icon'></i></a>
@@ -75,7 +77,8 @@ export default class Side extends Component {
   }
 }
 Side.propTypes = {
-  productList: PropTypes.array.isRequired,
+  productSet: PropTypes.object.isRequired,
+  productOrder: PropTypes.array.isRequired,
   isValidNameForProduct: PropTypes.bool.isRequired,
   text: PropTypes.object.isRequired
 }

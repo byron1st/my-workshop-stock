@@ -14,7 +14,7 @@ export default class BodyTop extends Component {
         <div className='ui container'>
           <div className='ui form'>
             <div className='fields'>
-              <ProductInputForm productList={this.props.productList} text={this.props.text}/>
+              <ProductInputForm productSet={this.props.productSet} productOrder={this.props.productOrder} text={this.props.text}/>
               <AmountInputForm amount={this.props.newEvent.amount} text={this.props.text}/>
               <TypeInputForm text={this.props.text}/>
               <DateInputForm text={this.props.text}/>
@@ -31,31 +31,28 @@ export default class BodyTop extends Component {
 }
 BodyTop.propTypes = {
   newEvent: PropTypes.object.isRequired,
-  productList: PropTypes.array.isRequired,
+  productSet: PropTypes.object.isRequired,
+  productOrder: PropTypes.array.isRequired,
   text: PropTypes.object.isRequired
 }
 
 class ProductInputForm extends Component {
-  // TODO: it's not working.
-  // componentDidMount () {
-  //   $('select.dropdown').dropdown()
-  // }
-  // componentDidUpdate () {
-  //   $('select.dropdown').dropdown()
-  // }
   render () {
     return (
       <div className='six wide field' id='productInputForm'>
         <label>{this.props.text['Product']}</label>
         <select className='ui search dropdown' onChange={this._selectProduct}>
           <option value=''>{this.props.text['Search a product']}</option>
-          {this._getOptions(this.props.productList)}
+          {this._getOptions(this.props.productSet, this.props.productOrder)}
         </select>
       </div>
     )
   }
-  _getOptions (productList) {
-    return productList.map(product => <option value={product.id} key={product.id}>{product.name}</option>)
+  _getOptions (productSet, productOrder) {
+    return productOrder.map(id => {
+      let product = productSet[id]
+      return <option value={product.id} key={product.id}>{product.name}</option>
+    })
   }
   _selectProduct (e) {
     $('#productInputForm').removeClass('error')
@@ -63,7 +60,8 @@ class ProductInputForm extends Component {
   }
 }
 ProductInputForm.propTypes = {
-  productList: PropTypes.array.isRequired,
+  productSet: PropTypes.object.isRequired,
+  productOrder: PropTypes.array.isRequired,
   text: PropTypes.object.isRequired
 }
 

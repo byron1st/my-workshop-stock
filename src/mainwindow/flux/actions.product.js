@@ -1,7 +1,7 @@
 /*eslint-disable no-unused-vars*/
 'use strict'
 
-import {Map} from 'immutable'
+import {Map, List} from 'immutable'
 import {remote} from 'electron'
 
 import dispatcher from '../../util/flux/dispatcher'
@@ -39,9 +39,12 @@ function addNewProduct (newProductObj) {
     editable: false
   })
 
-  let productList = store.getValue('productList').push(product)
+  // let productList = store.getValue('productList').push(product)
+  let productSet = store.getValue('productSet').set(product.get('id'), product)
+  let productOrder = store.getValue('productOrder').push(product.get('id'))
   
-  store.setValue('productList', productList)
+  store.setValue('productSet', productSet)
+  store.setValue('productOrder', productOrder)
   store.emitChange()
 }
 
@@ -56,11 +59,10 @@ function checkName (name) {
  * @param      {object}  arg     {productId: string, editable: bool}
  */
 function toggleProductEditable (arg) {
-  let productList = store.getValue('productList')
-  let productIdx = productList.findKey(product => product.get('id') === arg.productId)
-  if (productIdx !== undefined) {
-    let toggledProduct = productList.get(productIdx).set('editable', arg.editable)
-    store.setValue('productList', productList.set(productIdx, toggledProduct))
+  let product = store.getValue('productSet').get(arg.productId)
+  if (product !== undefined) {
+    let toggledProduct = product.set('editable', arg.editable)
+    store.setValue('productSet', store.getValue('productSet').set(arg.productId, toggledProduct))
     store.emitChange()
   }
 }
@@ -68,13 +70,12 @@ function toggleProductEditable (arg) {
 /**
  * Saves a product name.
  *
- * @param      {object}  arg     {productId: string, name: string}
+ * @param      {object}  arg     {productId: number, name: string, productOrder: array<number>}
  */
 function saveProductName (arg) {
-  let productList = store.getValue('productList')
-  let productIdx = productList.findKey(product => product.get('id') === arg.productId)
-  if (productIdx !== undefined) {
-    let toggledProduct = productList.get(productIdx).withMutations(product => {
+  let product = store.getValue('productSet').get(arg.productId)
+  if (product !== undefined) {
+    let toggledProduct = product.withMutations(product => {
       product.set('editable', false).set('name', arg.name)
     })
 
@@ -85,8 +86,9 @@ function saveProductName (arg) {
       }
     }
     
-    store.setValue('productList', productList.set(productIdx, toggledProduct))
+    store.setValue('productSet', store.getValue('productSet').set(arg.productId, toggledProduct))
     store.setValue('eventList', eventList.asImmutable())
+    store.setValue('productOrder', List(arg.productOrder))
     store.emitChange()
   }
 }
@@ -97,9 +99,8 @@ function saveProductName (arg) {
  * @param      {object}  arg     {productId: number, text: object}
  */
 function removeProduct (arg) {
-  let productList = store.getValue('productList')
-  let productIdx = productList.findKey(product => product.get('id') === arg.productId)
-  if (productIdx !== undefined) {
+  let product = store.getValue('productSet').get(arg.productId)
+  if (product !== undefined) {
     remote.dialog.showMessageBox({
       type: 'question',
       buttons: [arg.text['OK'], arg.text['Cancel']],
@@ -110,7 +111,9 @@ function removeProduct (arg) {
       if (index === 1) {
         return
       } else {
-        store.setValue('productList', store.getValue('productList').delete(productIdx))
+        let order = store.getValue('productOrder').findKey(id => id === arg.productId)
+        store.setValue('productSet', store.getValue('productSet').delete(arg.productIdx))
+        store.setValue('productOrder', store.getValue('productOrder').splice(order, 1))
         store.setValue('eventList', store.getValue('eventList').filterNot(event => event.get('productId') === arg.productId))
         store.emitChange()
       }
@@ -119,7 +122,7 @@ function removeProduct (arg) {
 }
 
 function isValidNameForProduct (name) {
-  return store.getValue('productList').find(product => {
+  return store.getValue('productSet').find(product => {
     return product.get('name') === name
   }) === undefined
 }

@@ -68,8 +68,9 @@ function createMainWindow (initStore) {
     minHeight: 600
   })
   mainWindow.loadURL('file://' + __dirname + '/../mainwindow/index.html')
-  mainWindow.productList = initStore.product
+  mainWindow.productSet = initStore.product
   mainWindow.eventList = initStore.event
+  mainWindow.productOrder = initStore.productOrder
   let locale = app.getLocale()
   if (c.supportLocales.indexOf(locale) === -1) {
     locale = 'en'
@@ -109,10 +110,10 @@ function getInitData () {
     // run at first time
     return {
       product: [],
-      event: []
+      event: [],
+      productOrder: {}
     }
   }
-
   return JSON.parse(fs.readFileSync(path.join(dbPath, dbFileList[0])).toString())
 }
 
@@ -123,5 +124,6 @@ function saveDBFile (data) {
     dbFileList.pop()
   }
   dbFileList.unshift(newDBFilePath)
+
   fs.writeFileSync(path.join(dbPath, newDBFilePath), JSON.stringify(data))
 }

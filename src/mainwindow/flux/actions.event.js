@@ -40,7 +40,6 @@ function updateNewEventField (arg) {
     }
     arg.value = Number(arg.value)
   }
-
   store.setInValue(['newEvent', arg.field], arg.value)
   store.emitChange()
 }
@@ -67,7 +66,7 @@ function addNewEvent (newEventObj) {
 
   /*create an object of a new event*/
   let amount = newEventObj.amount
-  let productId = Number(newEventObj.productId)
+  let productId = newEventObj.productId
   if (newEventObj.type === 'sale') {
     amount = amount * -1
   }
@@ -76,7 +75,7 @@ function addNewEvent (newEventObj) {
     date: newEventObj.date,
     amount: amount,
     productId: productId,
-    productName: store.getValue('productList').find(product => product.get('id') === productId).get('name'),
+    productName: store.getValue('productSet').get(productId).get('name'),
     editable: false
   })
 
@@ -127,11 +126,9 @@ function searchProductName (searchTerm) {
 }
 
 function refineProductAmount (productId, changedValue) {
-  let productList = store.getValue('productList')
-  let productIdx = productList.findKey(product => product.get('id') === productId)
-  if (productIdx !== undefined) {
-    let originalProduct = productList.get(productIdx)
-    let changedProduct = originalProduct.set('amount', originalProduct.get('amount') + changedValue)
-    store.setValue('productList', productList.set(productIdx, changedProduct))
+  let product = store.getValue('productSet').get(productId)
+  if (product !== undefined) {
+    let changedProduct = product.set('amount', product.get('amount') + changedValue)
+    store.setValue('productSet', store.getValue('productSet').set(productId, changedProduct))
   }
 }

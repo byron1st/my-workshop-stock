@@ -9,7 +9,9 @@ import * as util from '../../util/util'
 
 export default class Side extends Component {
   componentDidMount () {
-    $('#product-list').sortable()
+    $('#product-list').sortable({
+      handle: '.product-move-handle'
+    })
     $('#product-list').disableSelection()
   }
   render () {
@@ -33,6 +35,7 @@ export default class Side extends Component {
       let itemContentView
       if (product.editable) {
         itemContentView = <div className='product' id={product.id}>
+          <i className='move icon product-move-handle'></i>
           <div className='ui mini icon input'>
             <input type='text' defaultValue={product.name} id={'input' + product.id}/>
           </div>

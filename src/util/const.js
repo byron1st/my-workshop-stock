@@ -9,3 +9,5 @@ export const defaultEventValue = new Map({
   productName: '',
   type: 'sale'
 })
+
+export const supportLocales = ['en', 'ko']

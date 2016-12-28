@@ -1,13 +1,14 @@
 'use strict'
 
-import {Record, List} from 'immutable'
+import {Record, List, Map} from 'immutable'
 
 import Store from '../../util/flux/store'
 import * as c from '../../util/const'
 
 const Data = Record({
-  productList: List([]),
+  productSet: Map({}),
   eventList: List([]),
+  productOrder: List([]),
   newEvent: c.defaultEventValue,
   isValidNameForProduct: true,
   searchTerm: '',

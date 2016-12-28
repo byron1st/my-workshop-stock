@@ -25,8 +25,9 @@ class Container extends Component {
     initActions()
     store.addChangeListener(this._updateState.bind(this))
     dispatcher.dispatch(INITIALIZE_STORE, {
-      productList: remote.getCurrentWindow().productList,
+      productSet: remote.getCurrentWindow().productSet,
       eventList: remote.getCurrentWindow().eventList,
+      productOrder: remote.getCurrentWindow().productOrder,
       locale: remote.getCurrentWindow().initLocale
     })
     this.text = this._loadLocale(remote.getCurrentWindow().initLocale)
@@ -41,8 +42,9 @@ class Container extends Component {
         if (index === 0) {
           let storeData = store.getData()
           ipcRenderer.send(ch.EXIT_CONFIRMED, {
-            product: storeData.productList,
-            event: storeData.eventList
+            product: storeData.productSet,
+            event: storeData.eventList,
+            productOrder: storeData.productOrder
           })
         }
       })

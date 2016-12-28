@@ -9,7 +9,7 @@ export default class Body extends Component {
   render () {
     return (
       <div id='body'>
-        <BodyTop newEvent={this.props.newEvent} productList={this.props.productList} text={this.props.text}/>
+        <BodyTop newEvent={this.props.newEvent} productSet={this.props.productSet} productOrder={this.props.productOrder} text={this.props.text}/>
         <BodyList eventList={this.props.eventList} searchTerm={this.props.searchTerm} text={this.props.text}/>
       </div>
     )
@@ -18,7 +18,8 @@ export default class Body extends Component {
 Body.propTypes = {
   eventList: PropTypes.array.isRequired,
   newEvent: PropTypes.object.isRequired,
-  productList: PropTypes.array.isRequired,
+  productSet: PropTypes.object.isRequired,
+  productOrder: PropTypes.array.isRequired,
   searchTerm: PropTypes.string.isRequired,
   text: PropTypes.object.isRequired
 }

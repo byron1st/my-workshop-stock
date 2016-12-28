@@ -1,51 +1,52 @@
 {
-  "product": [
-    {
-      "id": 1,
+  "product": {
+    "1": {
+      "id": "1",
       "name": "제품 1",
       "amount": 3200,
       "editable": false
     },
-    {
-      "id": 2,
+    "2": {
+      "id": "2",
       "name": "제품 asdf 1",
       "amount": 0,
       "editable": false
     },
-    {
-      "id": 3,
+    "3": {
+      "id": "3",
       "name": "제품 kkkk 1",
       "amount": 0,
       "editable": false
     },
-    {
-      "id": 4,
+    "4": {
+      "id": "4",
       "name": "제품 1 yyyyoaijsdofi",
       "amount": 0,
       "editable": false
     }
-  ],
+  },
   "event": [
     {
-      "id": 11,
+      "id": "11",
       "amount": 100,
-      "productId": 1,
+      "productId": "1",
       "productName": "제품 1",
       "editable": false
     },
     {
-      "id": 22,
+      "id": "22",
       "amount": 3200,
-      "productId": 1,
+      "productId": "1",
       "productName": "제품 1",
       "editable": false
     },
     {
-      "id": 33,
+      "id": "33",
       "amount": -100,
-      "productId": 1,
+      "productId": "1",
       "productName": "제품 1",
       "editable": false
     }
-  ]
+  ],
+  "productOrder": ["1", "2", "3", "4"]
 }

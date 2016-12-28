@@ -6,6 +6,7 @@ import fs from 'fs'
 
 import testMode from './app.mode'
 import * as ch from '../util/ipc.channels'
+import * as c from '../util/const'
 
 const baseDBPathForTest = path.normalize('./test/resource')
 const dbPathForTest = path.join(baseDBPathForTest, 'db')
@@ -67,9 +68,14 @@ function createMainWindow (initStore) {
     minHeight: 600
   })
   mainWindow.loadURL('file://' + __dirname + '/../mainwindow/index.html')
-  mainWindow.productList = initStore.product
+  mainWindow.productSet = initStore.product
   mainWindow.eventList = initStore.event
-  mainWindow.initLocale = app.getLocale()
+  mainWindow.productOrder = initStore.productOrder
+  let locale = app.getLocale()
+  if (c.supportLocales.indexOf(locale) === -1) {
+    locale = 'en'
+  }
+  mainWindow.initLocale = locale
   mainWindow.on('closed', () => mainWindow = null)
   mainWindow.on('close', event => {
     if (!closeConfirmed) {
@@ -104,10 +110,10 @@ function getInitData () {
     // run at first time
     return {
       product: [],
-      event: []
+      event: [],
+      productOrder: {}
     }
   }
-
   return JSON.parse(fs.readFileSync(path.join(dbPath, dbFileList[0])).toString())
 }
 
@@ -118,5 +124,6 @@ function saveDBFile (data) {
     dbFileList.pop()
   }
   dbFileList.unshift(newDBFilePath)
+
   fs.writeFileSync(path.join(dbPath, newDBFilePath), JSON.stringify(data))
 }

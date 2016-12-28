@@ -17,9 +17,9 @@ export default class Side extends Component {
   render () {
     return (
       <div className='ui visible right sidebar inverted vertical menu'>
-        <div className='ui center aligned large header inverted'>{this.props.text['Stock']}</div>
         <div className='ui segment inverted'>
-          <button className='ui fluid compact button' onClick={this._openNewProductModal}>{this.props.text['Add a New Product']}</button>
+          <div className='ui center aligned large header inverted'>{this.props.text['Stock']}</div>
+          <button className='ui fluid compact blue button' onClick={this._openNewProductModal}>{this.props.text['Add a New Product']}</button>
           <NewProductModal isValidNameForProduct={this.props.isValidNameForProduct} text={this.props.text}/>
         </div>
         <div className='ui segment inverted'>

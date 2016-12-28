@@ -8,6 +8,10 @@ import * as productActions from '../flux/actions.product'
 import * as util from '../../util/util'
 
 export default class Side extends Component {
+  componentDidMount () {
+    $('#product-list').sortable()
+    $('#product-list').disableSelection()
+  }
   render () {
     return (
       <div className='ui visible right sidebar inverted vertical menu'>
@@ -17,7 +21,7 @@ export default class Side extends Component {
           <NewProductModal isValidNameForProduct={this.props.isValidNameForProduct} text={this.props.text}/>
         </div>
         <div className='ui segment inverted'>
-          <div className='ui relaxed middle aligned divided inverted list'>
+          <div className='ui relaxed middle aligned divided inverted list' id='product-list'>
             {this._getProductListView(this.props.productList, this.props.text)}
           </div>
         </div>

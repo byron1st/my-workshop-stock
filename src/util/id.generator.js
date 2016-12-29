@@ -13,14 +13,16 @@ export default function generateId (kind) {
 
   let id
   do {
-    id = Math.floor(Math.random() * (100000 - 1)) + 1
+    let idValue = Math.floor(Math.random() * (100000 - 1)) + 1
+    id = idValue.toString()
   } while (idList.indexOf(id) !== -1)
 
   idList.push(id)
   return id
 }
 
-export function initIds (eventList, productList) {
+export function initIds (eventList, productOrder) {
   eventId = eventList.map(event => event.id)
-  productId = productList.map(product => product.id)
+  productId = productOrder.map(id => id)
+  console.log(productOrder)
 }

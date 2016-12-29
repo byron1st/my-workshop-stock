@@ -15,6 +15,8 @@ import * as ch from '../util/ipc.channels'
 
 import Window from './components/window'
 
+const BACKUP_TIME_INTERVAL = 5 * 60 * 1000
+
 class Container extends Component {
   constructor () {
     super()
@@ -25,11 +27,13 @@ class Container extends Component {
     initActions()
     store.addChangeListener(this._updateState.bind(this))
     dispatcher.dispatch(INITIALIZE_STORE, {
-      productList: remote.getCurrentWindow().productList,
+      productSet: remote.getCurrentWindow().productSet,
       eventList: remote.getCurrentWindow().eventList,
+      productOrder: remote.getCurrentWindow().productOrder,
       locale: remote.getCurrentWindow().initLocale
     })
     this.text = this._loadLocale(remote.getCurrentWindow().initLocale)
+    setInterval(() => ipcRenderer.send(ch.BACKUP_DATA, this._getStoreData()), BACKUP_TIME_INTERVAL)
     ipcRenderer.on(ch.EXIT, () => {
       remote.dialog.showMessageBox({
         type: 'question',
@@ -39,11 +43,7 @@ class Container extends Component {
         cancelId: 1
       }, index => {
         if (index === 0) {
-          let storeData = store.getData()
-          ipcRenderer.send(ch.EXIT_CONFIRMED, {
-            product: storeData.productList,
-            event: storeData.eventList
-          })
+          ipcRenderer.send(ch.EXIT_CONFIRMED, this._getStoreData())
         }
       })
     })
@@ -64,6 +64,14 @@ class Container extends Component {
   }
   _loadLocale (locale) {
     return JSON.parse(fs.readFileSync(path.join(__dirname, '/../../../locales', locale + '.json')))
+  }
+  _getStoreData () {
+    let storeData = store.getData()
+    return {
+      product: storeData.productSet,
+      event: storeData.eventList,
+      productOrder: storeData.productOrder
+    }
   }
 }
 

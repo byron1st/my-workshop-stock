@@ -1,16 +1,24 @@
 'use strict'
 
-import {app, BrowserWindow, ipcMain} from 'electron'
+import {app, BrowserWindow, ipcMain, Menu/*, autoUpdater*/} from 'electron'
 import path from 'path'
 import fs from 'fs'
 
 import testMode from './app.mode'
+import menu from './menu'
 import * as ch from '../util/ipc.channels'
+import * as c from '../util/const'
 
 const baseDBPathForTest = path.normalize('./test/resource')
 const dbPathForTest = path.join(baseDBPathForTest, 'db')
-const dbPathForProduction = path.join(app.getPath('userData'))
-const dbFileListLength = 5
+const dbPathForProduction = path.join(app.getPath('userData'), 'db')
+
+const DB_FILE_LIST_LENGTH = 20
+
+// import os from 'os'
+// const platform = os.platform() + '_' + os.arch()
+// const version = app.getVersion()
+// autoUpdater.setFeedURL('https://lit-bayou-78984.herokuapp.com/update/'+platform+'/'+version)
 
 let dbPath = ''
 let dbFileList = []
@@ -21,10 +29,6 @@ if (testMode) {
   dbPath = dbPathForTest
 } else {
   dbPath = dbPathForProduction
-}
-
-if (!testMode && !fs.existsSync(dbPath)) {
-  fs.mkdirSync(dbPath)
 }
 
 app.on('ready', initialize)
@@ -39,13 +43,15 @@ ipcMain.on(ch.EXIT_CONFIRMED, (event, store) => {
   saveDBFile(store)
   app.quit()
 })
+ipcMain.on(ch.BACKUP_DATA, (event, store) => {
+  saveDBFile(store)
+})
 
 function initialize () {
-  if (testMode) {
-    prepareTestData()
-  }
-  let initStore = getInitData()
-  createMainWindow(initStore)
+  // let isUpdate = autoUpdater.checkForUpdates()
+  // console.log(isUpdate)
+  Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
+  createMainWindow(getInitData())
 }
 
 function wrapUp () {
@@ -60,9 +66,14 @@ function createMainWindow (initStore) {
     minHeight: 600
   })
   mainWindow.loadURL('file://' + __dirname + '/../mainwindow/index.html')
-  mainWindow.productList = initStore.product
+  mainWindow.productSet = initStore.product
   mainWindow.eventList = initStore.event
-  mainWindow.initLocale = app.getLocale()
+  mainWindow.productOrder = initStore.productOrder
+  let locale = app.getLocale()
+  if (c.supportLocales.indexOf(locale) === -1) {
+    locale = 'en'
+  }
+  mainWindow.initLocale = locale
   mainWindow.on('closed', () => mainWindow = null)
   mainWindow.on('close', event => {
     if (!closeConfirmed) {
@@ -85,6 +96,22 @@ function prepareTestData () {
 }
 
 function getInitData () {
+  const EMPTY_STORE = {
+    product: {},
+    event: [],
+    productOrder: []
+  }
+  
+  if (testMode) {
+    prepareTestData()
+  } else {
+    if (!fs.existsSync(app.getPath('userData'))) {
+      return EMPTY_STORE
+    } else if (!fs.existsSync(dbPath)) {
+      fs.mkdirSync(dbPath)
+    }
+  }
+
   dbFileList = fs.readdirSync(dbPath).sort((prev, next) => {
     if (prev < next) {
       return 1
@@ -95,21 +122,18 @@ function getInitData () {
 
   if (dbFileList.length === 0) {
     // run at first time
-    return {
-      product: [],
-      event: []
-    }
+    return EMPTY_STORE
   }
-
   return JSON.parse(fs.readFileSync(path.join(dbPath, dbFileList[0])).toString())
 }
 
 function saveDBFile (data) {
   let newDBFilePath = 'db_' + Date.now() + '.json'
-  if (dbFileList.length >= dbFileListLength) {
-    fs.unlinkSync(path.join(dbPath, dbFileList[dbFileListLength - 1]))
+  if (dbFileList.length >= DB_FILE_LIST_LENGTH) {
+    fs.unlinkSync(path.join(dbPath, dbFileList[DB_FILE_LIST_LENGTH - 1]))
     dbFileList.pop()
   }
   dbFileList.unshift(newDBFilePath)
+
   fs.writeFileSync(path.join(dbPath, newDBFilePath), JSON.stringify(data))
 }

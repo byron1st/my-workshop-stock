@@ -8,50 +8,61 @@ import * as productActions from '../flux/actions.product'
 import * as util from '../../util/util'
 
 export default class Side extends Component {
+  componentDidMount () {
+    $('#product-list').sortable({
+      handle: '.product-move-handle'
+    })
+    $('#product-list').disableSelection()
+  }
   render () {
     return (
       <div className='ui visible right sidebar inverted vertical menu'>
-        <div className='ui center aligned large header inverted'>{this.props.text['Stock']}</div>
         <div className='ui segment inverted'>
-          <button className='ui fluid compact button' onClick={this._openNewProductModal}>{this.props.text['Add a New Product']}</button>
+          <div className='ui center aligned large header inverted'>{this.props.text['Stock']}</div>
+          <button className='ui fluid compact blue button' onClick={this._openNewProductModal}>{this.props.text['Add a New Product']}</button>
           <NewProductModal isValidNameForProduct={this.props.isValidNameForProduct} text={this.props.text}/>
         </div>
         <div className='ui segment inverted'>
-          <div className='ui relaxed middle aligned divided inverted list'>
-            {this._getProductListView(this.props.productList, this.props.text)}
+          <div className='ui relaxed middle aligned divided inverted list' id='product-list'>
+            {this._getProductListView(this.props.productSet, this.props.productOrder, this.props.text)}
           </div>
         </div>
       </div>
     )
   }
-  _getProductListView (productList, text) {
-    return productList.map(product => {
+  _getProductListView (productSet, productOrder, text) {
+    return productOrder.map(id => {
+      let product = productSet[id]
       let itemContentView
       if (product.editable) {
-        itemContentView = <div className='product' id={product.id}>
-          <div className='ui mini icon input'>
+        itemContentView = <div className='product'>
+          <i className='move icon product-move-handle'></i>
+          <div className='ui inverted action small input'>
             <input type='text' defaultValue={product.name} id={'input' + product.id}/>
+            <div className='ui icon button' onClick={() => {
+              let arg = {
+                productId: product.id,
+                name: $('#input' + product.id).val(),
+                productOrder: $('#product-list').sortable('toArray'),
+                text: text
+              }
+              dispatcher.dispatch(productActions.SAVE_PRODUCT_NAME, arg)
+            }}><i className='checkmark icon'></i></div>
           </div>
-          <a href='#' onClick={() => {
-            let arg = { productId: product.id, name: $('#input' + product.id).val() }
-            dispatcher.dispatch(productActions.SAVE_PRODUCT_NAME, arg)
-          }}><i className='checkmark box icon'></i></a>
         </div>
         
       } else {
-        itemContentView = <div className='product' id={product.id}>
-          {product.name} <a href='#' onClick={() => {
+        itemContentView = <div className='product'>
+          <a href='#' onClick={() => {
             let arg = { productId: product.id, editable: true }
             dispatcher.dispatch(productActions.TOGGLE_PRODUCT_EDITABLE, arg)
-          }}>
-            <i className='edit icon'></i>
-          </a>
+          }}><i className='edit icon'></i></a> {product.name}
           <a href='#' onClick={() => {
             dispatcher.dispatch(productActions.REMOVE_PRODUCT, {productId: product.id, text: text})
           }}><i className='ui right floated remove icon'></i></a>
         </div>
       }
-      return (<div className='item' key={product.id}>
+      return (<div className='item' key={product.id} id={product.id}>
                 <div className='middle aligned content'>
                   {itemContentView}
                 </div>
@@ -67,7 +78,8 @@ export default class Side extends Component {
   }
 }
 Side.propTypes = {
-  productList: PropTypes.array.isRequired,
+  productSet: PropTypes.object.isRequired,
+  productOrder: PropTypes.array.isRequired,
   isValidNameForProduct: PropTypes.bool.isRequired,
   text: PropTypes.object.isRequired
 }

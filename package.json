@@ -1,6 +1,6 @@
 {
   "name": "my-workshop-stock",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Only stock!",
   "main": "compiled/src/app/main.js",
   "author": "byron1st",
@@ -35,7 +35,7 @@
     "gulp-electron-mocha": "^1.2.3",
     "gulp-eslint": "^3.0.1",
     "gulp-sass": "^2.3.2",
-    "semantic-ui": "^2.2.6",
+    "semantic-ui": "^2.2.7",
     "sinon": "^1.17.6"
   },
   "optionalDependencies": {
@@ -45,6 +45,7 @@
   "dependencies": {
     "immutable": "^3.8.1",
     "jquery": "^3.1.1",
+    "jquery-ui-dist": "^1.12.1",
     "react": "^15.4.1",
     "react-dom": "^15.4.1"
   }

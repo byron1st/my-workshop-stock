@@ -11,7 +11,8 @@ import * as c from '../util/const'
 
 const baseDBPathForTest = path.normalize('./test/resource')
 const dbPathForTest = path.join(baseDBPathForTest, 'db')
-const dbPathForProduction = path.join(app.getPath('userData'))
+const dbPathForProduction = path.join(app.getPath('userData'), 'db')
+
 const DB_FILE_LIST_LENGTH = 20
 
 // import os from 'os'
@@ -28,10 +29,6 @@ if (testMode) {
   dbPath = dbPathForTest
 } else {
   dbPath = dbPathForProduction
-}
-
-if (!testMode && !fs.existsSync(dbPath)) {
-  fs.mkdirSync(dbPath)
 }
 
 app.on('ready', initialize)
@@ -53,12 +50,8 @@ ipcMain.on(ch.BACKUP_DATA, (event, store) => {
 function initialize () {
   // let isUpdate = autoUpdater.checkForUpdates()
   // console.log(isUpdate)
-  if (testMode) {
-    prepareTestData()
-  }
-  let initStore = getInitData()
   Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
-  createMainWindow(initStore)
+  createMainWindow(getInitData())
 }
 
 function wrapUp () {
@@ -103,6 +96,22 @@ function prepareTestData () {
 }
 
 function getInitData () {
+  const EMPTY_STORE = {
+    product: {},
+    event: [],
+    productOrder: []
+  }
+  
+  if (testMode) {
+    prepareTestData()
+  } else {
+    if (!fs.existsSync(app.getPath('userData'))) {
+      return EMPTY_STORE
+    } else if (!fs.existsSync(dbPath)) {
+      fs.mkdirSync(dbPath)
+    }
+  }
+
   dbFileList = fs.readdirSync(dbPath).sort((prev, next) => {
     if (prev < next) {
       return 1
@@ -113,11 +122,7 @@ function getInitData () {
 
   if (dbFileList.length === 0) {
     // run at first time
-    return {
-      product: [],
-      event: [],
-      productOrder: {}
-    }
+    return EMPTY_STORE
   }
   return JSON.parse(fs.readFileSync(path.join(dbPath, dbFileList[0])).toString())
 }

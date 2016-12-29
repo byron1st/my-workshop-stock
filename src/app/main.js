@@ -12,7 +12,7 @@ import * as c from '../util/const'
 const baseDBPathForTest = path.normalize('./test/resource')
 const dbPathForTest = path.join(baseDBPathForTest, 'db')
 const dbPathForProduction = path.join(app.getPath('userData'))
-const dbFileListLength = 5
+const DB_FILE_LIST_LENGTH = 20
 
 // import os from 'os'
 // const platform = os.platform() + '_' + os.arch()
@@ -45,6 +45,9 @@ ipcMain.on(ch.EXIT_CONFIRMED, (event, store) => {
   closeConfirmed = true
   saveDBFile(store)
   app.quit()
+})
+ipcMain.on(ch.BACKUP_DATA, (event, store) => {
+  saveDBFile(store)
 })
 
 function initialize () {
@@ -121,8 +124,8 @@ function getInitData () {
 
 function saveDBFile (data) {
   let newDBFilePath = 'db_' + Date.now() + '.json'
-  if (dbFileList.length >= dbFileListLength) {
-    fs.unlinkSync(path.join(dbPath, dbFileList[dbFileListLength - 1]))
+  if (dbFileList.length >= DB_FILE_LIST_LENGTH) {
+    fs.unlinkSync(path.join(dbPath, dbFileList[DB_FILE_LIST_LENGTH - 1]))
     dbFileList.pop()
   }
   dbFileList.unshift(newDBFilePath)

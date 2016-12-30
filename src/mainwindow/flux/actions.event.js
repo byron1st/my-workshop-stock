@@ -7,6 +7,7 @@ import {remote} from 'electron'
 import dispatcher from '../../util/flux/dispatcher'
 import store from './store.main'
 import * as util from '../../util/util'
+import * as c from '../../util/const'
 import generateId from '../../util/id.generator'
 
 let ipc = {}
@@ -76,7 +77,8 @@ function addNewEvent (newEventObj) {
     amount: amount,
     productId: productId,
     productName: store.getValue('productSet').get(productId).get('name'),
-    editable: false
+    editable: false,
+    status: c.EVENT_TYPE.READY
   })
 
   /*insert the new one and sort the list*/

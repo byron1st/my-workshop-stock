@@ -18,6 +18,7 @@ export default class Window extends Component {
           productSet={this.props.store.productSet}
           productOrder={this.props.store.productOrder}
           searchTerm={this.props.store.searchTerm}
+          isArchivedVisible={this.props.store.isArchivedVisible}
           text={this.props.text}/>
       </div>
     )

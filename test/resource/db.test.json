@@ -4,7 +4,7 @@
     "1": {
       "id": "1",
       "name": "제품 1",
-      "amount": 669,
+      "amount": 667,
       "editable": false
     },
     "2": {
@@ -76,7 +76,7 @@
       "status": "event-processing"
     },
     {
-      "id": "11",
+      "id": "77",
       "amount": 100,
       "productId": "1",
       "productName": "제품 1",
@@ -84,7 +84,7 @@
       "status": "event-processing"
     },
     {
-      "id": "77",
+      "id": "88",
       "amount": 50,
       "productId": "1",
       "productName": "제품 1",
@@ -92,12 +92,28 @@
       "status": "event-done"
     },
     {
-      "id": "88",
+      "id": "99",
       "amount": -1,
       "productId": "1",
       "productName": "제품 1",
       "editable": false,
       "status": "event-done"
+    },
+    {
+      "id": "1010",
+      "amount": -1,
+      "productId": "1",
+      "productName": "제품 1",
+      "editable": false,
+      "status": "event-archived"
+    },
+    {
+      "id": "1111",
+      "amount": -1,
+      "productId": "1",
+      "productName": "제품 1",
+      "editable": false,
+      "status": "event-archived"
     }
   ],
   "productOrder": ["1", "2", "3", "4"]

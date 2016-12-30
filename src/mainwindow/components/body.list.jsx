@@ -26,7 +26,7 @@ export default class BodyList extends Component {
             <div className='row'>
               <HistorySegment type={c.EVENT_TYPE.READY} eventList={eventList} text={this.props.text}/>
               <HistorySegment type={c.EVENT_TYPE.PROCESSING} eventList={eventList} text={this.props.text}/>
-              <HistorySegment type={c.EVENT_TYPE.DONE} eventList={eventList} text={this.props.text}/>
+              <HistorySegment type={c.EVENT_TYPE.DONE} eventList={eventList} isArchivedVisible={this.props.isArchivedVisible} text={this.props.text}/>
             </div>
           </div>
         </div>
@@ -37,18 +37,36 @@ export default class BodyList extends Component {
 BodyList.propTypes = {
   eventList: PropTypes.array.isRequired,
   searchTerm: PropTypes.string.isRequired,
+  isArchivedVisible: PropTypes.bool.isRequired,
   text: PropTypes.object.isRequired
 }
 
 class HistorySegment extends Component {
   render () {
+    let toggleArchived = ''
+    if (this.props.type === c.EVENT_TYPE.DONE) {
+      if (this.props.isArchivedVisible) {
+        toggleArchived = <div className='sub header'>
+          <a href='#' onClick={() => this._toggleArchived(false)}>{this.props.text['Hide archived']}</a>
+        </div>
+      } else {
+        toggleArchived = <div className='sub header'>
+          <a href='#' onClick={() => this._toggleArchived(true)}>{this.props.text['Show archived']}</a>
+        </div>
+      }
+    }
     return (
       <div className='column'>
         <div className='ui medium center aligned header'>
           {this.props.text[this._getSegmentHeader(this.props.type)]}
+          {toggleArchived}
         </div>
         <div className='ui middle aligned divided list'>
           {this._getEventListView(this.props.eventList, this.props.type)}
+        </div>
+        {this.props.isArchivedVisible ? this._getArchivedHeader(this.props.text['Archived']) : ''}
+        <div className='ui middle aligned divided list'>
+          {this.props.isArchivedVisible ? this._getEventListView(this.props.eventList, c.EVENT_TYPE.ARCHIVED) : ''}
         </div>
       </div>
     )
@@ -61,6 +79,7 @@ class HistorySegment extends Component {
           amount={event.amount}
           date={new Date(event.date)}
           index={index}
+          type={type}
           text={this.props.text}/>
       } else {
         return
@@ -77,10 +96,21 @@ class HistorySegment extends Component {
       return 'Done'
     }
   }
+  _getArchivedHeader (archivedText) {
+    return (
+      <h5 className='ui dividing disabled header'>
+        {archivedText}
+      </h5>
+    )
+  }
+  _toggleArchived (isArchivedVisible) {
+    dispatcher.dispatch(eventActions.TOGGLE_ARCHIVED, isArchivedVisible)
+  }
 }
 HistorySegment.propTypes = {
   type: PropTypes.string.isRequired,
   eventList: PropTypes.array.isRequired,
+  isArchivedVisible: PropTypes.bool,
   text: PropTypes.object.isRequired
 }
 
@@ -95,17 +125,42 @@ class Event extends Component {
       amount = this.props.amount
     }
 
+    let leftButton, rightIcon
+    switch (this.props.type) {
+    case c.EVENT_TYPE.READY:
+      leftButton = <button className='circular ui positive icon button' onClick={() => this._approve(this.props.index)}>
+          <i className='checkmark icon'></i>
+        </button>
+      rightIcon = <i className='ui right floated remove icon' onClick={() => this._delete(this.props.index, this.props.text)}></i>
+      break
+    case c.EVENT_TYPE.DONE:
+      leftButton = <button className='circular ui positive icon button' onClick={() => this._approve(this.props.index)}>
+          <i className='archive icon'></i>
+        </button>
+      rightIcon = <i className='ui right floated angle double down icon' onClick={() => this._disapprove(this.props.index)}></i>
+      break
+    case c.EVENT_TYPE.ARCHIVED:
+      leftButton = <button className='circular ui icon disabled button'>
+          <i className='archive icon'></i>
+        </button>
+      rightIcon = <i className='ui right floated angle double down icon' onClick={() => this._disapprove(this.props.index)}></i>
+      break
+    default:
+      leftButton = <button className='circular ui positive icon button' onClick={() => this._approve(this.props.index)}>
+          <i className='checkmark icon'></i>
+        </button>
+      rightIcon = <i className='ui right floated angle double down icon' onClick={() => this._disapprove(this.props.index)}></i>
+    }
+
     return (
       <div className='item'>
         <div className='left floated content'>
-          <button className='circular ui positive icon button'>
-            <i className='checkmark icon'></i>
-          </button>
+          {leftButton}
         </div>
         <div className='content'>
           <div className='header'>
             {icon} {this.props.productName}: {util.getCurrencyValue(amount)}
-            <a href='#'><i className='ui right floated remove icon' onClick={() => this._delete(this.props.index, this.props.text)}></i></a>
+            <a href='#'>{rightIcon}</a>
           </div>
           <div className='description'>
             {util.getDateString(new Date(this.props.date))}
@@ -117,12 +172,19 @@ class Event extends Component {
   _delete (index, text) {
     dispatcher.dispatch(eventActions.DELETE_EVENT, {eventIndex: index, text: text})
   }
+  _approve (index) {
+    dispatcher.dispatch(eventActions.APPROVE_EVENT, index)
+  }
+  _disapprove (index) {
+    dispatcher.dispatch(eventActions.DISAPPROVE_EVENT, index)
+  }
 }
 Event.propTypes = {
   productName: PropTypes.string.isRequired,
   amount: PropTypes.number.isRequired,
   date: PropTypes.object.isRequired,
   index: PropTypes.number.isRequired,
+  type: PropTypes.string.isRequired,
   text: PropTypes.object.isRequired
 }
 

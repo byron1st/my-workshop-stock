@@ -10,7 +10,7 @@ export default class Body extends Component {
     return (
       <div id='body'>
         <BodyTop newEvent={this.props.newEvent} productSet={this.props.productSet} productOrder={this.props.productOrder} text={this.props.text}/>
-        <BodyList eventList={this.props.eventList} searchTerm={this.props.searchTerm} text={this.props.text}/>
+        <BodyList eventList={this.props.eventList} searchTerm={this.props.searchTerm} isArchivedVisible={this.props.isArchivedVisible} text={this.props.text}/>
       </div>
     )
   }
@@ -21,5 +21,6 @@ Body.propTypes = {
   productSet: PropTypes.object.isRequired,
   productOrder: PropTypes.array.isRequired,
   searchTerm: PropTypes.string.isRequired,
+  isArchivedVisible: PropTypes.bool.isRequired,
   text: PropTypes.object.isRequired
 }

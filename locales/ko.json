@@ -22,6 +22,7 @@
   "Ready": "준비",
   "Processing": "처리중",
   "Done": "완료",
-  "Delete": "삭제",
-  "Accept": "승인"
+  "Hide archived": "아카이브 숨기기",
+  "Show archived": "아카이브 보이기",
+  "Archived": "아카이브"
 }

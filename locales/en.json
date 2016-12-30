@@ -22,6 +22,7 @@
   "Ready": "Ready",
   "Processing": "Processing",
   "Done": "Done",
-  "Delete": "Delete",
-  "Accept": "Accept"
+  "Hide archived": "Hide archived",
+  "Show archived": "Show archived",
+  "Archived": "Archived"
 }

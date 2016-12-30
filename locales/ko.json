@@ -21,5 +21,7 @@
   "Will you quit the program?": "프로그램을 종료하겠습니까?",
   "Ready": "준비",
   "Processing": "처리중",
-  "Done": "완료"
+  "Done": "완료",
+  "Delete": "삭제",
+  "Accept": "승인"
 }

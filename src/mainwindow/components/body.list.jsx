@@ -43,7 +43,7 @@ class HistorySegment extends Component {
         <div className='ui medium center aligned header'>
           {this.props.text[this._getSegmentHeader(this.props.type)]}
         </div>
-        <div className='ui feed'>
+        <div className='ui cards'>
           {this._getEventListView(this.props.eventList)}
         </div>
       </div>
@@ -88,20 +88,24 @@ HistorySegment.propTypes = {
 
 class Event extends Component {
   render () {
-    return (<div className='event'>
-              <div className='label'>
-                {this.props.icon}
-              </div>
-              <div className='content'>
-                <div className='summary'>
-                  {this.props.productName}: {util.getCurrencyValue(this.props.amount)}
-                  <div className='date'>
-                    {util.getDateString(new Date(this.props.date))}
-                  </div>
-                  &nbsp;<i className='remove icon' onClick={() => this._delete(this.props.index, this.props.text)}></i>
-                </div>
-              </div>
-            </div>)
+    return (
+      <div className='card'>
+        <div className='content'>
+          <div className='header'>
+            {this.props.icon} {this.props.productName}: {util.getCurrencyValue(this.props.amount)}
+          </div>
+          <div className='meta'>
+            {util.getDateString(new Date(this.props.date))}
+          </div>
+        </div>
+        <div className='extra content'>
+          <div className='ui two buttons'>
+            <div className='ui basic green button'>{this.props.text['Accept']}</div>
+            <div className='ui basic red button' onClick={() => this._delete(this.props.index, this.props.text)}>{this.props.text['Delete']}</div>
+          </div>
+        </div>
+      </div>
+    )
   }
   _delete (index, text) {
     dispatcher.dispatch(eventActions.DELETE_EVENT, {eventIndex: index, text: text})

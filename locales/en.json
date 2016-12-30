@@ -21,5 +21,7 @@
   "Will you quit the program?": "Will you quit the program?",
   "Ready": "Ready",
   "Processing": "Processing",
-  "Done": "Done"
+  "Done": "Done",
+  "Delete": "Delete",
+  "Accept": "Accept"
 }

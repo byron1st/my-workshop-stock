@@ -20,12 +20,14 @@ export default class BodyList extends Component {
         <h4 className='ui horizontal divider header'>
           {this.props.text['History']}
         </h4>
-        <SearchBar text={this.props.text}/>
-        <div className='ui three column divided grid'>
-          <div className='row'>
-            <HistorySegment type={c.EVENT_TYPE.READY} eventList={eventList} text={this.props.text}/>
-            <HistorySegment type={c.EVENT_TYPE.PROCESSING} eventList={eventList} text={this.props.text}/>
-            <HistorySegment type={c.EVENT_TYPE.DONE} eventList={eventList} text={this.props.text}/>
+        <div className='ui segment'>
+          <SearchBar text={this.props.text}/>
+          <div className='ui three column divided grid'>
+            <div className='row'>
+              <HistorySegment type={c.EVENT_TYPE.READY} eventList={eventList} text={this.props.text}/>
+              <HistorySegment type={c.EVENT_TYPE.PROCESSING} eventList={eventList} text={this.props.text}/>
+              <HistorySegment type={c.EVENT_TYPE.DONE} eventList={eventList} text={this.props.text}/>
+            </div>
           </div>
         </div>
       </div>
@@ -45,7 +47,7 @@ class HistorySegment extends Component {
         <div className='ui medium center aligned header'>
           {this.props.text[this._getSegmentHeader(this.props.type)]}
         </div>
-        <div className='ui cards'>
+        <div className='ui middle aligned divided list'>
           {this._getEventListView(this.props.eventList, this.props.type)}
         </div>
       </div>
@@ -94,19 +96,19 @@ class Event extends Component {
     }
 
     return (
-      <div className='card'>
+      <div className='item'>
+        <div className='left floated content'>
+          <button className='circular ui positive icon button'>
+            <i className='checkmark icon'></i>
+          </button>
+        </div>
         <div className='content'>
           <div className='header'>
             {icon} {this.props.productName}: {util.getCurrencyValue(amount)}
+            <a href='#'><i className='ui right floated remove icon' onClick={() => this._delete(this.props.index, this.props.text)}></i></a>
           </div>
-          <div className='meta'>
+          <div className='description'>
             {util.getDateString(new Date(this.props.date))}
-          </div>
-        </div>
-        <div className='extra content'>
-          <div className='ui two buttons'>
-            <div className='ui basic green button'>{this.props.text['Accept']}</div>
-            <div className='ui basic red button' onClick={() => this._delete(this.props.index, this.props.text)}>{this.props.text['Delete']}</div>
           </div>
         </div>
       </div>

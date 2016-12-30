@@ -1,4 +1,5 @@
 {
+  "dbRevision": 1,
   "product": {
     "1": {
       "id": "1",
@@ -28,24 +29,75 @@
   "event": [
     {
       "id": "11",
-      "amount": 100,
+      "amount": 200,
       "productId": "1",
       "productName": "제품 1",
-      "editable": false
+      "editable": false,
+      "status": "event-ready"
     },
     {
       "id": "22",
-      "amount": 3200,
+      "amount": 300,
       "productId": "1",
       "productName": "제품 1",
-      "editable": false
+      "editable": false,
+      "status": "event-ready"
     },
     {
       "id": "33",
       "amount": -100,
       "productId": "1",
       "productName": "제품 1",
-      "editable": false
+      "editable": false,
+      "status": "event-ready"
+    },
+    {
+      "id": "44",
+      "amount": 100,
+      "productId": "1",
+      "productName": "제품 1",
+      "editable": false,
+      "status": "event-processing"
+    },
+    {
+      "id": "55",
+      "amount": 30,
+      "productId": "1",
+      "productName": "제품 1",
+      "editable": false,
+      "status": "event-processing"
+    },
+    {
+      "id": "66",
+      "amount": -10,
+      "productId": "1",
+      "productName": "제품 1",
+      "editable": false,
+      "status": "event-processing"
+    },
+    {
+      "id": "11",
+      "amount": 100,
+      "productId": "1",
+      "productName": "제품 1",
+      "editable": false,
+      "status": "event-processing"
+    },
+    {
+      "id": "77",
+      "amount": 50,
+      "productId": "1",
+      "productName": "제품 1",
+      "editable": false,
+      "status": "event-done"
+    },
+    {
+      "id": "88",
+      "amount": -1,
+      "productId": "1",
+      "productName": "제품 1",
+      "editable": false,
+      "status": "event-done"
     }
   ],
   "productOrder": ["1", "2", "3", "4"]

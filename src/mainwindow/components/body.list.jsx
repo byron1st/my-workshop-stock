@@ -44,29 +44,23 @@ class HistorySegment extends Component {
           {this.props.text[this._getSegmentHeader(this.props.type)]}
         </div>
         <div className='ui cards'>
-          {this._getEventListView(this.props.eventList)}
+          {this._getEventListView(this.props.eventList, this.props.type)}
         </div>
       </div>
     )
   }
-  _getEventListView (eventList) {
+  _getEventListView (eventList, type) {
     return eventList.map((event, index) => {
-      let icon, amount
-      if (event.amount < 0) {
-        icon = <i className='shipping icon'></i>
-        amount = event.amount * -1
+      if (type === event.status) {
+        return <Event key={event.id}
+          productName={event.productName}
+          amount={event.amount}
+          date={new Date(event.date)}
+          index={index}
+          text={this.props.text}/>
       } else {
-        icon = <i className='cube icon'></i>
-        amount = event.amount
+        return
       }
-
-      return <Event key={event.id}
-        icon={icon}
-        productName={event.productName}
-        amount={amount}
-        date={new Date(event.date)}
-        index={index}
-        text={this.props.text}/>
     })
   }
   _getSegmentHeader (type) {
@@ -88,11 +82,20 @@ HistorySegment.propTypes = {
 
 class Event extends Component {
   render () {
+    let icon, amount
+    if (this.props.amount < 0) {
+      icon = <i className='shipping icon'></i>
+      amount = this.props.amount * -1
+    } else {
+      icon = <i className='cube icon'></i>
+      amount = this.props.amount
+    }
+
     return (
       <div className='card'>
         <div className='content'>
           <div className='header'>
-            {this.props.icon} {this.props.productName}: {util.getCurrencyValue(this.props.amount)}
+            {icon} {this.props.productName}: {util.getCurrencyValue(amount)}
           </div>
           <div className='meta'>
             {util.getDateString(new Date(this.props.date))}
@@ -112,7 +115,6 @@ class Event extends Component {
   }
 }
 Event.propTypes = {
-  icon: PropTypes.object.isRequired,
   productName: PropTypes.string.isRequired,
   amount: PropTypes.number.isRequired,
   date: PropTypes.object.isRequired,

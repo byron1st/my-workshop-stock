@@ -137,19 +137,19 @@ class Event extends Component {
       leftButton = <button className='circular ui positive icon button' onClick={() => this._approve(this.props.index)}>
           <i className='archive icon'></i>
         </button>
-      rightIcon = <i className='ui right floated angle double down icon' onClick={() => this._disapprove(this.props.index)}></i>
+      rightIcon = <i className='ui right floated backward icon' onClick={() => this._disapprove(this.props.index)}></i>
       break
     case c.EVENT_TYPE.ARCHIVED:
       leftButton = <button className='circular ui icon disabled button'>
           <i className='archive icon'></i>
         </button>
-      rightIcon = <i className='ui right floated angle double down icon' onClick={() => this._disapprove(this.props.index)}></i>
+      rightIcon = <i className='ui right floated chevron up icon' onClick={() => this._disapprove(this.props.index)}></i>
       break
     default:
       leftButton = <button className='circular ui positive icon button' onClick={() => this._approve(this.props.index)}>
           <i className='checkmark icon'></i>
         </button>
-      rightIcon = <i className='ui right floated angle double down icon' onClick={() => this._disapprove(this.props.index)}></i>
+      rightIcon = <i className='ui right floated backward icon' onClick={() => this._disapprove(this.props.index)}></i>
     }
 
     return (

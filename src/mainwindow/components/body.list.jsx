@@ -21,10 +21,12 @@ export default class BodyList extends Component {
           {this.props.text['History']}
         </h4>
         <SearchBar text={this.props.text}/>
-        <div className='ui padded horizontal segments'>
-          <HistorySegment type={c.EVENT_TYPE.READY} eventList={eventList} text={this.props.text}/>
-          <HistorySegment type={c.EVENT_TYPE.PROCESSING} eventList={eventList} text={this.props.text}/>
-          <HistorySegment type={c.EVENT_TYPE.DONE} eventList={eventList} text={this.props.text}/>
+        <div className='ui three column divided grid'>
+          <div className='row'>
+            <HistorySegment type={c.EVENT_TYPE.READY} eventList={eventList} text={this.props.text}/>
+            <HistorySegment type={c.EVENT_TYPE.PROCESSING} eventList={eventList} text={this.props.text}/>
+            <HistorySegment type={c.EVENT_TYPE.DONE} eventList={eventList} text={this.props.text}/>
+          </div>
         </div>
       </div>
     )
@@ -39,7 +41,7 @@ BodyList.propTypes = {
 class HistorySegment extends Component {
   render () {
     return (
-      <div className='ui segment'>
+      <div className='column'>
         <div className='ui medium center aligned header'>
           {this.props.text[this._getSegmentHeader(this.props.type)]}
         </div>

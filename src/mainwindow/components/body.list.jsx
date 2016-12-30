@@ -4,6 +4,7 @@ import React, {Component, PropTypes} from 'react'
 
 import * as util from '../../util/util'
 import dispatcher from '../../util/flux/dispatcher'
+import * as c from '../../util/const'
 import * as eventActions from '../flux/actions.event'
 
 export default class BodyList extends Component {
@@ -19,13 +20,31 @@ export default class BodyList extends Component {
         <h4 className='ui horizontal divider header'>
           {this.props.text['History']}
         </h4>
-        <div className='ui padded segment'>
-          <div className='ui container'>
-            <SearchBar text={this.props.text}/>
-            <div className='ui feed'>
-              {this._getEventListView(eventList)}
-            </div>
-          </div>
+        <SearchBar text={this.props.text}/>
+        <div className='ui padded horizontal segments'>
+          <HistorySegment type={c.EVENT_TYPE.READY} eventList={eventList} text={this.props.text}/>
+          <HistorySegment type={c.EVENT_TYPE.PROCESSING} eventList={eventList} text={this.props.text}/>
+          <HistorySegment type={c.EVENT_TYPE.DONE} eventList={eventList} text={this.props.text}/>
+        </div>
+      </div>
+    )
+  }
+}
+BodyList.propTypes = {
+  eventList: PropTypes.array.isRequired,
+  searchTerm: PropTypes.string.isRequired,
+  text: PropTypes.object.isRequired
+}
+
+class HistorySegment extends Component {
+  render () {
+    return (
+      <div className='ui segment'>
+        <div className='ui medium center aligned header'>
+          {this.props.text[this._getSegmentHeader(this.props.type)]}
+        </div>
+        <div className='ui feed'>
+          {this._getEventListView(this.props.eventList)}
         </div>
       </div>
     )
@@ -50,10 +69,20 @@ export default class BodyList extends Component {
         text={this.props.text}/>
     })
   }
+  _getSegmentHeader (type) {
+    switch (type) {
+    case c.EVENT_TYPE.READY: 
+      return 'Ready'
+    case c.EVENT_TYPE.PROCESSING:
+      return 'Processing'
+    case c.EVENT_TYPE.DONE:
+      return 'Done'
+    }
+  }
 }
-BodyList.propTypes = {
+HistorySegment.propTypes = {
+  type: PropTypes.string.isRequired,
   eventList: PropTypes.array.isRequired,
-  searchTerm: PropTypes.string.isRequired,
   text: PropTypes.object.isRequired
 }
 

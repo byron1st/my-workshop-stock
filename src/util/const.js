@@ -11,3 +11,10 @@ export const defaultEventValue = new Map({
 })
 
 export const supportLocales = ['en', 'ko']
+
+export const EVENT_TYPE = {
+  READY: 'event-ready',
+  PROCESSING: 'event-processing',
+  DONE: 'event-done',
+  ARCHIVED: 'event-archived'
+}

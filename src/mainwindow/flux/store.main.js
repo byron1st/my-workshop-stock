@@ -12,7 +12,8 @@ const Data = Record({
   newEvent: c.defaultEventValue,
   isValidNameForProduct: true,
   searchTerm: '',
-  locale: ''
+  locale: '',
+  isArchivedVisible: false
 })
 
 export default new Store(new Data())

@@ -18,5 +18,11 @@
   "Stock": "Stock",
   "Will you delete this product? Every related event will be deleted together.": "Will you delete this product? Every related event will be deleted together.",
   "Will you delete this event?": "Will you delete this event?",
-  "Will you quit the program?": "Will you quit the program?"
+  "Will you quit the program?": "Will you quit the program?",
+  "Ready": "Ready",
+  "Processing": "Processing",
+  "Done": "Done",
+  "Hide archived": "Hide archived",
+  "Show archived": "Show archived",
+  "Archived": "Archived"
 }

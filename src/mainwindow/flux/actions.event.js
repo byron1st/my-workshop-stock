@@ -7,6 +7,7 @@ import {remote} from 'electron'
 import dispatcher from '../../util/flux/dispatcher'
 import store from './store.main'
 import * as util from '../../util/util'
+import * as c from '../../util/const'
 import generateId from '../../util/id.generator'
 
 let ipc = {}
@@ -15,6 +16,9 @@ export const UPDATE_NEWEVENT_FIELD = 'update-newevent-field'
 export const ADD_NEWEVENT = 'add-newevent'
 export const DELETE_EVENT = 'delete-event'
 export const SEARCH_PRODUCTNAME = 'search-productname'
+export const APPROVE_EVENT = 'approve-event'
+export const DISAPPROVE_EVENT = 'disapprove-event'
+export const TOGGLE_ARCHIVED = 'toggle-archived'
 
 export function initialize (ipcModule) {
   ipc = ipcModule
@@ -23,6 +27,9 @@ export function initialize (ipcModule) {
   dispatcher.register(ADD_NEWEVENT, addNewEvent)
   dispatcher.register(DELETE_EVENT, deleteEvent)
   dispatcher.register(SEARCH_PRODUCTNAME, searchProductName)
+  dispatcher.register(APPROVE_EVENT, approveEvent)
+  dispatcher.register(DISAPPROVE_EVENT, disapproveEvent)
+  dispatcher.register(TOGGLE_ARCHIVED, toggleArchived)
 }
 
 /**
@@ -76,7 +83,8 @@ function addNewEvent (newEventObj) {
     amount: amount,
     productId: productId,
     productName: store.getValue('productSet').get(productId).get('name'),
-    editable: false
+    editable: false,
+    status: c.EVENT_TYPE.READY
   })
 
   /*insert the new one and sort the list*/
@@ -122,6 +130,49 @@ function deleteEvent (arg) {
 
 function searchProductName (searchTerm) {
   store.setValue('searchTerm', searchTerm)
+  store.emitChange()
+}
+
+function approveEvent (index) {
+  let event = store.getValue('eventList').get(index)
+  let approvedEvent
+  switch (event.get('status')) {
+  case c.EVENT_TYPE.READY:
+    approvedEvent = event.set('status', c.EVENT_TYPE.PROCESSING)
+    break
+  case c.EVENT_TYPE.PROCESSING:
+    approvedEvent = event.set('status', c.EVENT_TYPE.DONE)
+    break
+  case c.EVENT_TYPE.DONE:
+    approvedEvent = event.set('status', c.EVENT_TYPE.ARCHIVED)
+    break
+  }
+
+  store.setValue('eventList', store.getValue('eventList').set(index, approvedEvent))
+  store.emitChange()
+}
+
+function disapproveEvent (index) {
+  let event = store.getValue('eventList').get(index)
+  let approvedEvent
+  switch (event.get('status')) {
+  case c.EVENT_TYPE.PROCESSING:
+    approvedEvent = event.set('status', c.EVENT_TYPE.READY)
+    break
+  case c.EVENT_TYPE.DONE:
+    approvedEvent = event.set('status', c.EVENT_TYPE.PROCESSING)
+    break
+  case c.EVENT_TYPE.ARCHIVED:
+    approvedEvent = event.set('status', c.EVENT_TYPE.DONE)
+    break
+  }
+
+  store.setValue('eventList', store.getValue('eventList').set(index, approvedEvent))
+  store.emitChange()
+}
+
+function toggleArchived (isArchivedVisible) {
+  store.setValue('isArchivedVisible', isArchivedVisible)
   store.emitChange()
 }
 

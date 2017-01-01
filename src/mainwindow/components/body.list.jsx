@@ -125,42 +125,36 @@ class Event extends Component {
       amount = this.props.amount
     }
 
-    let leftButton, rightIcon
+    let leftButton, rightButton
     switch (this.props.type) {
     case c.EVENT_TYPE.READY:
-      leftButton = <button className='circular ui positive icon button' onClick={() => this._approve(this.props.index)}>
-          <i className='checkmark icon'></i>
-        </button>
-      rightIcon = <i className='ui right floated remove icon' onClick={() => this._delete(this.props.index, this.props.text)}></i>
+      leftButton = this._getIconButton('', 'remove', () => this._delete(this.props.index, this.props.text))
+      rightButton = this._getIconButton('primary', 'checkmark', () => this._approve(this.props.index))
+      break
+    case c.EVENT_TYPE.PROCESSING:
+      leftButton = this._getIconButton('', 'arrow circle left', () => this._disapprove(this.props.index))
+      rightButton = this._getIconButton('primary', 'checkmark', () => this._approve(this.props.index))
       break
     case c.EVENT_TYPE.DONE:
-      leftButton = <button className='circular ui positive icon button' onClick={() => this._approve(this.props.index)}>
-          <i className='archive icon'></i>
-        </button>
-      rightIcon = <i className='ui right floated backward icon' onClick={() => this._disapprove(this.props.index)}></i>
+      leftButton = this._getIconButton('', 'arrow circle left', () => this._disapprove(this.props.index))
+      rightButton = this._getIconButton('', 'archive', () => this._approve(this.props.index))
       break
     case c.EVENT_TYPE.ARCHIVED:
-      leftButton = <button className='circular ui icon disabled button'>
-          <i className='archive icon'></i>
-        </button>
-      rightIcon = <i className='ui right floated chevron up icon' onClick={() => this._disapprove(this.props.index)}></i>
+      leftButton = this._getIconButton('', 'undo', () => this._disapprove(this.props.index))
       break
-    default:
-      leftButton = <button className='circular ui positive icon button' onClick={() => this._approve(this.props.index)}>
-          <i className='checkmark icon'></i>
-        </button>
-      rightIcon = <i className='ui right floated backward icon' onClick={() => this._disapprove(this.props.index)}></i>
     }
 
     return (
       <div className='item'>
-        <div className='left floated content'>
-          {leftButton}
+        <div className='right floated content'>
+          <div className='ui buttons'>
+            {leftButton}
+            {rightButton}
+          </div>
         </div>
         <div className='content'>
           <div className='header'>
             {icon} {this.props.productName}: {util.getCurrencyValue(amount)}
-            <a href='#'>{rightIcon}</a>
           </div>
           <div className='description'>
             {util.getDateString(new Date(this.props.date))}
@@ -177,6 +171,12 @@ class Event extends Component {
   }
   _disapprove (index) {
     dispatcher.dispatch(eventActions.DISAPPROVE_EVENT, index)
+  }
+  _getIconButton (color, icon, onClickFunction) {
+    return (
+      <button className={'ui ' + color + ' icon button'} onClick={onClickFunction}>
+        <i className={icon + ' icon'}></i>
+      </button>)
   }
 }
 Event.propTypes = {

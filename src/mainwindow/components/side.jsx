@@ -107,7 +107,7 @@ class NewProductModal extends Component {
           <div className='ui form' id='modalNameForm'>
             <div className='field'>
               <label>{this.props.text['Name']}</label>
-              <input type='text' id='newProductName' onChange={this._checkName}/>     
+              <input type='text' id='newProductName' onChange={this._checkName}/>
             </div>
             <div className='ui error message'>
               <div className='header'>{this.props.text['Duplicated Name']}</div>

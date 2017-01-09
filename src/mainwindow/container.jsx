@@ -63,7 +63,7 @@ class Container extends Component {
     this.setState(store.getData())
   }
   _loadLocale (locale) {
-    return JSON.parse(fs.readFileSync(path.join(__dirname, '/../../../locales', locale + '.json')))
+    return JSON.parse(fs.readFileSync(path.join(__dirname, '/../../public/locales', locale + '.json')))
   }
   _getStoreData () {
     let storeData = store.getData()

@@ -28,10 +28,10 @@ gulp.task('del:compiled', () => {
 gulp.task('compile:js', ['del:compiled'], () => {
   return gulp.src(JS_FILE_LIST)
     .pipe(sourcemaps.init())
-    .pipe(babel({
-      'presets': ['es2015', 'react']
-    }))
-    .pipe(sourcemaps.write('../maps', {includeContent: true}))
+      .pipe(babel({
+        'presets': ['es2015', 'react']
+      }))
+    .pipe(sourcemaps.write('../maps', {includeContent: false, sourceRoot: '../src'}))
     .pipe(gulp.dest(COMPILED_DEST))
 })
 

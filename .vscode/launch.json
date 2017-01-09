@@ -8,18 +8,23 @@
       "type": "node",
       "request": "launch",
       "name": "프로그램 시작",
-      "program": "${workspaceRoot}/src/main/main.js",
+      "program": "${workspaceRoot}/compiled/main/main.js",
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+      "preLaunchTask": "test",
       "sourceMaps": true,
       "outFiles": [
-        "compiled/**/*"
+        "${workspaceRoot}/compiled/**/*.js"
       ]
     },
     {
       "type": "node",
       "request": "attach",
       "name": "프로세스에 연결",
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceRoot}/compiled/**/*.js"
+      ],
       "port": 5858
     }
   ]

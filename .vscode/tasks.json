@@ -6,9 +6,6 @@
     "isShellCommand": true,
     "showOutput": "silent",
     "suppressTaskName": true,
-    "problemMatcher": [
-        "$eslint-stylish"
-    ],
     "tasks": [
         {
             "taskName": "install",

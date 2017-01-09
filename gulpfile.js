@@ -1,7 +1,6 @@
 const del = require('del')
 const gulp = require('gulp')
 const babel = require('gulp-babel')
-// const eslint = require('gulp-eslint')
 // const sass = require('gulp-sass')
 const electronMocha = require('gulp-electron-mocha')
 const sourcemaps = require('gulp-sourcemaps')

@@ -83,6 +83,7 @@ function createMainWindow (initStore) {
   })
 
   if (testMode) {
+    BrowserWindow.addDevToolsExtension('/Users/byron1st/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/0.15.4_0')
     mainWindow.webContents.openDevTools()
   }
 }

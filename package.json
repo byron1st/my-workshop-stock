@@ -26,6 +26,7 @@
     "babel-preset-react": "^6.16.0",
     "chai": "^3.5.0",
     "del": "^2.2.2",
+    "devtron": "^1.4.0",
     "electron": "^1.4.10",
     "electron-builder": "^10.9.2",
     "eslint": "^3.11.1",

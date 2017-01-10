@@ -3,7 +3,6 @@
 import {Record} from 'immutable'
 
 import Store from '../../util/flux/store'
-import * as c from '../../util/const'
 
 const Data = Record({
   productSet: {},

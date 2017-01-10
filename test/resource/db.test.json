@@ -4,22 +4,22 @@
     "1": {
       "id": "1",
       "name": "제품 1",
-      "amount": -102
+      "stock": -102
     },
     "2": {
       "id": "2",
       "name": "제품 asdf 1",
-      "amount": -291
+      "stock": -291
     },
     "3": {
       "id": "3",
       "name": "제품 kkkk 1",
-      "amount": -50
+      "stock": -50
     },
     "4": {
       "id": "4",
       "name": "제품 1 yyyyoaijsdofi",
-      "amount": -70
+      "stock": -70
     }
   },
   "eventSet": {

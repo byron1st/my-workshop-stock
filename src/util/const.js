@@ -23,3 +23,9 @@ export const EVENTGROUP_KIND = {
   SALE: 'egkind-sale',
   PRODUCTION: 'egkind-production'
 }
+
+export const ID_KIND = {
+  EVENT: 'idkind-event',
+  EVENTGROUP: 'idkind-eventgroup',
+  PRODUCT: 'idkind-product'
+}

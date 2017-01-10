@@ -1,15 +1,13 @@
-/*eslint-disable no-unused-vars*/
 'use strict'
 
 import {Map, List} from 'immutable'
 import {remote} from 'electron'
 
 import dispatcher from '../../util/flux/dispatcher'
-import store from './store.main'
-import * as util from '../../util/util'
+import dataStore from './store.data'
+import uiStore from './store.ui'
+import * as c from '../../util/const'
 import generateId from '../../util/id.generator'
-
-let ipc = {}
 
 export const ADD_NEWPRODUCT = 'add-newproduct'
 export const ISVALIDNAME_FOR_PRODUCT = 'isvalidname-for-product'
@@ -17,9 +15,7 @@ export const TOGGLE_PRODUCT_EDITABLE = 'toggle-product-editable'
 export const SAVE_PRODUCT_NAME = 'save-product-name'
 export const REMOVE_PRODUCT = 'remove-product'
 
-export function initialize (ipcModule) {
-  ipc = ipcModule
-  ipc //TODO: should be deleted.
+export function initialize () {
   dispatcher.register(ADD_NEWPRODUCT, addNewProduct)
   dispatcher.register(ISVALIDNAME_FOR_PRODUCT, checkName)
   dispatcher.register(TOGGLE_PRODUCT_EDITABLE, toggleProductEditable)
@@ -33,77 +29,64 @@ function addNewProduct (newProductObj) {
   }
 
   let product = new Map({
-    id: generateId('product'),
+    id: generateId(c.ID_KIND.PRODUCT),
     name: newProductObj.name,
-    amount: 0,
-    editable: false
+    stock: 0
   })
 
-  // let productList = store.getValue('productList').push(product)
-  let productSet = store.getValue('productSet').set(product.get('id'), product)
-  let productOrder = store.getValue('productOrder').push(product.get('id'))
+  let productSet = dataStore.getValue('productSet').set(product.get('id'), product)
+  let productIdList = dataStore.getValue('productIdList').push(product.get('id'))
   
-  store.setValue('productSet', productSet)
-  store.setValue('productOrder', productOrder)
-  store.emitChange()
+  dataStore.setValue('productSet', productSet)
+  dataStore.setValue('productIdList', productIdList)
+  dataStore.emitChange()
 }
 
 function checkName (name) {
-  store.setValue('isValidNameForProduct', isValidNameForProduct(name))
-  store.emitChange()
+  uiStore.setValue('isValidNameForProduct', isValidNameForProduct(name))
+  uiStore.emitChange()
 }
 
 /**
  * Toggle the editable of a product
  *
- * @param      {object}  arg     {productId: string, editable: bool}
+ * @param      {object}  arg     {id: string, editable: bool}
  */
 function toggleProductEditable (arg) {
-  let product = store.getValue('productSet').get(arg.productId)
-  if (product !== undefined) {
-    let toggledProduct = product.set('editable', arg.editable)
-    store.setValue('productSet', store.getValue('productSet').set(arg.productId, toggledProduct))
-    store.emitChange()
+  let editableProductList = uiStore.getValue('editableProductList')
+  if (editableProductList.find((id) => id === arg.id) === undefined) {
+    uiStore.setValue('editableProductList', editableProductList.push(arg.id))
+    uiStore.emitChange()
   }
 }
 
 /**
  * Saves a product name.
  *
- * @param      {object}  arg     {productId: number, name: string, productOrder: array<number>, text: object}
+ * @param      {object}  arg     {id: string, name: string, productIdList: array<string>, text: object}
  */
 function saveProductName (arg) {
-  let product = store.getValue('productSet').get(arg.productId)
+  let product = dataStore.getValue('productSet').get(arg.id)
   if (product !== undefined) {
     if (product.get('name') !== arg.name && !isValidNameForProduct(arg.name)) {
       return remote.dialog.showErrorBox(arg.text['Duplicated Name'], arg.text['There is the same name in the list.'])
     }
 
-    let toggledProduct = product.withMutations(product => {
-      product.set('editable', false).set('name', arg.name)
-    })
-
-    let eventList = store.getValue('eventList').asMutable()
-    for (let i = 0; i < eventList.size; i++) {
-      if (eventList.get(i).get('productId') === arg.productId) {
-        eventList.set(i, eventList.get(i).set('productName', arg.name))
-      }
-    }
-    
-    store.setValue('productSet', store.getValue('productSet').set(arg.productId, toggledProduct))
-    store.setValue('eventList', eventList.asImmutable())
-    store.setValue('productOrder', List(arg.productOrder))
-    store.emitChange()
+    dataStore.setValue('productSet', dataStore.getValue('productSet').set(arg.id, product.set('name', arg.name)))
+    dataStore.setValue('productIdList', List(arg.productIdList))
+    uiStore.setValue('editableProductList', uiStore.getValue('editableProductList').filter(id => id !== arg.id))
+    dataStore.emitChange()
+    uiStore.emitChange()
   }
 }
 
 /**
  * Removes a product.
  *
- * @param      {object}  arg     {productId: number, text: object}
+ * @param      {object}  arg     {id: number, text: object}
  */
 function removeProduct (arg) {
-  let product = store.getValue('productSet').get(arg.productId)
+  let product = dataStore.getValue('productSet').get(arg.id)
   if (product !== undefined) {
     remote.dialog.showMessageBox({
       type: 'question',
@@ -115,18 +98,27 @@ function removeProduct (arg) {
       if (index === 1) {
         return
       } else {
-        let order = store.getValue('productOrder').findKey(id => id === arg.productId)
-        store.setValue('productSet', store.getValue('productSet').delete(arg.productIdx))
-        store.setValue('productOrder', store.getValue('productOrder').splice(order, 1))
-        store.setValue('eventList', store.getValue('eventList').filterNot(event => event.get('productId') === arg.productId))
-        store.emitChange()
+        let order = dataStore.getValue('productIdList').findKey(id => id === arg.id)
+        dataStore.setValue('productSet', dataStore.getValue('productSet').delete(arg.productIdx))
+        dataStore.setValue('productIdList', dataStore.getValue('productIdList').splice(order, 1))
+
+        let filteredEventSet = dataStore.getValue('eventSet').filterNot(event => event.get('productId') === arg.id)
+        let updatedEventGroupSet = dataStore.getValue('eventGroupSet').map(eventGroup => {
+          let updatedEventIdList = eventGroup.get('eventIdList').filterNot(id => filteredEventSet.keyOf(id) === undefined)
+          return eventGroup.set('eventIdList', updatedEventIdList)
+        })
+
+        dataStore.setValue('eventList', dataStore.getValue('eventList').filterNot(event => event.get('productId') === arg.id))
+        dataStore.setValue('eventSet', filteredEventSet)
+        dataStore.setValue('eventGroupSet', updatedEventGroupSet)
+        dataStore.emitChange()
       }
     })
   }
 }
 
 function isValidNameForProduct (name) {
-  return store.getValue('productSet').find(product => {
+  return dataStore.getValue('productSet').find(product => {
     return product.get('name') === name
   }) === undefined
 }

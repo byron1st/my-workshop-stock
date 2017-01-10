@@ -18,3 +18,8 @@ export const EVENT_TYPE = {
   DONE: 'event-done',
   ARCHIVED: 'event-archived'
 }
+
+export const EVENTGROUP_KIND = {
+  SALE: 'egkind-sale',
+  PRODUCTION: 'egkind-production'
+}

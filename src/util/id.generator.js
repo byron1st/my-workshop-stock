@@ -1,14 +1,24 @@
 'use strict'
 
+import {ID_KIND} from './const'
+
 let eventId = []
+let eventGroupId = []
 let productId = []
 
 export default function generateId (kind) {
   let idList
-  if (kind === 'event') {
+
+  switch (kind) {
+  case ID_KIND.EVENT:
     idList = eventId
-  } else {
+    break
+  case ID_KIND.EVENTGROUP:
+    idList = eventGroupId
+    break
+  case ID_KIND.PRODUCT:
     idList = productId
+    break
   }
 
   let id
@@ -21,8 +31,8 @@ export default function generateId (kind) {
   return id
 }
 
-export function initIds (eventList, productOrder) {
-  eventId = eventList.map(event => event.id)
-  productId = productOrder.map(id => id)
-  console.log(productOrder)
+export function initIds (eventIdList, eventGroupIdList, productIdList) {
+  eventId = eventIdList.map(id => id)
+  eventGroupId = eventGroupIdList.map(id => id)
+  productId = productIdList.map(id => id)
 }

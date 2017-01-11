@@ -8,7 +8,8 @@ import {remote, ipcRenderer} from 'electron'
 import path from 'path'
 import fs from 'fs'
 
-import store from './flux/store.main'
+import dataStore from './flux/store.data'
+import uiStore from './flux/store.ui'
 import dispatcher from '../util/flux/dispatcher'
 import initActions, {INITIALIZE_STORE} from './flux/actions'
 import * as ch from '../util/ipc.channels'
@@ -25,13 +26,13 @@ class Container extends Component {
   }
   componentWillMount () {
     initActions()
-    store.addChangeListener(this._updateState.bind(this))
+    dataStore.addChangeListener(() => this._updateState('data'))
+    uiStore.addChangeListener(() => this._updateState('ui'))
     dispatcher.dispatch(INITIALIZE_STORE, {
-      productSet: remote.getCurrentWindow().productSet,
-      eventList: remote.getCurrentWindow().eventList,
-      productOrder: remote.getCurrentWindow().productOrder,
+      initStore: remote.getCurrentWindow().initStore,
       locale: remote.getCurrentWindow().initLocale
     })
+
     this.text = this._loadLocale(remote.getCurrentWindow().initLocale)
     setInterval(() => ipcRenderer.send(ch.BACKUP_DATA, this._getStoreData()), BACKUP_TIME_INTERVAL)
     ipcRenderer.on(ch.EXIT, () => {
@@ -59,19 +60,19 @@ class Container extends Component {
       <Window store={this.state} text={this.text}/>
     )
   }
-  _updateState () {
-    this.setState(store.getData())
+  _updateState (storeKind) {
+    if (storeKind === 'data') {
+      this.setState({ data: dataStore.getData() })
+    } else if (storeKind === 'ui') {
+      this.setState({ ui: uiStore.getData() })
+    }
   }
   _loadLocale (locale) {
     return JSON.parse(fs.readFileSync(path.join(__dirname, '/../../public/locales', locale + '.json')))
   }
   _getStoreData () {
-    let storeData = store.getData()
-    return {
-      product: storeData.productSet,
-      event: storeData.eventList,
-      productOrder: storeData.productOrder
-    }
+    // TODO: dbRevision 값은 저장이 되지 못함.
+    return dataStore.getData()
   }
 }
 

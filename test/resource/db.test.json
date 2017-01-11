@@ -1,120 +1,126 @@
 {
-  "dbRevision": 1,
-  "product": {
+  "dbRevision": 2,
+  "productSet": {
     "1": {
       "id": "1",
       "name": "제품 1",
-      "amount": 667,
-      "editable": false
+      "stock": -102
     },
     "2": {
       "id": "2",
       "name": "제품 asdf 1",
-      "amount": 0,
-      "editable": false
+      "stock": -291
     },
     "3": {
       "id": "3",
       "name": "제품 kkkk 1",
-      "amount": 0,
-      "editable": false
+      "stock": -50
     },
     "4": {
       "id": "4",
       "name": "제품 1 yyyyoaijsdofi",
-      "amount": 0,
-      "editable": false
+      "stock": -70
     }
   },
-  "event": [
-    {
+  "eventSet": {
+    "11": {
       "id": "11",
       "amount": 200,
-      "productId": "1",
-      "productName": "제품 1",
-      "editable": false,
-      "status": "event-ready"
+      "productId": "1"
     },
-    {
+    "22": {
       "id": "22",
       "amount": 300,
-      "productId": "1",
-      "productName": "제품 1",
-      "editable": false,
-      "status": "event-ready"
+      "productId": "2"
     },
-    {
+    "33": {
       "id": "33",
-      "amount": -100,
-      "productId": "1",
-      "productName": "제품 1",
-      "editable": false,
-      "status": "event-ready"
+      "amount": 100,
+      "productId": "3"
     },
-    {
+    "44": {
       "id": "44",
       "amount": 100,
-      "productId": "1",
-      "productName": "제품 1",
-      "editable": false,
-      "status": "event-processing"
+      "productId": "4"
     },
-    {
+    "55": {
       "id": "55",
       "amount": 30,
-      "productId": "1",
-      "productName": "제품 1",
-      "editable": false,
-      "status": "event-processing"
+      "productId": "4"
     },
-    {
+    "66": {
       "id": "66",
-      "amount": -10,
-      "productId": "1",
-      "productName": "제품 1",
-      "editable": false,
-      "status": "event-processing"
+      "amount": 10,
+      "productId": "2"
     },
-    {
+    "77": {
       "id": "77",
       "amount": 100,
-      "productId": "1",
-      "productName": "제품 1",
-      "editable": false,
-      "status": "event-processing"
+      "productId": "1"
     },
-    {
+    "88": {
       "id": "88",
       "amount": 50,
-      "productId": "1",
-      "productName": "제품 1",
-      "editable": false,
-      "status": "event-done"
+      "productId": "3"
     },
-    {
+    "99": {
       "id": "99",
-      "amount": -1,
-      "productId": "1",
-      "productName": "제품 1",
-      "editable": false,
-      "status": "event-done"
+      "amount": 1,
+      "productId": "2"
     },
-    {
+    "1010": {
       "id": "1010",
-      "amount": -1,
-      "productId": "1",
-      "productName": "제품 1",
-      "editable": false,
-      "status": "event-archived"
+      "amount": 1,
+      "productId": "1"
     },
-    {
+    "1111": {
       "id": "1111",
-      "amount": -1,
-      "productId": "1",
-      "productName": "제품 1",
-      "editable": false,
-      "status": "event-archived"
+      "amount": 1,
+      "productId": "1"
     }
-  ],
-  "productOrder": ["1", "2", "3", "4"]
+  },
+  "eventGroupSet": {
+    "eg01": {
+      "id": "eg01",
+      "title": "event-group-1",
+      "kind": "egkind-sale",
+      "date": null,
+      "status": "event-ready",
+      "eventIdList": ["11", "22"]
+    },
+    "eg02": {
+      "id": "eg02",
+      "title": "event-group-2",
+      "kind": "egkind-sale",
+      "date": null,
+      "status": "event-processing",
+      "eventIdList": ["33", "44"]
+    },
+    "eg03": {
+      "id": "eg03",
+      "title": "event-group-3",
+      "kind": "egkind-production",
+      "date": null,
+      "status": "event-done",
+      "eventIdList": ["55", "66", "77"]
+    },
+    "eg04": {
+      "id": "eg04",
+      "title": "event-group-4",
+      "kind": "egkind-production",
+      "date": null,
+      "status": "event-done",
+      "eventIdList": ["88"]
+    },
+    "eg05": {
+      "id": "eg05",
+      "title": "event-group-5",
+      "kind": "egkind-sale",
+      "date": null,
+      "status": "event-archived",
+      "eventIdList": ["99", "1010", "1111"]
+    }
+  },
+  "productIdList": ["1", "2", "3", "4"],
+  "eventGroupIdList": ["eg01", "eg02", "eg03", "eg04", "eg05"]
 }

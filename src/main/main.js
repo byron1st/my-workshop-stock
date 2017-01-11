@@ -8,6 +8,7 @@ import testMode from './app.mode'
 import menu from './menu'
 import * as ch from '../util/ipc.channels'
 import * as c from '../util/const'
+import * as util from '../util/util'
 
 const baseDBPathForTest = path.normalize('./test/resource')
 const dbPathForTest = path.join(baseDBPathForTest, 'db')
@@ -66,9 +67,7 @@ function createMainWindow (initStore) {
     minHeight: 600
   })
   mainWindow.loadURL('file://' + __dirname + '/../mainwindow/index.html')
-  mainWindow.productSet = initStore.product
-  mainWindow.eventList = initStore.event
-  mainWindow.productOrder = initStore.productOrder
+  mainWindow.initStore = initStore
   let locale = app.getLocale()
   if (c.supportLocales.indexOf(locale) === -1) {
     locale = 'en'
@@ -88,19 +87,13 @@ function createMainWindow (initStore) {
   }
 }
 
-function prepareTestData () {
-  if (fs.readdirSync(dbPathForTest).length === 0) {
-    let testDBData = JSON.parse(fs.readFileSync(path.join(baseDBPathForTest, 'db.test.json')).toString())
-    testDBData.event.forEach(event => event.date = new Date(2016, 1, 3))
-    saveDBFile(testDBData)
-  }
-}
-
 function getInitData () {
   const EMPTY_STORE = {
-    product: {},
-    event: [],
-    productOrder: []
+    productSet: {},
+    eventSet: {},
+    eventGroupSet: {},
+    productIdList: [],
+    eventGroupIdList: []
   }
   
   if (testMode) {
@@ -126,6 +119,19 @@ function getInitData () {
     return EMPTY_STORE
   }
   return JSON.parse(fs.readFileSync(path.join(dbPath, dbFileList[0])).toString())
+}
+
+function prepareTestData () {
+  if (fs.readdirSync(dbPathForTest).length === 0) {
+    let testDBData = JSON.parse(fs.readFileSync(path.join(baseDBPathForTest, 'db.test.json')).toString())
+    testDBData.eventGroupIdList.forEach(eventGroupId => testDBData.eventGroupSet[eventGroupId].date = getRandomDate())
+    testDBData.eventGroupIdList.sort((prev, next) => testDBData.eventGroupSet[next].date - testDBData.eventGroupSet[prev].date)
+    saveDBFile(testDBData)
+  }
+
+  function getRandomDate () {
+    return new Date(util.getRandomIntInclusive(2013, 2016), util.getRandomIntInclusive(0, 11), util.getRandomIntInclusive(1, 30))
+  }
 }
 
 function saveDBFile (data) {

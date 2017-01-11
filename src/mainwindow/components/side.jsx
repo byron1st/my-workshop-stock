@@ -1,13 +1,14 @@
 /*global $*/
 'use strict'
 
-import React, {Component, PropTypes} from 'react'
+import React from 'react'
 
+import PresentationalComp from './presentational'
 import dispatcher from '../../util/flux/dispatcher'
 import * as productActions from '../flux/actions.product'
 import * as util from '../../util/util'
 
-export default class Side extends Component {
+export default class Side extends PresentationalComp {
   componentDidMount () {
     $('#product-list').sortable({
       handle: '.product-move-handle'
@@ -20,78 +21,80 @@ export default class Side extends Component {
         <div className='ui segment inverted'>
           <div className='ui center aligned large header inverted'>{this.props.text['Stock']}</div>
           <button className='ui fluid compact blue button' onClick={this._openNewProductModal}>{this.props.text['Add a New Product']}</button>
-          <NewProductModal isValidNameForProduct={this.props.isValidNameForProduct} text={this.props.text}/>
+          <NewProductModal data={this.props.data} ui={this.props.ui} text={this.props.text}/>
         </div>
         <div className='ui segment inverted'>
           <div className='ui relaxed middle aligned divided inverted list' id='product-list'>
-            {this._getProductListView(this.props.productSet, this.props.productOrder, this.props.text)}
+            {this._getProductListView.call(this)}
           </div>
         </div>
       </div>
     )
   }
-  _getProductListView (productSet, productOrder, text) {
-    return productOrder.map(id => {
-      let product = productSet[id]
+  _getProductListView () {
+    let data = this.props.data
+    return data.productIdList.map(id => {
+      let product = data.productSet[id]
       let itemContentView
-      if (product.editable) {
-        itemContentView = <div className='product'>
-          <i className='move icon product-move-handle'></i>
-          <div className='ui inverted action small input'>
-            <input type='text' defaultValue={product.name} id={'input' + product.id}/>
-            <div className='ui icon button' onClick={() => {
-              let arg = {
-                productId: product.id,
-                name: $('#input' + product.id).val(),
-                productOrder: $('#product-list').sortable('toArray'),
-                text: text
-              }
-              dispatcher.dispatch(productActions.SAVE_PRODUCT_NAME, arg)
-            }}><i className='checkmark icon'></i></div>
-          </div>
-        </div>
-        
+      if (isEditable.call(this, id)) {
+        itemContentView = (
+          <div className='product'>
+            <i className='move icon product-move-handle'></i>
+            <div className='ui inverted action small input'>
+              <input type='text' defaultValue={product.name} id={'input' + product.id}/>
+              <div className='ui icon button' onClick={() => {
+                let arg = {
+                  id: product.id,
+                  name: $('#input' + product.id).val(),
+                  productIdList: $('#product-list').sortable('toArray'),
+                  text: this.props.text
+                }
+                dispatcher.dispatch(productActions.SAVE_PRODUCT_NAME, arg)
+              }}><i className='checkmark icon'></i></div>
+            </div>
+          </div> )
       } else {
-        itemContentView = <div className='product'>
-          <a href='#' onClick={() => {
-            let arg = { productId: product.id, editable: true }
-            dispatcher.dispatch(productActions.TOGGLE_PRODUCT_EDITABLE, arg)
-          }}><i className='edit icon'></i></a> {product.name}
-          <a href='#' onClick={() => {
-            dispatcher.dispatch(productActions.REMOVE_PRODUCT, {productId: product.id, text: text})
-          }}><i className='ui right floated remove icon'></i></a>
-        </div>
+        itemContentView = (
+          <div className='product'>
+            <a href='#' onClick={() => {
+              let arg = { id: product.id, editable: true }
+              dispatcher.dispatch(productActions.TOGGLE_PRODUCT_EDITABLE, arg)
+            }}><i className='edit icon'></i></a> {product.name}
+            <a href='#' onClick={() => {
+              dispatcher.dispatch(productActions.REMOVE_PRODUCT, {id: product.id, text: this.props.text})
+            }}><i className='ui right floated remove icon'></i></a>
+          </div> )
       }
-      return (<div className='item' key={product.id} id={product.id}>
-                <div className='middle aligned content'>
-                  {itemContentView}
-                </div>
-                <div className='extra'>
-                   <span>{util.getCurrencyValue(product.amount)}</span>
-                </div>
-              </div>)
+
+      return (
+        <div className='item' key={product.id} id={product.id}>
+          <div className='middle aligned content'>
+            {itemContentView}
+          </div>
+          <div className='extra'>
+              <span>{util.getCurrencyValue(product.stock)}</span>
+          </div>
+        </div> )
     })
+
+    function isEditable (id) {
+      return this.props.ui.editableProductList.indexOf(id) !== -1
+    }
   }
   _openNewProductModal () {
     $('#newProductModal').modal('show')
     $('#newProductName').val('')
   }
 }
-Side.propTypes = {
-  productSet: PropTypes.object.isRequired,
-  productOrder: PropTypes.array.isRequired,
-  isValidNameForProduct: PropTypes.bool.isRequired,
-  text: PropTypes.object.isRequired
-}
 
-class NewProductModal extends Component {
+class NewProductModal extends PresentationalComp {
   componentDidMount () {
     $('#newProductModal').modal({
       closable: false
     })
   }
   componentDidUpdate () {
-    if (this.props.isValidNameForProduct) {
+    if (this.props.ui.isValidNameForProduct) {
       $('#modalNameForm').removeClass('error')
       $('#modalCreateBtn').removeClass('disabled')
     } else {
@@ -128,8 +131,4 @@ class NewProductModal extends Component {
   _checkName (e) {
     dispatcher.dispatch(productActions.ISVALIDNAME_FOR_PRODUCT, e.target.value)
   }
-}
-NewProductModal.propTypes = {
-  isValidNameForProduct: PropTypes.bool.isRequired,
-  text: PropTypes.object.isRequired
 }

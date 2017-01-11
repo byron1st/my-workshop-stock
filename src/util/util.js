@@ -50,3 +50,10 @@ export function getCurrencyValue (amount) {
 export function isNumeric (n) {
   return ((!isNaN(parseFloat(n)) && isFinite(n)) || n === '')
 }
+
+/**
+ * get a random integer number. (from the MDN site) 
+ */
+export function getRandomIntInclusive (min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}

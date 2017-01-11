@@ -8,8 +8,8 @@ const fs = require('fs')
 
 const JS_FILE_LIST = ['src/**/*.js', 'src/**/*.jsx']
 const JS_TEST_FILE_LIST = ['test/**/*.js']
-const COPY_SRC_LIST = ['src/**/*.css', 'src/**/app.mode.json', 'src/**/*.html']
 const COPY_LIST = {
+  src: ['src/**/*.css', 'src/**/app.mode.json', 'src/**/*.html'],
   compiled: ['compiled/**/*'],
   public: ['public/**/*']
 }
@@ -35,7 +35,7 @@ gulp.task('compile:js', ['del:compiled'], () => {
 })
 
 gulp.task('copy:src', ['del:compiled'], () => {
-  return gulp.src(COPY_SRC_LIST)
+  return gulp.src(COPY_LIST.src)
     .pipe(gulp.dest(COMPILED_DEST))
 })
 

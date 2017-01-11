@@ -2,7 +2,7 @@
 
 import React, {Component, PropTypes} from 'react'
 
-// import Body from './body'
+import Body from './body'
 import Side from './side'
 
 export default class Window extends Component {
@@ -10,6 +10,10 @@ export default class Window extends Component {
     return (
       <div>
         <Side 
+          data={this.props.store.data}
+          ui={this.props.store.ui}
+          text={this.props.text} />
+        <Body
           data={this.props.store.data}
           ui={this.props.store.ui}
           text={this.props.text} />

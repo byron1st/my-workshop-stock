@@ -19,6 +19,13 @@ export const EVENT_TYPE = {
   ARCHIVED: 'event-archived'
 }
 
+export const EVENTGROUP_STATUS = {
+  READY: 'egstatus-ready',
+  PROCESSING: 'egstatus-processing',
+  DONE: 'egstatus-done',
+  ARCHIVED: 'egstatus-archived'
+}
+
 export const EVENTGROUP_KIND = {
   SALE: 'egkind-sale',
   PRODUCTION: 'egkind-production'

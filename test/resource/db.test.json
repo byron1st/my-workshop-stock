@@ -85,7 +85,7 @@
       "title": "event-group-1",
       "kind": "egkind-sale",
       "date": null,
-      "status": "event-ready",
+      "status": "egstatus-ready",
       "eventIdList": ["11", "22"]
     },
     "eg02": {
@@ -93,7 +93,7 @@
       "title": "event-group-2",
       "kind": "egkind-sale",
       "date": null,
-      "status": "event-processing",
+      "status": "egstatus-processing",
       "eventIdList": ["33", "44"]
     },
     "eg03": {
@@ -101,7 +101,7 @@
       "title": "event-group-3",
       "kind": "egkind-production",
       "date": null,
-      "status": "event-done",
+      "status": "egstatus-done",
       "eventIdList": ["55", "66", "77"]
     },
     "eg04": {
@@ -109,7 +109,7 @@
       "title": "event-group-4",
       "kind": "egkind-production",
       "date": null,
-      "status": "event-done",
+      "status": "egstatus-done",
       "eventIdList": ["88"]
     },
     "eg05": {
@@ -117,7 +117,7 @@
       "title": "event-group-5",
       "kind": "egkind-sale",
       "date": null,
-      "status": "event-archived",
+      "status": "egstatus-archived",
       "eventIdList": ["99", "1010", "1111"]
     }
   },

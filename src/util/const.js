@@ -36,3 +36,10 @@ export const ID_KIND = {
   EVENTGROUP: 'idkind-eventgroup',
   PRODUCT: 'idkind-product'
 }
+
+export const UI_TAB = {
+  ALL: 'uitab-all',
+  READY: 'uitab-ready',
+  PROCESSING: 'uitab-processing',
+  DONE: 'uitab-done'
+}

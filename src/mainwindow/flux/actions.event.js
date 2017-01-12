@@ -6,6 +6,7 @@ import {remote} from 'electron'
 
 import dispatcher from '../../util/flux/dispatcher'
 import store from './store.main'
+import uiStore from './store.ui'
 import * as util from '../../util/util'
 import * as c from '../../util/const'
 import generateId from '../../util/id.generator'
@@ -19,6 +20,7 @@ export const SEARCH_PRODUCTNAME = 'search-productname'
 export const APPROVE_EVENT = 'approve-event'
 export const DISAPPROVE_EVENT = 'disapprove-event'
 export const TOGGLE_ARCHIVED = 'toggle-archived'
+export const CHANGE_ACTIVE_TAB = 'change-active-tab'
 
 export function initialize (ipcModule) {
   ipc = ipcModule
@@ -30,6 +32,7 @@ export function initialize (ipcModule) {
   dispatcher.register(APPROVE_EVENT, approveEvent)
   dispatcher.register(DISAPPROVE_EVENT, disapproveEvent)
   dispatcher.register(TOGGLE_ARCHIVED, toggleArchived)
+  dispatcher.register(CHANGE_ACTIVE_TAB, changeActiveTab)
 }
 
 /**
@@ -174,6 +177,11 @@ function disapproveEvent (index) {
 function toggleArchived (isArchivedVisible) {
   store.setValue('isArchivedVisible', isArchivedVisible)
   store.emitChange()
+}
+
+function changeActiveTab (tab) {
+  uiStore.setValue('activeTab', tab) 
+  uiStore.emitChange()
 }
 
 function refineProductAmount (productId, changedValue) {

@@ -1,35 +1,27 @@
 'use strict'
 
-import React, {PropTypes} from 'react'
+import React, {PropTypes, Component} from 'react'
 
 import PresentationalComp from './presentational'
 
 import * as util from '../../util/util'
-// import dispatcher from '../../util/flux/dispatcher'
+import dispatcher from '../../util/flux/dispatcher'
 import * as c from '../../util/const'
-// import * as eventActions from '../flux/actions.event'
+import * as eventActions from '../flux/actions.event'
 
 export default class BodyList extends PresentationalComp {
   render () {
-    // let eventList
-    // if (this.props.searchTerm) {
-    //   eventList = this.props.eventList.filter(event => event.productName.includes(this.props.searchTerm))
-    // } else {
-    //   eventList = this.props.eventList
-    // }
     return (
       <div id='bodyList'>
         <h4 className='ui horizontal divider header'>
           {this.props.text['History']}
         </h4>
         <div className='ui segment'>
-          {/*<SearchBar />*/}
-          <div className='ui three column divided grid'>
-            <div className='row'>
+          <SearchBar />
+          <div className='ui one column grid'>
+            <Tab data={this.props.data} ui={this.props.ui} text={this.props.text} />
+            <div className='ui bottom attached active tab segment'>
               <EventGroupList data={this.props.data} ui={this.props.ui} text={this.props.text} />
-              {/*<HistorySegment type={c.EVENT_TYPE.READY} eventList={eventList} text={this.props.text}/>
-              <HistorySegment type={c.EVENT_TYPE.PROCESSING} eventList={eventList} text={this.props.text}/>
-              <HistorySegment type={c.EVENT_TYPE.DONE} eventList={eventList} isArchivedVisible={this.props.isArchivedVisible} text={this.props.text}/>*/}
             </div>
           </div>
         </div>
@@ -38,9 +30,42 @@ export default class BodyList extends PresentationalComp {
   }
 }
 
+class Tab extends PresentationalComp {
+  render () {
+    let tabListView = []
+    Object.keys(c.UI_TAB).forEach(tab => {
+      let tabView
+      let tabName = c.UI_TAB[tab]
+      if (tabName === this.props.ui.activeTab) {
+        tabView = <div className='active item'>{this.props.text[tabName]}</div>
+      } else {
+        tabView = <div className='item' onClick={() => this._changeActiveTab(tabName)}>{this.props.text[tabName]}</div>
+      }
+      tabListView.push(tabView)
+    })
+
+    return (
+      <div className='ui top attached tabular menu'>
+        {tabListView}
+      </div>
+    )
+  }
+  _changeActiveTab (tab) {
+    dispatcher.dispatch(eventActions.CHANGE_ACTIVE_TAB, tab)
+  }
+}
+
 class EventGroupList extends PresentationalComp {
   render() {
-    let eventGroupIdList = this.props.data.eventGroupIdList
+    let eventGroupIdList = this.props.data.eventGroupIdList.filter(eventGroupId => {
+      let status = this.props.data.eventGroupSet[eventGroupId].status
+      switch (this.props.ui.activeTab) {
+      case c.UI_TAB.ALL: return true
+      case c.UI_TAB.READY: return status === c.EVENTGROUP_STATUS.READY
+      case c.UI_TAB.PROCESSING: return status === c.EVENTGROUP_STATUS.PROCESSING
+      case c.UI_TAB.DONE: return status === c.EVENTGROUP_STATUS.DONE || status === c.EVENTGROUP_STATUS.ARCHIVED
+      }
+    })
     let eventGroupListView = []
     eventGroupIdList.forEach(eventGroupId => {
       let eventGroupView = <EventGroup key={eventGroupId} 
@@ -48,7 +73,7 @@ class EventGroupList extends PresentationalComp {
       eventGroupListView.push(eventGroupView)
     })
     return (
-      <div className='ui cards'>
+      <div className='ui cards eventgroup'>
         {eventGroupListView}
       </div>
     )
@@ -146,170 +171,23 @@ Event.propTypes = {
   id: PropTypes.string.isRequired
 }
 
-// class HistorySegment extends Component {
-//   render () {
-//     let toggleArchived = ''
-//     if (this.props.type === c.EVENT_TYPE.DONE) {
-//       if (this.props.isArchivedVisible) {
-//         toggleArchived = <div className='sub header'>
-//           <a href='#' onClick={() => this._toggleArchived(false)}>{this.props.text['Hide archived']}</a>
-//         </div>
-//       } else {
-//         toggleArchived = <div className='sub header'>
-//           <a href='#' onClick={() => this._toggleArchived(true)}>{this.props.text['Show archived']}</a>
-//         </div>
-//       }
-//     }
-//     return (
-//       <div className='column'>
-//         <div className='ui medium center aligned header'>
-//           {this.props.text[this._getSegmentHeader(this.props.type)]}
-//           {toggleArchived}
-//         </div>
-//         <div className='ui middle aligned divided list'>
-//           {this._getEventListView(this.props.eventList, this.props.type)}
-//         </div>
-//         {this.props.isArchivedVisible ? this._getArchivedHeader(this.props.text['Archived']) : ''}
-//         <div className='ui middle aligned divided list'>
-//           {this.props.isArchivedVisible ? this._getEventListView(this.props.eventList, c.EVENT_TYPE.ARCHIVED) : ''}
-//         </div>
-//       </div>
-//     )
-//   }
-//   _getEventListView (eventList, type) {
-//     return eventList.map((event, index) => {
-//       if (type === event.status) {
-//         return <Event key={event.id}
-//           productName={event.productName}
-//           amount={event.amount}
-//           date={new Date(event.date)}
-//           index={index}
-//           type={type}
-//           text={this.props.text}/>
-//       } else {
-//         return
-//       }
-//     })
-//   }
-//   _getSegmentHeader (type) {
-//     switch (type) {
-//     case c.EVENT_TYPE.READY: 
-//       return 'Ready'
-//     case c.EVENT_TYPE.PROCESSING:
-//       return 'Processing'
-//     case c.EVENT_TYPE.DONE:
-//       return 'Done'
-//     }
-//   }
-//   _getArchivedHeader (archivedText) {
-//     return (
-//       <h5 className='ui dividing disabled header'>
-//         {archivedText}
-//       </h5>
-//     )
-//   }
-//   _toggleArchived (isArchivedVisible) {
-//     dispatcher.dispatch(eventActions.TOGGLE_ARCHIVED, isArchivedVisible)
-//   }
-// }
-// HistorySegment.propTypes = {
-//   type: PropTypes.string.isRequired,
-//   eventList: PropTypes.array.isRequired,
-//   isArchivedVisible: PropTypes.bool,
-//   text: PropTypes.object.isRequired
-// }
-
-// class Event extends Component {
-//   render () {
-//     let icon, amount
-//     if (this.props.amount < 0) {
-//       icon = <i className='shipping icon'></i>
-//       amount = this.props.amount * -1
-//     } else {
-//       icon = <i className='cube icon'></i>
-//       amount = this.props.amount
-//     }
-
-//     let leftButton, rightButton
-//     switch (this.props.type) {
-//     case c.EVENT_TYPE.READY:
-//       leftButton = this._getIconButton('', 'remove', () => this._delete(this.props.index, this.props.text))
-//       rightButton = this._getIconButton('primary', 'checkmark', () => this._approve(this.props.index))
-//       break
-//     case c.EVENT_TYPE.PROCESSING:
-//       leftButton = this._getIconButton('', 'arrow circle left', () => this._disapprove(this.props.index))
-//       rightButton = this._getIconButton('primary', 'checkmark', () => this._approve(this.props.index))
-//       break
-//     case c.EVENT_TYPE.DONE:
-//       leftButton = this._getIconButton('', 'arrow circle left', () => this._disapprove(this.props.index))
-//       rightButton = this._getIconButton('', 'archive', () => this._approve(this.props.index))
-//       break
-//     case c.EVENT_TYPE.ARCHIVED:
-//       leftButton = this._getIconButton('', 'undo', () => this._disapprove(this.props.index))
-//       break
-//     }
-
-//     return (
-//       <div className='item'>
-//         <div className='right floated content'>
-//           <div className='ui buttons'>
-//             {leftButton}
-//             {rightButton}
-//           </div>
-//         </div>
-//         <div className='content'>
-//           <div className='header'>
-//             {icon} {this.props.productName}: {util.getCurrencyValue(amount)}
-//           </div>
-//           <div className='description'>
-//             {util.getDateString(new Date(this.props.date))}
-//           </div>
-//         </div>
-//       </div>
-//     )
-//   }
-//   _delete (index, text) {
-//     dispatcher.dispatch(eventActions.DELETE_EVENT, {eventIndex: index, text: text})
-//   }
-//   _approve (index) {
-//     dispatcher.dispatch(eventActions.APPROVE_EVENT, index)
-//   }
-//   _disapprove (index) {
-//     dispatcher.dispatch(eventActions.DISAPPROVE_EVENT, index)
-//   }
-//   _getIconButton (color, icon, onClickFunction) {
-//     return (
-//       <button className={'ui ' + color + ' icon button'} onClick={onClickFunction}>
-//         <i className={icon + ' icon'}></i>
-//       </button>)
-//   }
-// }
-// Event.propTypes = {
-//   productName: PropTypes.string.isRequired,
-//   amount: PropTypes.number.isRequired,
-//   date: PropTypes.object.isRequired,
-//   index: PropTypes.number.isRequired,
-//   type: PropTypes.string.isRequired,
-//   text: PropTypes.object.isRequired
-// }
-
-// class SearchBar extends PresentationalComp {
-//   render () {
-//     return (
-//       <div className='ui one column center aligned grid'>
-//         <div className='column'>
-//           <div className='ui search' id='eventSearch'>
-//             <div className='ui icon input'>
-//               <input className='prompt' type='text' onChange={this._search}/>
-//               <i className='search icon'></i>
-//             </div>
-//             <div className='results'></div>
-//           </div>
-//         </div>
-//       </div>
-//     )
-//   }
-//   _search(e) {
-//     dispatcher.dispatch(eventActions.SEARCH_PRODUCTNAME, e.target.value)
-//   }
-// }
+class SearchBar extends Component {
+  render () {
+    return (
+      <div className='ui one column center aligned grid'>
+        <div className='column'>
+          <div className='ui search' id='eventSearch'>
+            <div className='ui icon input'>
+              <input className='prompt' type='text' onChange={this._search}/>
+              <i className='search icon'></i>
+            </div>
+            <div className='results'></div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+  _search(e) {
+    dispatcher.dispatch(eventActions.SEARCH_PRODUCTNAME, e.target.value)
+  }
+}

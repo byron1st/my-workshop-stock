@@ -27,5 +27,9 @@
   "Archived": "Archived",
   "Process": "Process",
   "Archive": "Archive",
-  "Undo": "Undo"
+  "Undo": "Undo",
+  "uitab-all": "All",
+  "uitab-ready": "Ready",
+  "uitab-processing": "Processing",
+  "uitab-done": "Done"
 }

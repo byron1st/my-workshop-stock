@@ -37,9 +37,9 @@ class Tab extends PresentationalComp {
       let tabView
       let tabName = c.UI_TAB[tab]
       if (tabName === this.props.ui.activeTab) {
-        tabView = <div className='active item'>{this.props.text[tabName]}</div>
+        tabView = <div key={tabName} className='active item'>{this.props.text[tabName]}</div>
       } else {
-        tabView = <div className='item' onClick={() => this._changeActiveTab(tabName)}>{this.props.text[tabName]}</div>
+        tabView = <div key={tabName} className='item' onClick={() => this._changeActiveTab(tabName)}>{this.props.text[tabName]}</div>
       }
       tabListView.push(tabView)
     })

@@ -22,11 +22,21 @@ export default class BodyList extends PresentationalComp {
             <Tab data={this.props.data} ui={this.props.ui} text={this.props.text} />
             <div className='ui bottom attached active tab segment'>
               <EventGroupList data={this.props.data} ui={this.props.ui} text={this.props.text} />
+              {this.props.ui.activeTab === c.UI_TAB.DONE ? 
+                <h4 className='ui dividing header' onClick={() => this._toggleArchived()}>
+                  {this.props.ui.isArchivedVisible ? 
+                    this.props.text['Hide archived'] : this.props.text['Show archived']}
+                </h4> : ''}
+              {this.props.ui.activeTab === c.UI_TAB.DONE && this.props.ui.isArchivedVisible ?
+                <ArchivedEventGroupList data={this.props.data} ui={this.props.ui} text={this.props.text} /> : ''}
             </div>
           </div>
         </div>
       </div>
     )
+  }
+  _toggleArchived () {
+    dispatcher.dispatch(eventActions.TOGGLE_ARCHIVED, !this.props.ui.isArchivedVisible)
   }
 }
 
@@ -57,26 +67,41 @@ class Tab extends PresentationalComp {
 
 class EventGroupList extends PresentationalComp {
   render() {
-    let eventGroupIdList = this.props.data.eventGroupIdList.filter(eventGroupId => {
+    let eventGroupIdList = this._getEventGroupIdList(this.props.data.eventGroupIdList)
+    return (
+      <div className='ui cards eventgroup'>
+        {this._getEventGroupListView(eventGroupIdList)}
+      </div>
+    )
+  }
+  _getEventGroupIdList (eventGroupIdList) {
+    return eventGroupIdList.filter(eventGroupId => {
       let status = this.props.data.eventGroupSet[eventGroupId].status
       switch (this.props.ui.activeTab) {
       case c.UI_TAB.ALL: return true
       case c.UI_TAB.READY: return status === c.EVENTGROUP_STATUS.READY
       case c.UI_TAB.PROCESSING: return status === c.EVENTGROUP_STATUS.PROCESSING
-      case c.UI_TAB.DONE: return status === c.EVENTGROUP_STATUS.DONE || status === c.EVENTGROUP_STATUS.ARCHIVED
+      case c.UI_TAB.DONE: return status === c.EVENTGROUP_STATUS.DONE
       }
     })
+  }
+  _getEventGroupListView (eventGroupIdList) {
     let eventGroupListView = []
     eventGroupIdList.forEach(eventGroupId => {
       let eventGroupView = <EventGroup key={eventGroupId} 
         id={eventGroupId} data={this.props.data} ui={this.props.ui} text={this.props.text} />
       eventGroupListView.push(eventGroupView)
     })
-    return (
-      <div className='ui cards eventgroup'>
-        {eventGroupListView}
-      </div>
-    )
+    return eventGroupListView
+  }
+}
+
+class ArchivedEventGroupList extends EventGroupList {
+  _getEventGroupIdList (eventGroupIdList) {
+    return eventGroupIdList.filter(eventGroupId => {
+      let status = this.props.data.eventGroupSet[eventGroupId].status
+      return status === c.EVENTGROUP_STATUS.ARCHIVED
+    })
   }
 }
 

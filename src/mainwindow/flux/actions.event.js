@@ -179,8 +179,8 @@ function undoEventGroupStatus (eventGroupId) {
 }
 
 function toggleArchived (isArchivedVisible) {
-  store.setValue('isArchivedVisible', isArchivedVisible)
-  store.emitChange()
+  uiStore.setValue('isArchivedVisible', isArchivedVisible)
+  uiStore.emitChange()
 }
 
 function changeActiveTab (tab) {

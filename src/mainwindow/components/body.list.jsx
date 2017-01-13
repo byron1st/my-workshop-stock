@@ -1,7 +1,6 @@
 'use strict'
 
 import React, {PropTypes, Component} from 'react'
-
 import PresentationalComp from './presentational'
 
 import * as util from '../../util/util'
@@ -14,17 +13,17 @@ export default class BodyList extends PresentationalComp {
     return (
       <div id='bodyList'>
         <SearchBar />
-          <Tab data={this.props.data} ui={this.props.ui} text={this.props.text} />
-          <div className='ui bottom attached active tab segment'>
-            <EventGroupList data={this.props.data} ui={this.props.ui} text={this.props.text} />
-            {this.props.ui.activeTab === c.UI_TAB.DONE ? 
-              <h4 className='ui dividing header' onClick={() => this._toggleArchived()}>
-                {this.props.ui.isArchivedVisible ? 
-                  this.props.text['Hide archived'] : this.props.text['Show archived']}
-              </h4> : ''}
-            {this.props.ui.activeTab === c.UI_TAB.DONE && this.props.ui.isArchivedVisible ?
-              <ArchivedEventGroupList data={this.props.data} ui={this.props.ui} text={this.props.text} /> : ''}
-          </div>
+        <Tab data={this.props.data} ui={this.props.ui} text={this.props.text} />
+        <div className='ui bottom attached active tab segment'>
+          <EventGroupList data={this.props.data} ui={this.props.ui} text={this.props.text} />
+          {this.props.ui.activeTab === c.UI_TAB.DONE ? 
+            <h4 className='ui dividing header' onClick={() => this._toggleArchived()}>
+              {this.props.ui.isArchivedVisible ? 
+                this.props.text['Hide archived'] : this.props.text['Show archived']}
+            </h4> : ''}
+          {this.props.ui.activeTab === c.UI_TAB.DONE && this.props.ui.isArchivedVisible ?
+            <ArchivedEventGroupList data={this.props.data} ui={this.props.ui} text={this.props.text} /> : ''}
+        </div>
       </div>
     )
   }

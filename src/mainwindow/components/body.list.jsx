@@ -12,7 +12,14 @@ export default class BodyList extends PresentationalComp {
   render () {
     return (
       <div id='bodyList'>
-        <SearchBar />
+        <button className='left floated circular ui icon button' id='add-eventgroup-btn'>
+          <i className='plus icon'></i>
+        </button>
+        <div className='ui one column right aligned grid'>
+          <div className='column'>
+            <SearchBar />
+          </div>
+        </div>
         <Tab data={this.props.data} ui={this.props.ui} text={this.props.text} />
         <div className='ui bottom attached active tab segment'>
           <EventGroupList data={this.props.data} ui={this.props.ui} text={this.props.text} />
@@ -205,16 +212,12 @@ Event.propTypes = {
 class SearchBar extends Component {
   render () {
     return (
-      <div className='ui one column center aligned grid'>
-        <div className='column'>
-          <div className='ui search' id='eventSearch'>
-            <div className='ui icon input'>
-              <input className='prompt' type='text' onChange={this._search}/>
-              <i className='search icon'></i>
-            </div>
-            <div className='results'></div>
-          </div>
+      <div className='ui search' id='eventSearch'>
+        <div className='ui icon input'>
+          <input className='prompt' type='text' onChange={this._search}/>
+          <i className='search icon'></i>
         </div>
+        <div className='results'></div>
       </div>
     )
   }

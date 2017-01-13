@@ -108,7 +108,7 @@ function removeProduct (arg) {
           return eventGroup.set('eventIdList', updatedEventIdList)
         })
 
-        dataStore.setValue('eventList', dataStore.getValue('eventList').filterNot(event => event.get('productId') === arg.id))
+        // dataStore.setValue('eventList', dataStore.getValue('eventList').filterNot(event => event.get('productId') === arg.id))
         dataStore.setValue('eventSet', filteredEventSet)
         dataStore.setValue('eventGroupSet', updatedEventGroupSet)
         dataStore.emitChange()

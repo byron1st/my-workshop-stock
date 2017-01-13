@@ -7,6 +7,7 @@ import {remote} from 'electron'
 import dispatcher from '../../util/flux/dispatcher'
 import store from './store.main'
 import uiStore from './store.ui'
+import dataStore from './store.data'
 import * as util from '../../util/util'
 import * as c from '../../util/const'
 import generateId from '../../util/id.generator'
@@ -17,20 +18,23 @@ export const UPDATE_NEWEVENT_FIELD = 'update-newevent-field'
 export const ADD_NEWEVENT = 'add-newevent'
 export const DELETE_EVENT = 'delete-event'
 export const SEARCH_PRODUCTNAME = 'search-productname'
-export const APPROVE_EVENT = 'approve-event'
-export const DISAPPROVE_EVENT = 'disapprove-event'
+export const PROCEED_EVENTGROUP_STATUS = 'proceed-eventgroup-status'
+export const UNDO_EVENTGROUP_STATUS = 'undo-eventgroup-status'
 export const TOGGLE_ARCHIVED = 'toggle-archived'
 export const CHANGE_ACTIVE_TAB = 'change-active-tab'
 
 export function initialize (ipcModule) {
   ipc = ipcModule
   ipc //TODO: should be deleted.
+  /** EventGroup Add/Mod View */
   dispatcher.register(UPDATE_NEWEVENT_FIELD, updateNewEventField)
   dispatcher.register(ADD_NEWEVENT, addNewEvent)
   dispatcher.register(DELETE_EVENT, deleteEvent)
+
+  /** EventGroup List View */
   dispatcher.register(SEARCH_PRODUCTNAME, searchProductName)
-  dispatcher.register(APPROVE_EVENT, approveEvent)
-  dispatcher.register(DISAPPROVE_EVENT, disapproveEvent)
+  dispatcher.register(PROCEED_EVENTGROUP_STATUS, proceedEventGroupStatus)
+  dispatcher.register(UNDO_EVENTGROUP_STATUS, undoEventGroupStatus)
   dispatcher.register(TOGGLE_ARCHIVED, toggleArchived)
   dispatcher.register(CHANGE_ACTIVE_TAB, changeActiveTab)
 }
@@ -101,7 +105,7 @@ function addNewEvent (newEventObj) {
       }
     })
 
-  refineProductAmount(event.get('productId'), event.get('amount'))
+  _refineProductAmount(event.get('productId'), event.get('amount'))
   store.setInValue(['newEvent', 'amount'], 0)
   store.setValue('eventList', eventList)
   store.emitChange()
@@ -124,7 +128,7 @@ function deleteEvent (arg) {
       return
     } else {
       let willBeDeletedEvent = store.getValue('eventList').get(arg.eventIndex)
-      refineProductAmount(willBeDeletedEvent.get('productId'), (-1 * willBeDeletedEvent.get('amount')))
+      _refineProductAmount(willBeDeletedEvent.get('productId'), (-1 * willBeDeletedEvent.get('amount')))
       store.setValue('eventList', store.getValue('eventList').delete(arg.eventIndex))
       store.emitChange()
     }
@@ -132,46 +136,46 @@ function deleteEvent (arg) {
 }
 
 function searchProductName (searchTerm) {
-  store.setValue('searchTerm', searchTerm)
-  store.emitChange()
+  uiStore.setValue('searchTerm', searchTerm)
+  uiStore.emitChange()
 }
 
-function approveEvent (index) {
-  let event = store.getValue('eventList').get(index)
-  let approvedEvent
-  switch (event.get('status')) {
-  case c.EVENT_TYPE.READY:
-    approvedEvent = event.set('status', c.EVENT_TYPE.PROCESSING)
+function proceedEventGroupStatus (eventGroupId) {
+  let eventGroup = dataStore.getInValue(['eventGroupSet', eventGroupId])
+  let changedEventGroup
+  switch (eventGroup.get('status')) {
+  case c.EVENTGROUP_STATUS.READY:
+    changedEventGroup = eventGroup.set('status', c.EVENTGROUP_STATUS.PROCESSING)
     break
-  case c.EVENT_TYPE.PROCESSING:
-    approvedEvent = event.set('status', c.EVENT_TYPE.DONE)
+  case c.EVENTGROUP_STATUS.PROCESSING:
+    changedEventGroup = eventGroup.set('status', c.EVENTGROUP_STATUS.DONE)
     break
-  case c.EVENT_TYPE.DONE:
-    approvedEvent = event.set('status', c.EVENT_TYPE.ARCHIVED)
+  case c.EVENTGROUP_STATUS.DONE:
+    changedEventGroup = eventGroup.set('status', c.EVENTGROUP_STATUS.ARCHIVED)
     break
   }
 
-  store.setValue('eventList', store.getValue('eventList').set(index, approvedEvent))
-  store.emitChange()
+  dataStore.setValue('eventGroupSet', dataStore.getValue('eventGroupSet').set(eventGroupId, changedEventGroup))
+  dataStore.emitChange()
 }
 
-function disapproveEvent (index) {
-  let event = store.getValue('eventList').get(index)
-  let approvedEvent
-  switch (event.get('status')) {
-  case c.EVENT_TYPE.PROCESSING:
-    approvedEvent = event.set('status', c.EVENT_TYPE.READY)
+function undoEventGroupStatus (eventGroupId) {
+  let eventGroup = dataStore.getInValue(['eventGroupSet', eventGroupId])
+  let changedEventGroup
+  switch (eventGroup.get('status')) {
+  case c.EVENTGROUP_STATUS.PROCESSING:
+    changedEventGroup = eventGroup.set('status', c.EVENTGROUP_STATUS.READY)
     break
-  case c.EVENT_TYPE.DONE:
-    approvedEvent = event.set('status', c.EVENT_TYPE.PROCESSING)
+  case c.EVENTGROUP_STATUS.DONE:
+    changedEventGroup = eventGroup.set('status', c.EVENTGROUP_STATUS.PROCESSING)
     break
-  case c.EVENT_TYPE.ARCHIVED:
-    approvedEvent = event.set('status', c.EVENT_TYPE.DONE)
+  case c.EVENTGROUP_STATUS.ARCHIVED:
+    changedEventGroup = eventGroup.set('status', c.EVENTGROUP_STATUS.DONE)
     break
   }
 
-  store.setValue('eventList', store.getValue('eventList').set(index, approvedEvent))
-  store.emitChange()
+  dataStore.setValue('eventGroupSet', dataStore.getValue('eventGroupSet').set(eventGroupId, changedEventGroup))
+  dataStore.emitChange()
 }
 
 function toggleArchived (isArchivedVisible) {
@@ -184,7 +188,7 @@ function changeActiveTab (tab) {
   uiStore.emitChange()
 }
 
-function refineProductAmount (productId, changedValue) {
+function _refineProductAmount (productId, changedValue) {
   let product = store.getValue('productSet').get(productId)
   if (product !== undefined) {
     let changedProduct = product.set('amount', product.get('amount') + changedValue)

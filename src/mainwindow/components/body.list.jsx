@@ -116,37 +116,51 @@ class EventGroup extends PresentationalComp {
             </div>
           </div>
         </div>
-        {this._getAttachedButtonView.call(this, eventGroup.status)}
+        {this._getAttachedButtonView.call(this, eventGroup.status, eventGroup.id)}
       </div>
     )
   }
-  _getAttachedButtonView (status) {
+  _getAttachedButtonView (status, id) {
     switch(status) {
     case c.EVENTGROUP_STATUS.READY:
       return (
-        <div className='ui bottom attached small button'>
+        <div className='ui bottom attached small button' onClick={() => this._proceedEventGroupStatus(id)}>
           <i className='money icon'></i> {this.props.text['Process']}
         </div>)
     case c.EVENTGROUP_STATUS.PROCESSING:
       return (
         <div className='ui bottom attached small two buttons'>
-          <div className='ui button'><i className='undo icon'></i> {this.props.text['Undo']}</div>
+          <div className='ui button' onClick={() => this._undoEventGroupStatus(id)}>
+            <i className='undo icon'></i> {this.props.text['Undo']}
+          </div>
           <div className='or'></div>
-          <div className='ui positive button'><i className='shipping icon'></i> {this.props.text['Done']}</div>
+          <div className='ui positive button' onClick={() => this._proceedEventGroupStatus(id)}>
+            <i className='shipping icon'></i> {this.props.text['Done']}
+          </div>
         </div> )
     case c.EVENTGROUP_STATUS.DONE:
       return (
         <div className='ui bottom attached small two buttons'>
-          <div className='ui button'><i className='undo icon'></i> {this.props.text['Undo']}</div>
+          <div className='ui button' onClick={() => this._undoEventGroupStatus(id)}>
+            <i className='undo icon'></i> {this.props.text['Undo']}
+          </div>
           <div className='or'></div>
-          <div className='ui positive button'><i className='archive icon'></i> {this.props.text['Archive']}</div>
+          <div className='ui positive button' onClick={() => this._proceedEventGroupStatus(id)}>
+            <i className='archive icon'></i> {this.props.text['Archive']}
+          </div>
         </div> )
     case c.EVENTGROUP_STATUS.ARCHIVED:
       return (
-        <div className='ui bottom attached small button'>
+        <div className='ui bottom attached small button' onClick={() => this._undoEventGroupStatus(id)}>
           <i className='undo icon'></i> {this.props.text['Undo']}
         </div> )
     }
+  }
+  _proceedEventGroupStatus (eventGroupId) {
+    dispatcher.dispatch(eventActions.PROCEED_EVENTGROUP_STATUS, eventGroupId)
+  }
+  _undoEventGroupStatus (eventGroupId) {
+    dispatcher.dispatch(eventActions.UNDO_EVENTGROUP_STATUS, eventGroupId)
   }
 }
 EventGroup.propTypes = {

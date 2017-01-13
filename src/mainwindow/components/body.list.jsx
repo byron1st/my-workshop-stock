@@ -13,25 +13,18 @@ export default class BodyList extends PresentationalComp {
   render () {
     return (
       <div id='bodyList'>
-        <h4 className='ui horizontal divider header'>
-          {this.props.text['History']}
-        </h4>
-        <div className='ui segment'>
-          <SearchBar />
-          <div className='ui one column grid'>
-            <Tab data={this.props.data} ui={this.props.ui} text={this.props.text} />
-            <div className='ui bottom attached active tab segment'>
-              <EventGroupList data={this.props.data} ui={this.props.ui} text={this.props.text} />
-              {this.props.ui.activeTab === c.UI_TAB.DONE ? 
-                <h4 className='ui dividing header' onClick={() => this._toggleArchived()}>
-                  {this.props.ui.isArchivedVisible ? 
-                    this.props.text['Hide archived'] : this.props.text['Show archived']}
-                </h4> : ''}
-              {this.props.ui.activeTab === c.UI_TAB.DONE && this.props.ui.isArchivedVisible ?
-                <ArchivedEventGroupList data={this.props.data} ui={this.props.ui} text={this.props.text} /> : ''}
-            </div>
+        <SearchBar />
+          <Tab data={this.props.data} ui={this.props.ui} text={this.props.text} />
+          <div className='ui bottom attached active tab segment'>
+            <EventGroupList data={this.props.data} ui={this.props.ui} text={this.props.text} />
+            {this.props.ui.activeTab === c.UI_TAB.DONE ? 
+              <h4 className='ui dividing header' onClick={() => this._toggleArchived()}>
+                {this.props.ui.isArchivedVisible ? 
+                  this.props.text['Hide archived'] : this.props.text['Show archived']}
+              </h4> : ''}
+            {this.props.ui.activeTab === c.UI_TAB.DONE && this.props.ui.isArchivedVisible ?
+              <ArchivedEventGroupList data={this.props.data} ui={this.props.ui} text={this.props.text} /> : ''}
           </div>
-        </div>
       </div>
     )
   }

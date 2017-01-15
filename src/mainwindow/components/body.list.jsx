@@ -12,7 +12,7 @@ export default class BodyList extends PresentationalComp {
   render () {
     return (
       <div id='bodyList'>
-        <button className='left floated circular ui icon button' id='add-eventgroup-btn'>
+        <button className='left floated circular ui icon button' id='add-eventgroup-btn' onClick={() => this._openAddWindow()}>
           <i className='plus icon'></i>
         </button>
         <div className='ui one column right aligned grid'>
@@ -36,6 +36,9 @@ export default class BodyList extends PresentationalComp {
   }
   _toggleArchived () {
     dispatcher.dispatch(eventActions.TOGGLE_ARCHIVED, !this.props.ui.isArchivedVisible)
+  }
+  _openAddWindow () {
+    dispatcher.dispatch(eventActions.OPEN_ADDWINDOW)
   }
 }
 

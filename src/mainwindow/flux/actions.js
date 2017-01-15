@@ -24,7 +24,6 @@ export default function initActions (ipcModule) {
  * @param   arg   {Object}    {initStore: Object, initLocale: String}
  */
 function initializeStore (arg) {
-  console.log(arg.initStore)
   initIds(Object.keys(arg.initStore.eventSet), arg.initStore.eventGroupIdList, arg.initStore.productIdList)
   dataStore.setValue('productSet', Immutable.fromJS(arg.initStore.productSet))
   dataStore.setValue('eventSet', Immutable.fromJS(arg.initStore.eventSet))

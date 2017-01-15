@@ -24,6 +24,7 @@ const DB_FILE_LIST_LENGTH = 20
 let dbPath = ''
 let dbFileList = []
 let mainWindow = null
+let addWindow = null
 let closeConfirmed = false
 
 if (testMode) {
@@ -46,6 +47,9 @@ ipcMain.on(ch.EXIT_CONFIRMED, (event, store) => {
 })
 ipcMain.on(ch.BACKUP_DATA, (event, store) => {
   saveDBFile(store)
+})
+ipcMain.on(ch.OPEN_ADDWINDOW, () => {
+  createAddWindow()
 })
 
 function initialize () {
@@ -80,6 +84,22 @@ function createMainWindow (initStore) {
       mainWindow.webContents.send(ch.EXIT)
     }
   })
+
+  if (testMode) {
+    BrowserWindow.addDevToolsExtension('/Users/byron1st/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/0.15.4_0')
+    mainWindow.webContents.openDevTools()
+  }
+}
+
+function createAddWindow () {
+  addWindow = new BrowserWindow({
+    width: 600,
+    height: 400,
+    minWidth: 600,
+    minHeight: 400
+  })
+  addWindow.loadURL('file://' + __dirname + '/../addwindow/index.html')
+  addWindow.on('closed', () => addWindow = null)
 
   if (testMode) {
     BrowserWindow.addDevToolsExtension('/Users/byron1st/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/0.15.4_0')

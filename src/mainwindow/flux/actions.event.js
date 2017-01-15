@@ -118,42 +118,54 @@ export function initialize (ipcModule) {
 //  * @param      {object}  arg     {eventIndex: number, text: object}
 //  */
 // function deleteEvent (arg) {
-//   remote.dialog.showMessageBox({
-//     type: 'question',
-//     buttons: [arg.text['OK'], arg.text['Cancel']],
-//     defaultId: 1,
-//     message: arg.text['Will you delete this event?'],
-//     cancelId: 1
-//   }, (index) => {
-//     if (index === 1) {
-//       return
-//     } else {
-//       let willBeDeletedEvent = store.getValue('eventList').get(arg.eventIndex)
-//       _refineProductAmount(willBeDeletedEvent.get('productId'), (-1 * willBeDeletedEvent.get('amount')))
-//       store.setValue('eventList', store.getValue('eventList').delete(arg.eventIndex))
-//       store.emitChange()
-//     }
-//   })
+  // remote.dialog.showMessageBox({
+  //   type: 'question',
+  //   buttons: [arg.text['OK'], arg.text['Cancel']],
+  //   defaultId: 1,
+  //   message: arg.text['Will you delete this event?'],
+  //   cancelId: 1
+  // }, (index) => {
+  //   if (index === 1) {
+  //     return
+  //   } else {
+  //     let willBeDeletedEvent = store.getValue('eventList').get(arg.eventIndex)
+  //     _refineProductAmount(willBeDeletedEvent.get('productId'), (-1 * willBeDeletedEvent.get('amount')))
+  //     store.setValue('eventList', store.getValue('eventList').delete(arg.eventIndex))
+  //     store.emitChange()
+  //   }
+  // })
 // }
 
-function deleteEventGroup (eventGroupId) {
-  let eventGroup = dataStore.getInValue(['eventGroupSet', eventGroupId])
-  let eventIdList = eventGroup.get('eventIdList')
-
-  let filteredEventGroupIdList = dataStore.getValue('eventGroupIdList').filter(id => id !== eventGroupId)
-  let filteredEventSet = dataStore.getValue('eventSet').filter(event => {
-    let id = event.get('id')
-    if (eventIdList.indexOf(id) === -1) {
-      return true
+function deleteEventGroup (arg) {
+  remote.dialog.showMessageBox({
+    type: 'question',
+    buttons: [arg.text['OK'], arg.text['Cancel']],
+    defaultId: 1,
+    message: arg.text['Will you delete this event?'],
+    cancelId: 1
+  }, (index) => {
+    if (index === 1) {
+      return
     } else {
-      return false
+      let eventGroup = dataStore.getInValue(['eventGroupSet', arg.eventGroupId])
+      let eventIdList = eventGroup.get('eventIdList')
+
+      let filteredEventGroupIdList = dataStore.getValue('eventGroupIdList').filter(id => id !== arg.eventGroupId)
+      let filteredEventSet = dataStore.getValue('eventSet').filter(event => {
+        let id = event.get('id')
+        if (eventIdList.indexOf(id) === -1) {
+          return true
+        } else {
+          return false
+        }
+      })
+
+      dataStore.setValue('eventGroupSet', dataStore.getValue('eventGroupSet').delete(arg.eventGroupId))
+      dataStore.setValue('eventGroupIdList', filteredEventGroupIdList)
+      dataStore.setValue('eventSet', filteredEventSet)
+      dataStore.emitChange()
     }
   })
-
-  dataStore.setValue('eventGroupSet', dataStore.getValue('eventGroupSet').delete(eventGroupId))
-  dataStore.setValue('eventGroupIdList', filteredEventGroupIdList)
-  dataStore.setValue('eventSet', filteredEventSet)
-  dataStore.emitChange()
 }
 
 function searchProductName (searchTerm) {

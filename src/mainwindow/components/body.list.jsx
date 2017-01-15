@@ -129,7 +129,7 @@ class EventGroup extends PresentationalComp {
         <div className='content'>
           <div className='header'>
             {eventGroup.title}
-            <a href='#' onClick={() => this._removeEventGroup(this.props.id)}>
+            <a href='#' onClick={() => this._removeEventGroup(this.props.id, this.props.text)}>
               <i className='ui right floated trash icon'></i>
             </a>
           </div>
@@ -188,8 +188,8 @@ class EventGroup extends PresentationalComp {
   _undoEventGroupStatus (eventGroupId) {
     dispatcher.dispatch(eventActions.UNDO_EVENTGROUP_STATUS, eventGroupId)
   }
-  _removeEventGroup (id) {
-    dispatcher.dispatch(eventActions.DELETE_EVENTGROUP, id)
+  _removeEventGroup (id, text) { 
+    dispatcher.dispatch(eventActions.DELETE_EVENTGROUP, {eventGroupId: id, text: text})
   }
 }
 EventGroup.propTypes = {

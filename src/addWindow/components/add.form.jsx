@@ -14,13 +14,15 @@ export default class AddForm extends Component {
     let eventGroup = this.props.data.eventGroup
     let eventListView = []
     eventGroup.eventList.forEach((event, idx) => {
-      eventListView.push(
-        <EventForm 
-          event={event}
-          idx={idx}
-          productSet={this.props.data.productSet}
-          text={this.props.text} />
-      )
+      if (idx !== 0){
+        eventListView.push(
+          <EventForm 
+            event={event}
+            idx={idx}
+            productSet={this.props.data.productSet}
+            text={this.props.text} />
+        )
+      }
     })
     return (
       <div className='ui raised segment'>
@@ -32,8 +34,8 @@ export default class AddForm extends Component {
           </div>
           <h4 className='ui dividing header'>Products</h4>
           <EventInputForm 
-            event={c.EMPTY_EVENT}
-            idx={-1}
+            event={eventGroup.eventList[0]}
+            idx={0}
             productSet={this.props.data.productSet}
             text={this.props.text} />
           <div className='ui divider'></div>
@@ -123,6 +125,13 @@ KindForm.propTypes = {
 class EventForm extends Component {
   render () {
     let productListView = []
+
+    if (this.props.idx === 0) {
+      productListView.push(
+        <option value=''>Select a product</option>
+      )
+    }
+
     let productList = Object.keys(this.props.productSet)
     productList.forEach(id => {
       let product = this.props.productSet[id]
@@ -142,6 +151,7 @@ class EventForm extends Component {
           <label>Amount</label>
           <input type='text' value={this.props.event.amount} onChange={this._onAmountChange}/>
         </div>
+        {this._getButton()}
       </div>
     )
   }

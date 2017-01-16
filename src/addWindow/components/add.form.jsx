@@ -3,6 +3,8 @@
 
 import React, {Component, PropTypes} from 'react'
 
+import dispatcher from '../../util/flux/dispatcher'
+import * as actions from '../flux/actions'
 import * as c from '../../util/const'
 import * as util from '../../util/util'
 
@@ -55,12 +57,12 @@ class TitleForm extends Component {
     return (
       <div className='seven wide field'>
         <label>{this.props.label}</label>
-        <input type='text' value={this.props.value} onChange={(e) => this._onChange(e.target.value)}/>
+        <input type='text' value={this.props.value} onChange={this._onChange}/>
       </div>
     )
   }
-  _onChange(value) {
-    console.log(value)
+  _onChange(e) {
+    dispatcher.dispatch(actions.CHANGE_EVENTGROUP_FIELD, {field: 'title', value: e.target.value})
   }
 }
 TitleForm.propTypes = {
@@ -75,7 +77,7 @@ class DateForm extends Component {
       today: true,
       formatter: {
         date: (date) => {
-          //TODO: dispatcher
+          dispatcher.dispatch(actions.CHANGE_EVENTGROUP_FIELD, {field: 'date', value: date})
           return util.getDateString(new Date(date))
         }
       }
@@ -114,7 +116,7 @@ class KindForm extends Component {
     )
   }
   _onChange (e) {
-    console.log(e.target.value)
+    dispatcher.dispatch(actions.CHANGE_EVENTGROUP_FIELD, {field: 'kind', value: e.target.value})
   }
 }
 KindForm.propTypes = {

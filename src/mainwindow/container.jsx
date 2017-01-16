@@ -34,6 +34,7 @@ class Container extends Component {
     })
 
     this.text = this._loadLocale(remote.getCurrentWindow().initLocale)
+    
     setInterval(() => ipcRenderer.send(ch.BACKUP_DATA, this._getStoreData()), BACKUP_TIME_INTERVAL)
     ipcRenderer.on(ch.EXIT, () => {
       remote.dialog.showMessageBox({

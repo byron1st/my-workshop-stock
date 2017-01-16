@@ -48,8 +48,8 @@ ipcMain.on(ch.EXIT_CONFIRMED, (event, store) => {
 ipcMain.on(ch.BACKUP_DATA, (event, store) => {
   saveDBFile(store)
 })
-ipcMain.on(ch.OPEN_ADDWINDOW, () => {
-  createAddWindow()
+ipcMain.on(ch.OPEN_ADDWINDOW, (event, productSet) => {
+  createAddWindow(productSet)
 })
 
 function initialize () {
@@ -72,11 +72,7 @@ function createMainWindow (initStore) {
   })
   mainWindow.loadURL('file://' + __dirname + '/../mainwindow/index.html')
   mainWindow.initStore = initStore
-  let locale = app.getLocale()
-  if (c.supportLocales.indexOf(locale) === -1) {
-    locale = 'en'
-  }
-  mainWindow.initLocale = locale
+  mainWindow.initLocale = getInitLocale()
   mainWindow.on('closed', () => mainWindow = null)
   mainWindow.on('close', event => {
     if (!closeConfirmed) {
@@ -91,7 +87,7 @@ function createMainWindow (initStore) {
   }
 }
 
-function createAddWindow () {
+function createAddWindow (productSet) {
   addWindow = new BrowserWindow({
     width: 600,
     height: 400,
@@ -100,10 +96,12 @@ function createAddWindow () {
   })
   addWindow.loadURL('file://' + __dirname + '/../addwindow/index.html')
   addWindow.on('closed', () => addWindow = null)
+  addWindow.productSet = productSet
+  addWindow.initLocale = getInitLocale()
 
   if (testMode) {
     BrowserWindow.addDevToolsExtension('/Users/byron1st/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/0.15.4_0')
-    mainWindow.webContents.openDevTools()
+    addWindow.webContents.openDevTools()
   }
 }
 
@@ -163,4 +161,12 @@ function saveDBFile (data) {
   dbFileList.unshift(newDBFilePath)
 
   fs.writeFileSync(path.join(dbPath, newDBFilePath), JSON.stringify(data))
+}
+
+function getInitLocale () {
+  let locale = app.getLocale()
+  if (c.supportLocales.indexOf(locale) === -1) {
+    locale = 'en'
+  }
+  return locale
 }

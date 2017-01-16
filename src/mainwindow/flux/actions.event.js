@@ -117,7 +117,7 @@ function changeActiveTab (tab) {
 }
 
 function openAddwindow () {
-  ipcRenderer.send(ch.OPEN_ADDWINDOW)
+  ipcRenderer.send(ch.OPEN_ADDWINDOW, dataStore.getValue('productSet').toJS())
 }
 
 // function _refineProductAmount (productId, changedValue) {

@@ -130,7 +130,7 @@ class EventForm extends Component {
 
     if (this.props.idx === 0) {
       productListView.push(
-        <option value=''>Select a product</option>
+        <option value='' key={'-1'}>Select a product</option>
       )
     }
 

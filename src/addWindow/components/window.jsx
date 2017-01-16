@@ -7,16 +7,9 @@ import AddForm from './add.form'
 
 export default class Window extends PresentationalComp {
   render () {
-    let addFormView = []
-    this.props.data.eventGroupList.forEach((eventGroup, idx) => {
-      addFormView.push(
-        <AddForm key={'eg-idx' + idx}
-          eventGroup={eventGroup} idx={idx} text={this.props.text} />
-      )
-    })
     return (
       <div className='ui container'>
-        {addFormView}
+        <AddForm data={this.props.data} text={this.props.text} />
       </div>
     )
   }

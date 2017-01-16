@@ -43,3 +43,8 @@ export const UI_TAB = {
   PROCESSING: 'uitab-processing',
   DONE: 'uitab-done'
 }
+
+export const EMPTY_EVENT = {
+  amount: 0,
+  productId: ''
+}

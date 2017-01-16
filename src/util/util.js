@@ -65,6 +65,6 @@ export function getEmptyEventGroup () {
     title: '',
     kind: c.EVENTGROUP_KIND.SALE,
     date: new Date(),
-    eventIdList: []
+    eventList: [] // not IdList
   }
 }

@@ -6,9 +6,7 @@ import Store from '../../util/flux/store'
 import {getEmptyEventGroup} from '../../util/util'
 
 const Data = Record({
-  eventGroupList: Immutable.fromJS(
-    [getEmptyEventGroup()]
-  ),
+  eventGroup: Immutable.fromJS(getEmptyEventGroup()),
   productSet: Map({})
 })
 

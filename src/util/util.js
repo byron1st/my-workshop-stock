@@ -1,5 +1,7 @@
 'use strict'
 
+import * as c from './const'
+
 /**
  * Gets the date string.
  *
@@ -56,4 +58,13 @@ export function isNumeric (n) {
  */
 export function getRandomIntInclusive (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+export function getEmptyEventGroup () {
+  return {
+    title: '',
+    kind: c.EVENTGROUP_KIND.SALE,
+    date: new Date(),
+    eventIdList: []
+  }
 }

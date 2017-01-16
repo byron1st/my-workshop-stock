@@ -73,6 +73,7 @@ export default class AddForm extends Component {
 }
 AddForm.propTypes = {
   eventGroup: PropTypes.object.isRequired,
+  idx: PropTypes.number.isRequired,
   text: PropTypes.object.isRequired
 }
 

@@ -1,11 +1,14 @@
 'use strict'
 
-import {List, Map, Record} from 'immutable'
+import Immutable, {Map, Record} from 'immutable'
 
 import Store from '../../util/flux/store'
+import {getEmptyEventGroup} from '../../util/util'
 
 const Data = Record({
-  eventGroupList: List([]),
+  eventGroupList: Immutable.fromJS(
+    [getEmptyEventGroup()]
+  ),
   productSet: Map({})
 })
 

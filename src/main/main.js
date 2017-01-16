@@ -89,10 +89,10 @@ function createMainWindow (initStore) {
 
 function createAddWindow (productSet) {
   addWindow = new BrowserWindow({
-    width: 600,
-    height: 400,
-    minWidth: 600,
-    minHeight: 400
+    width: 800,
+    height: 600,
+    minWidth: 800,
+    minHeight: 600
   })
   addWindow.loadURL('file://' + __dirname + '/../addwindow/index.html')
   addWindow.on('closed', () => addWindow = null)

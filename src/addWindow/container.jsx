@@ -29,7 +29,7 @@ class Container extends Component {
   render () {
     console.log(this.state)
     return (
-      <Window />
+      <Window data={this.state} text={this.text} />
     )
   }
   _updateState () {

@@ -1,13 +1,14 @@
 'use strict'
 
-import React, {Component} from 'react'
+import React from 'react'
+import PresentationalComp from './presentational'
 
-export default class Window extends Component {
+import AddForm from './add.form'
+
+export default class Window extends PresentationalComp {
   render () {
     return (
-      <h1>Hello World</h1>
+      <AddForm eventGroup={{}} text={this.props.text} />
     )
   }
-}
-Window.propTypes = {
 }

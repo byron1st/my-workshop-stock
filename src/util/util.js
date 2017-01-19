@@ -1,5 +1,6 @@
 'use strict'
 
+import {Map} from 'immutable'
 import * as c from './const'
 
 /**
@@ -65,6 +66,6 @@ export function getEmptyEventGroup () {
     title: '',
     kind: c.EVENTGROUP_KIND.SALE,
     date: new Date(),
-    eventList: [c.EMPTY_EVENT] // not IdList
+    eventList: [Map(c.EMPTY_EVENT)] // not IdList
   }
 }

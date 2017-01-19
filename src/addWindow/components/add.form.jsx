@@ -145,23 +145,23 @@ class EventForm extends Component {
       <div className='fields'>
         <div className='ten wide field'>
           <label>Product</label>
-          <select className='ui search dropdown' value={this.props.event.productId} onChange={this._onProductChange}>
+          <select className='ui search dropdown' value={this.props.event.productId} onChange={(e) => this._onProductChange(e)}>
             {productListView}
           </select>
         </div>
         <div className='five wide field'>
           <label>Amount</label>
-          <input type='text' value={this.props.event.amount} onChange={this._onAmountChange}/>
+          <input type='text' value={this.props.event.amount} onChange={(e) => this._onAmountChange(e)}/>
         </div>
         {this._getButton()}
       </div>
     )
   }
   _onProductChange (e) {
-    console.log(e.target.value)
+    dispatcher.dispatch(actions.CHANGE_EVENT_FIELD, {idx: this.props.idx, field: 'productId', value: e.target.value})
   }
   _onAmountChange (e) {
-    console.log(e.target.value)
+    dispatcher.dispatch(actions.CHANGE_EVENT_FIELD, {idx: this.props.idx, field: 'amount', value: e.target.value})
   }
   _getButton () {
     return (
@@ -190,6 +190,6 @@ class EventInputForm extends EventForm {
     )
   }
   _onBtnClick () {
-    console.log('click-add-btn')
+    dispatcher.dispatch(actions.CHANGE_EVENTGROUP_FIELD, {'field': 'eventList'})
   }
 }

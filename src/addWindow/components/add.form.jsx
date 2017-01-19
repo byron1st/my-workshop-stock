@@ -99,7 +99,7 @@ class DateForm extends Component {
   }
 }
 DateForm.propTypes = {
-  value: PropTypes.string,
+  value: PropTypes.object,
   label: PropTypes.string.isRequired
 }
 

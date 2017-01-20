@@ -2,17 +2,18 @@
 
 import dispatcher from '../../util/flux/dispatcher'
 import store from './store'
-import * as c from '../../util/const'
 import * as util from '../../util/util'
 
 export const INITIALIZE_STORE = 'initialize-store'
 export const CHANGE_EVENTGROUP_FIELD = 'change-eventgroup-field'
 export const CHANGE_EVENT_FIELD = 'change-event-field'
+export const REMOVE_EVENT = 'remove-event'
 
 export function initialize () {
   dispatcher.register(INITIALIZE_STORE, initializeStore)
   dispatcher.register(CHANGE_EVENTGROUP_FIELD, changeEventGroupField)
   dispatcher.register(CHANGE_EVENT_FIELD, changeEventField)
+  dispatcher.register(REMOVE_EVENT, removeEvent)
 }
 
 function initializeStore (productSet) {
@@ -57,5 +58,11 @@ function changeEventField (arg) {
   }
 
   store.setInValue(['eventGroup', 'eventList', arg.idx, arg.field], newValue)
+  store.emitChange()
+}
+
+function removeEvent (idx) {
+  let eventList = store.getInValue(['eventGroup', 'eventList'])
+  store.setInValue(['eventGroup', 'eventList'], eventList.delete(idx))
   store.emitChange()
 }

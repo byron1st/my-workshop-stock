@@ -171,7 +171,7 @@ class EventForm extends Component {
     )
   }
   _onBtnClick () {
-    console.log('click-remove-btn')
+    dispatcher.dispatch(actions.REMOVE_EVENT, this.props.idx)
   }
 }
 EventForm.propTypes = {

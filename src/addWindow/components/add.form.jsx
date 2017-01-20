@@ -16,6 +16,7 @@ export default class AddForm extends Component {
       if (idx !== 0){
         eventListView.push(
           <EventForm 
+            key={'event' + idx}
             event={event}
             idx={idx}
             productSet={this.props.data.productSet}

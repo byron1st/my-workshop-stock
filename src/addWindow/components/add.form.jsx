@@ -9,9 +9,6 @@ import * as c from '../../util/const'
 import * as util from '../../util/util'
 
 export default class AddForm extends Component {
-  componentDidMount () {
-    $('select.dropdown').dropdown()
-  }
   render () {
     let eventGroup = this.props.data.eventGroup
     let eventListView = []
@@ -125,6 +122,9 @@ KindForm.propTypes = {
 }
 
 class EventForm extends Component {
+  componentDidMount () {
+    $('select.dropdown').dropdown()
+  }
   render () {
     let productListView = []
 

@@ -1,5 +1,7 @@
 'use strict'
 
+import {remote} from 'electron'
+
 import dispatcher from '../../util/flux/dispatcher'
 import store from './store'
 import * as util from '../../util/util'
@@ -8,12 +10,14 @@ export const INITIALIZE_STORE = 'initialize-store'
 export const CHANGE_EVENTGROUP_FIELD = 'change-eventgroup-field'
 export const CHANGE_EVENT_FIELD = 'change-event-field'
 export const REMOVE_EVENT = 'remove-event'
+export const SAVE_EVENTGROUP = 'save-eventgroup'
 
 export function initialize () {
   dispatcher.register(INITIALIZE_STORE, initializeStore)
   dispatcher.register(CHANGE_EVENTGROUP_FIELD, changeEventGroupField)
   dispatcher.register(CHANGE_EVENT_FIELD, changeEventField)
   dispatcher.register(REMOVE_EVENT, removeEvent)
+  dispatcher.register(SAVE_EVENTGROUP, saveEventGroup)
 }
 
 function initializeStore (productSet) {
@@ -103,4 +107,34 @@ function _validateEventField (field, value, idx) {
   }
   store.setInValue(['eventGroup', 'eventList', idx, 'error', field], isError)
   return !isError
+}
+
+function saveEventGroup () {
+  //에러 체크 => 있으면 다이얼로그 띄우고 return
+  //(id들은 mainW에서 생성)
+
+  let isErrorOnEventGroup = store.getInValue(['eventGroup', 'error'])
+    .reduce((prev, next) => prev || next, false)
+  
+  let isErrorOnEventList
+  let eventList = store.getInValue(['eventGroup', 'eventList'])
+  if (eventList.size === 1) {
+    isErrorOnEventList = true
+  } else {
+    isErrorOnEventList = eventList.reduce((prev, next, idx) => {
+      if (idx === 0) {
+        return false
+      }
+      return prev ||  next.get('error').reduce((prev, next) => prev || next, false)
+    }, false)
+  }
+
+  let isError = isErrorOnEventGroup || isErrorOnEventList
+
+  if (isError) {
+    return remote.dialog.showErrorBox('Error', 'There are some errors on fields.')
+  } else {
+    console.log('everything is okay.')
+    return //TODO: send IPC
+  }
 }

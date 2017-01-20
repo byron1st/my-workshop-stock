@@ -46,5 +46,9 @@ export const UI_TAB = {
 
 export const EMPTY_EVENT = {
   amount: 0,
-  productId: ''
+  productId: '',
+  error: {
+    productId: true,
+    amount: true
+  }
 }

@@ -1,6 +1,6 @@
 'use strict'
 
-import {Map} from 'immutable'
+import Immutable, {Map} from 'immutable'
 import * as c from './const'
 
 /**
@@ -66,6 +66,7 @@ export function getEmptyEventGroup () {
     title: '',
     kind: c.EVENTGROUP_KIND.SALE,
     date: new Date(),
-    eventList: [Map(c.EMPTY_EVENT)] // not IdList
+    eventList: [Immutable.fromJS(c.EMPTY_EVENT)], // not IdList
+    error: Map({title: true})
   }
 }

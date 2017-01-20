@@ -29,18 +29,30 @@ function initializeStore (productSet) {
 function changeEventGroupField (arg) {
   let newValue
   if (arg.field === 'eventList') {
-    let newEvent = store.getInValue(['eventGroup', arg.field, 0])
-    if (newEvent.get('productId') && newEvent.get('amount') !== 0) {
+    let addedEvent = store.getInValue(['eventGroup', arg.field, 0])
+    
+    if (_validateEventField('productId', addedEvent.get('productId'), 0)
+      && _validateEventField('amount', addedEvent.get('amount'), 0)) {
       newValue = store.getInValue(['eventGroup', arg.field]).withMutations(eventList => {
-        eventList.set(0, newEvent.set('amount', 0)).push(newEvent)
+        let newEvent = addedEvent.setIn(['error', 'amount'], true)
+        eventList.set(0, newEvent.set('amount', 0)).push(addedEvent)
       })
     } else {
-      //TODO: show error message
       return
     }
   } else {
     newValue = arg.value
   }
+
+  //field validation
+  if (arg.field === 'title') {
+    if (arg.value === '') {
+      store.setInValue(['eventGroup', 'error', arg.field], true)
+    } else {
+      store.setInValue(['eventGroup', 'error', arg.field], false)
+    }
+  }
+
   store.setInValue(['eventGroup', arg.field], newValue)
   store.emitChange()
 }
@@ -62,6 +74,8 @@ function changeEventField (arg) {
     newValue = arg.value
   }
 
+  _validateEventField(arg.field, newValue, arg.idx)
+
   store.setInValue(['eventGroup', 'eventList', arg.idx, arg.field], newValue)
   store.emitChange()
 }
@@ -70,4 +84,23 @@ function removeEvent (idx) {
   let eventList = store.getInValue(['eventGroup', 'eventList'])
   store.setInValue(['eventGroup', 'eventList'], eventList.delete(idx))
   store.emitChange()
+}
+
+function _validateEventField (field, value, idx) {
+  let isError
+  if (field === 'amount') {
+    if (value === 0) {
+      isError = true
+    } else {
+      isError = false
+    }
+  } else if (field === 'productId') {
+    if (value === '') {
+      isError = true
+    } else {
+      isError = false
+    }
+  }
+  store.setInValue(['eventGroup', 'eventList', idx, 'error', field], isError)
+  return !isError
 }

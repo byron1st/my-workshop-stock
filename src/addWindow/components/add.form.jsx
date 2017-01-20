@@ -27,7 +27,7 @@ export default class AddForm extends Component {
     return (
       <div className='ui form'>
         <div className='fields'>
-          <TitleForm value={eventGroup.title} label='Title' />
+          <TitleForm value={eventGroup.title} label='Title' error={eventGroup.error.title}/>
           <DateForm value={eventGroup.date} label='Date' />
           <KindForm value={eventGroup.kind} label='Kind' />
         </div>
@@ -51,7 +51,7 @@ AddForm.propTypes = {
 class TitleForm extends Component {
   render () {
     return (
-      <div className='seven wide field'>
+      <div className={'seven wide field' + (this.props.error ? ' error' : '')}>
         <label>{this.props.label}</label>
         <input type='text' value={this.props.value} onChange={this._onChange}/>
       </div>
@@ -63,7 +63,8 @@ class TitleForm extends Component {
 }
 TitleForm.propTypes = {
   value: PropTypes.string,
-  label: PropTypes.string.isRequired
+  label: PropTypes.string.isRequired,
+  error: PropTypes.bool.isRequired
 }
 
 class DateForm extends Component {
@@ -142,13 +143,13 @@ class EventForm extends Component {
     })
     return (
       <div className='fields'>
-        <div className='ten wide field'>
+        <div className={'ten wide field' + (this.props.event.error.productId ? ' error' : '')}>
           <label>Product</label>
           <select className='ui search dropdown' value={this.props.event.productId} onChange={(e) => this._onProductChange(e)}>
             {productListView}
           </select>
         </div>
-        <div className='five wide field'>
+        <div className={'five wide field' + (this.props.event.error.amount ? ' error' : '')}>
           <label>Amount</label>
           <input type='text' value={this.props.event.amount} onChange={(e) => this._onAmountChange(e)}/>
         </div>
@@ -164,7 +165,7 @@ class EventForm extends Component {
   }
   _getButton () {
     return (
-      <button className='ui icon button' onClick={() => this._onBtnClick()}>
+      <button className='ui icon negative button' onClick={() => this._onBtnClick()}>
         <i className='minus icon'></i>
       </button>
     )
@@ -183,7 +184,7 @@ EventForm.propTypes = {
 class EventInputForm extends EventForm {
   _getButton () {
     return (
-      <button className='ui icon button' onClick={() => this._onBtnClick()}>
+      <button className='ui icon positive button' onClick={() => this._onBtnClick()}>
         <i className='plus icon'></i>
       </button>
     )

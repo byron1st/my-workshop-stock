@@ -10,6 +10,7 @@ import * as eventActions from '../flux/actions.event'
 
 function _getStatusIcon (status) {
   const STATUS_ICON_NAME = {
+    ALL: 'hourglass full',
     READY: 'hourglass start',
     PROCESSING: 'hourglass half',
     DONE: 'hourglass end',

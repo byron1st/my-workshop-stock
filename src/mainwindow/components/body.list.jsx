@@ -8,6 +8,17 @@ import dispatcher from '../../util/flux/dispatcher'
 import * as c from '../../util/const'
 import * as eventActions from '../flux/actions.event'
 
+function _getStatusIcon (status) {
+  const STATUS_ICON_NAME = {
+    READY: 'hourglass start',
+    PROCESSING: 'hourglass half',
+    DONE: 'hourglass end',
+    ARCHIVED: 'archive'
+  }
+
+  return (<i className={STATUS_ICON_NAME[status] + ' icon'}></i>)
+}
+
 export default class BodyList extends PresentationalComp {
   render () {
     return (
@@ -25,7 +36,7 @@ export default class BodyList extends PresentationalComp {
           <EventGroupList data={this.props.data} ui={this.props.ui} text={this.props.text} />
           {this.props.ui.activeTab === c.UI_TAB.DONE ? 
             <h4 className='ui dividing header' onClick={() => this._toggleArchived()}>
-              {this.props.ui.isArchivedVisible ? 
+              {_getStatusIcon('ARCHIVED')} {this.props.ui.isArchivedVisible ? 
                 this.props.text['Hide archived'] : this.props.text['Show archived']}
             </h4> : ''}
           {this.props.ui.activeTab === c.UI_TAB.DONE && this.props.ui.isArchivedVisible ?
@@ -48,10 +59,11 @@ class Tab extends PresentationalComp {
     Object.keys(c.UI_TAB).forEach(tab => {
       let tabView
       let tabName = c.UI_TAB[tab]
+      let tabIcon = _getStatusIcon(tab)
       if (tabName === this.props.ui.activeTab) {
-        tabView = <div key={tabName} className='active item'>{this.props.text[tabName]}</div>
+        tabView = <div key={tabName} className='active item'>{tabIcon} {this.props.text[tabName]}</div>
       } else {
-        tabView = <div key={tabName} className='item' onClick={() => this._changeActiveTab(tabName)}>{this.props.text[tabName]}</div>
+        tabView = <div key={tabName} className='item' onClick={() => this._changeActiveTab(tabName)}>{tabIcon} {this.props.text[tabName]}</div>
       }
       tabListView.push(tabView)
     })
@@ -128,10 +140,10 @@ class EventGroup extends PresentationalComp {
       eventListView.push(eventView)
     })
     return (
-      <div className={'ui raised ' + kindView.cardColor + ' card'}>
+      <div className={'ui raised card'}>
         <div className='content'>
           <div className='header'>
-            {eventGroup.title}
+            {this._getStatusIcon(eventGroup.status)} {eventGroup.title}
             <a href='#' onClick={() => this._removeEventGroup(this.props.id, this.props.text)}>
               <i className='ui right floated trash icon'></i>
             </a>
@@ -183,6 +195,14 @@ class EventGroup extends PresentationalComp {
         <div className='ui bottom attached small button' onClick={() => this._undoEventGroupStatus(id)}>
           <i className='undo icon'></i> {this.props.text['Undo']}
         </div> )
+    }
+  }
+  _getStatusIcon (status) {
+    switch (status) {
+    case c.EVENTGROUP_STATUS.READY: return _getStatusIcon('READY')
+    case c.EVENTGROUP_STATUS.PROCESSING: return _getStatusIcon('PROCESSING')
+    case c.EVENTGROUP_STATUS.DONE: return _getStatusIcon('DONE')
+    case c.EVENTGROUP_STATUS.ARCHIVED: return _getStatusIcon('ARCHIVED')
     }
   }
   _proceedEventGroupStatus (eventGroupId) {

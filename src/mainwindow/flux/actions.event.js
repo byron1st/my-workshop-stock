@@ -18,6 +18,7 @@ export const PROCEED_EVENTGROUP_STATUS = 'proceed-eventgroup-status'
 export const UNDO_EVENTGROUP_STATUS = 'undo-eventgroup-status'
 export const TOGGLE_ARCHIVED = 'toggle-archived'
 export const CHANGE_ACTIVE_TAB = 'change-active-tab'
+export const CHANGE_ACTIVE_KIND = 'change-active-kind'
 export const OPEN_ADDWINDOW = 'open-addwindow'
 export const ADD_EVENTGROUP = 'add-eventgroup'
 
@@ -31,6 +32,7 @@ export function initialize (ipcModule) {
   dispatcher.register(UNDO_EVENTGROUP_STATUS, undoEventGroupStatus)
   dispatcher.register(TOGGLE_ARCHIVED, toggleArchived)
   dispatcher.register(CHANGE_ACTIVE_TAB, changeActiveTab)
+  dispatcher.register(CHANGE_ACTIVE_KIND, changeActiveKind)
   dispatcher.register(OPEN_ADDWINDOW, openAddwindow)
   dispatcher.register(ADD_EVENTGROUP, addEventGroup)
 }
@@ -123,6 +125,11 @@ function toggleArchived (isArchivedVisible) {
 
 function changeActiveTab (tab) {
   uiStore.setValue('activeTab', tab) 
+  uiStore.emitChange()
+}
+
+function changeActiveKind (kind) {
+  uiStore.setValue('activeKind', kind) 
   uiStore.emitChange()
 }
 

@@ -28,7 +28,8 @@ export const EVENTGROUP_STATUS = {
 
 export const EVENTGROUP_KIND = {
   SALE: 'egkind-sale',
-  PRODUCTION: 'egkind-production'
+  PRODUCTION: 'egkind-production',
+  ALL: 'egkind-all'
 }
 
 export const ID_KIND = {

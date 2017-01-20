@@ -11,7 +11,8 @@ const Data = Record({
   locale: '',
   isArchivedVisible: false,
   editableProductList: List([]),
-  activeTab: c.UI_TAB.ALL
+  activeTab: c.UI_TAB.ALL,
+  activeKind: c.EVENTGROUP_KIND.ALL
 })
 
 export default new Store(new Data())

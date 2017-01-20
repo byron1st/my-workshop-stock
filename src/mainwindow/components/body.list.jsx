@@ -34,6 +34,7 @@ export default class BodyList extends PresentationalComp {
         </div>
         <Tab data={this.props.data} ui={this.props.ui} text={this.props.text} />
         <div className='ui bottom attached active tab segment'>
+          <KindSelector data={this.props.data} ui={this.props.ui} text={this.props.text} />
           <EventGroupList data={this.props.data} ui={this.props.ui} text={this.props.text} />
           {this.props.ui.activeTab === c.UI_TAB.DONE ? 
             <h4 className='ui dividing header' onClick={() => this._toggleArchived()}>
@@ -80,6 +81,55 @@ class Tab extends PresentationalComp {
   }
 }
 
+class KindSelector extends PresentationalComp {
+  render () {
+    let activeKind = this.props.ui.activeKind
+    return (
+      <div className='ui form'>
+        <div className='inline fields'>
+          <div className='field'>
+            <KindRadio kind={c.EVENTGROUP_KIND.ALL} checked={activeKind === c.EVENTGROUP_KIND.ALL} text={this.props.text} />
+            <KindRadio kind={c.EVENTGROUP_KIND.SALE} checked={activeKind === c.EVENTGROUP_KIND.SALE} text={this.props.text} />
+            <KindRadio kind={c.EVENTGROUP_KIND.PRODUCTION} checked={activeKind === c.EVENTGROUP_KIND.PRODUCTION} text={this.props.text} />
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+
+class KindRadio extends Component {
+  render () {
+    let labelText = ''
+    switch (this.props.kind) {
+    case c.EVENTGROUP_KIND.ALL: 
+      labelText = this.props.text['All']
+      break
+    case c.EVENTGROUP_KIND.PRODUCTION: 
+      labelText = this.props.text['Production']
+      break
+    case c.EVENTGROUP_KIND.SALE:
+      labelText = this.props.text['Sale']
+      break
+    }
+
+    return (
+      <div className='ui radio checkbox'>
+        <input type='radio' name={this.props.kind} onChange={() => this._changeActiveKind(this.props.kind)} checked={this.props.checked} />
+        <label>{labelText}</label>
+      </div>
+    )
+  }
+  _changeActiveKind (kind) {
+    dispatcher.dispatch(eventActions.CHANGE_ACTIVE_KIND, kind)
+  }
+}
+KindRadio.propTypes = {
+  kind: PropTypes.string.isRequired,
+  checked: PropTypes.bool.isRequired,
+  text: PropTypes.object.isRequired
+}
+
 class EventGroupList extends PresentationalComp {
   render() {
     let eventGroupIdList = this._getEventGroupIdList(this.props.data.eventGroupIdList)
@@ -90,7 +140,14 @@ class EventGroupList extends PresentationalComp {
     )
   }
   _getEventGroupIdList (eventGroupIdList) {
-    return eventGroupIdList.filter(eventGroupId => {
+    let filteredList = eventGroupIdList.filter(eventGroupId => {
+      let kind = this.props.data.eventGroupSet[eventGroupId].kind
+      switch (this.props.ui.activeKind) {
+      case c.EVENTGROUP_KIND.ALL: return true
+      default: return kind === this.props.ui.activeKind
+      }
+    })
+    return filteredList.filter(eventGroupId => {
       let status = this.props.data.eventGroupSet[eventGroupId].status
       switch (this.props.ui.activeTab) {
       case c.UI_TAB.ALL: return true
@@ -113,7 +170,15 @@ class EventGroupList extends PresentationalComp {
 
 class ArchivedEventGroupList extends EventGroupList {
   _getEventGroupIdList (eventGroupIdList) {
-    return eventGroupIdList.filter(eventGroupId => {
+    let filteredList = eventGroupIdList.filter(eventGroupId => {
+      let kind = this.props.data.eventGroupSet[eventGroupId].kind
+      switch (this.props.ui.activeKind) {
+      case c.EVENTGROUP_KIND.ALL: return true
+      default: return kind === this.props.ui.activeKind
+      }
+    })
+
+    return filteredList.filter(eventGroupId => {
       let status = this.props.data.eventGroupSet[eventGroupId].status
       return status === c.EVENTGROUP_STATUS.ARCHIVED
     })

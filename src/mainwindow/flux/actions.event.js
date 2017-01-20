@@ -151,8 +151,18 @@ function addEventGroup (transportedEventGroup) {
     _refineProductAmount(newEvent.productId, newEventGroup.kind, newEvent.amount)
   })
   newEventGroup.eventIdList = newEventIdList
-  dataStore.setInValue(['eventGroupSet', newEventGroup.id], Immutable.fromJS(newEventGroup))
-  dataStore.setValue('eventGroupIdList', dataStore.getValue('eventGroupIdList').push(newEventGroup.id))
+  
+  let updatedEventGroupSet = dataStore.getValue('eventGroupSet').set(newEventGroup.id, Immutable.fromJS(newEventGroup))
+  let sortedList = dataStore.getValue('eventGroupIdList').push(newEventGroup.id).sort((prev, next) => {
+    if (updatedEventGroupSet.getIn([prev, 'date']) < updatedEventGroupSet.getIn([next, 'date'])) {
+      return 1
+    } else {
+      return -1
+    }
+  })
+
+  dataStore.setValue('eventGroupIdList', sortedList)
+  dataStore.setValue('eventGroupSet', updatedEventGroupSet)
   dataStore.emitChange()
 }
 

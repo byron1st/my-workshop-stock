@@ -1,12 +1,14 @@
 'use strict'
 
 import {remote, ipcRenderer} from 'electron'
+import Immutable from 'immutable'
 
 import dispatcher from '../../util/flux/dispatcher'
 import uiStore from './store.ui'
 import dataStore from './store.data'
 import * as c from '../../util/const'
 import * as ch from '../../util/ipc.channels'
+import generateId from '../../util/id.generator'
 
 let ipc = {}
 
@@ -17,6 +19,7 @@ export const UNDO_EVENTGROUP_STATUS = 'undo-eventgroup-status'
 export const TOGGLE_ARCHIVED = 'toggle-archived'
 export const CHANGE_ACTIVE_TAB = 'change-active-tab'
 export const OPEN_ADDWINDOW = 'open-addwindow'
+export const ADD_EVENTGROUP = 'add-eventgroup'
 
 export function initialize (ipcModule) {
   ipc = ipcModule
@@ -29,8 +32,14 @@ export function initialize (ipcModule) {
   dispatcher.register(TOGGLE_ARCHIVED, toggleArchived)
   dispatcher.register(CHANGE_ACTIVE_TAB, changeActiveTab)
   dispatcher.register(OPEN_ADDWINDOW, openAddwindow)
+  dispatcher.register(ADD_EVENTGROUP, addEventGroup)
 }
 
+/**
+ * 
+ * 
+ * @param {Object} {eventGroupId: String, text: Object}
+ */
 function deleteEventGroup (arg) {
   remote.dialog.showMessageBox({
     type: 'question',
@@ -44,13 +53,14 @@ function deleteEventGroup (arg) {
     } else {
       let eventGroup = dataStore.getInValue(['eventGroupSet', arg.eventGroupId])
       let eventIdList = eventGroup.get('eventIdList')
-
+      
       let filteredEventGroupIdList = dataStore.getValue('eventGroupIdList').filter(id => id !== arg.eventGroupId)
       let filteredEventSet = dataStore.getValue('eventSet').filter(event => {
         let id = event.get('id')
         if (eventIdList.indexOf(id) === -1) {
           return true
         } else {
+          _refineProductAmount(event.get('productId'), eventGroup.get('kind'), (event.get('amount') * -1))
           return false
         }
       })
@@ -120,10 +130,41 @@ function openAddwindow () {
   ipcRenderer.send(ch.OPEN_ADDWINDOW, dataStore.getValue('productSet').toJS())
 }
 
-// function _refineProductAmount (productId, changedValue) {
-//   let product = store.getValue('productSet').get(productId)
-//   if (product !== undefined) {
-//     let changedProduct = product.set('amount', product.get('amount') + changedValue)
-//     store.setValue('productSet', store.getValue('productSet').set(productId, changedProduct))
-//   }
-// }
+function addEventGroup (transportedEventGroup) {
+  let newEventGroup = {
+    id: generateId(c.ID_KIND.EVENTGROUP),
+    title: transportedEventGroup.title,
+    date: transportedEventGroup.date,
+    kind: transportedEventGroup.kind,
+    status: c.EVENTGROUP_STATUS.READY
+  }
+
+  let newEventIdList = []
+  transportedEventGroup.eventList.forEach(transportedEvent => {
+    let newEvent = {
+      id: generateId(c.ID_KIND.EVENT),
+      amount: transportedEvent.amount,
+      productId: transportedEvent.productId
+    }
+    newEventIdList.push(newEvent.id)
+    dataStore.setInValue(['eventSet', newEvent.id], Immutable.fromJS(newEvent))
+    _refineProductAmount(newEvent.productId, newEventGroup.kind, newEvent.amount)
+  })
+  newEventGroup.eventIdList = newEventIdList
+  dataStore.setInValue(['eventGroupSet', newEventGroup.id], Immutable.fromJS(newEventGroup))
+  dataStore.setValue('eventGroupIdList', dataStore.getValue('eventGroupIdList').push(newEventGroup.id))
+  dataStore.emitChange()
+}
+
+function _refineProductAmount (productId, kind, value) {
+  let changedValue = value
+  if (kind === c.EVENTGROUP_KIND.SALE) {
+    changedValue = -1 * changedValue
+  }
+
+  let product = dataStore.getValue('productSet').get(productId)
+  if (product !== undefined) {
+    let changedProduct = product.set('stock', product.get('stock') + changedValue)
+    dataStore.setValue('productSet', dataStore.getValue('productSet').set(productId, changedProduct))
+  }
+}

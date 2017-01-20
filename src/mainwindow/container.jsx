@@ -12,6 +12,7 @@ import dataStore from './flux/store.data'
 import uiStore from './flux/store.ui'
 import dispatcher from '../util/flux/dispatcher'
 import initActions, {INITIALIZE_STORE} from './flux/actions'
+import * as eventActions from './flux/actions.event'
 import * as ch from '../util/ipc.channels'
 
 import Window from './components/window'
@@ -50,7 +51,7 @@ class Container extends Component {
       })
     })
     ipcRenderer.on(ch.SAVE_EVENTGROUP, (event, eventGroup) => {
-      console.log(eventGroup)
+      dispatcher.dispatch(eventActions.ADD_EVENTGROUP, eventGroup)
     })
   }
   componentWillUpdate(_, nextState) {

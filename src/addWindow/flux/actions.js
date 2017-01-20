@@ -6,6 +6,7 @@ import dispatcher from '../../util/flux/dispatcher'
 import store from './store'
 import * as util from '../../util/util'
 import * as ch from '../../util/ipc.channels'
+import getText from '../../util/locale'
 
 export const INITIALIZE_STORE = 'initialize-store'
 export const CHANGE_EVENTGROUP_FIELD = 'change-eventgroup-field'
@@ -133,7 +134,7 @@ function saveEventGroup () {
   let isError = isErrorOnEventGroup || isErrorOnEventList
 
   if (isError) {
-    return remote.dialog.showErrorBox('Error', 'There are some errors on fields.')
+    return remote.dialog.showErrorBox(getText('Error'), getText('There are some errors on fields.'))
   } else {
     ipcRenderer.send(ch.SAVE_EVENTGROUP, store.getValue('eventGroup').toJS())
     return remote.getCurrentWindow().close()

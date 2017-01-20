@@ -32,5 +32,12 @@
   "uitab-all": "All",
   "uitab-ready": "Ready",
   "uitab-processing": "Processing",
-  "uitab-done": "Done"
+  "uitab-done": "Done",
+  "Save": "Save",
+  "Title": "Title",
+  "Kind": "Kind",
+  "Products": "Products",
+  "Select a product": "Select a product",
+  "Error": "Error",
+  "There are some errors on fields.": "There are some errors on fields."
 }

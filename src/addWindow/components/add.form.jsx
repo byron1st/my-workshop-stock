@@ -7,6 +7,7 @@ import dispatcher from '../../util/flux/dispatcher'
 import * as actions from '../flux/actions'
 import * as c from '../../util/const'
 import * as util from '../../util/util'
+import getText from '../../util/locale'
 
 export default class AddForm extends Component {
   render () {
@@ -19,24 +20,22 @@ export default class AddForm extends Component {
             key={'event' + idx}
             event={event}
             idx={idx}
-            productSet={this.props.data.productSet}
-            text={this.props.text} />
+            productSet={this.props.data.productSet} />
         )
       }
     })
     return (
       <div className='ui form'>
         <div className='fields'>
-          <TitleForm value={eventGroup.title} label='Title' error={eventGroup.error.title}/>
-          <DateForm value={eventGroup.date} label='Date' />
-          <KindForm value={eventGroup.kind} label='Kind' />
+          <TitleForm value={eventGroup.title} label={getText('Title')} error={eventGroup.error.title}/>
+          <DateForm value={eventGroup.date} label={getText('Date')} />
+          <KindForm value={eventGroup.kind} label={getText('Kind')} />
         </div>
-        <h4 className='ui dividing header'>Products</h4>
+        <h4 className='ui dividing header'>{getText('Products')}</h4>
         <EventInputForm 
           event={eventGroup.eventList[0]}
           idx={0}
-          productSet={this.props.data.productSet}
-          text={this.props.text} />
+          productSet={this.props.data.productSet} />
         <div className='ui divider'></div>
         {eventListView}
       </div>
@@ -44,8 +43,7 @@ export default class AddForm extends Component {
   }
 }
 AddForm.propTypes = {
-  data: PropTypes.object.isRequired,
-  text: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired
 }
 
 class TitleForm extends Component {
@@ -106,8 +104,8 @@ class KindForm extends Component {
       <div className='five wide field'>
         <label>{this.props.label}</label>
         <select className='ui search dropdown' value={this.props.value} onChange={this._onChange}>
-          <option value={c.EVENTGROUP_KIND.SALE}>Sale</option>
-          <option value={c.EVENTGROUP_KIND.PRODUCTION}>Production</option>
+          <option value={c.EVENTGROUP_KIND.SALE}>{getText('Sale')}</option>
+          <option value={c.EVENTGROUP_KIND.PRODUCTION}>{getText('Production')}</option>
         </select>
       </div>
     )
@@ -130,7 +128,7 @@ class EventForm extends Component {
 
     if (this.props.idx === 0) {
       productListView.push(
-        <option value='' key={'-1'}>Select a product</option>
+        <option value='' key={'-1'}>{getText('Select a product')}</option>
       )
     }
 
@@ -144,13 +142,13 @@ class EventForm extends Component {
     return (
       <div className='fields'>
         <div className={'ten wide field' + (this.props.event.error.productId ? ' error' : '')}>
-          <label>Product</label>
+          <label>{getText('Product')}</label>
           <select className='ui search dropdown' value={this.props.event.productId} onChange={(e) => this._onProductChange(e)}>
             {productListView}
           </select>
         </div>
         <div className={'five wide field' + (this.props.event.error.amount ? ' error' : '')}>
-          <label>Amount</label>
+          <label>{getText('Amount')}</label>
           <input type='text' value={this.props.event.amount} onChange={(e) => this._onAmountChange(e)}/>
         </div>
         {this._getButton()}
@@ -177,8 +175,7 @@ class EventForm extends Component {
 EventForm.propTypes = {
   event: PropTypes.object.isRequired,
   idx: PropTypes.number,
-  productSet: PropTypes.object.isRequired,
-  text: PropTypes.object.isRequired
+  productSet: PropTypes.object.isRequired
 }
 
 class EventInputForm extends EventForm {

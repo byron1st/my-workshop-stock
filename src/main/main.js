@@ -52,6 +52,9 @@ ipcMain.on(ch.BACKUP_DATA, (event, store) => {
 ipcMain.on(ch.OPEN_ADDWINDOW, (event, productSet) => {
   createAddWindow(productSet)
 })
+ipcMain.on(ch.SAVE_EVENTGROUP, (event, eventGroup) => {
+  mainWindow.webContents.send(ch.SAVE_EVENTGROUP, eventGroup)
+})
 
 function initialize () {
   // let isUpdate = autoUpdater.checkForUpdates()

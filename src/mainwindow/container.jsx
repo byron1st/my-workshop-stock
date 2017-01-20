@@ -49,6 +49,9 @@ class Container extends Component {
         }
       })
     })
+    ipcRenderer.on(ch.SAVE_EVENTGROUP, (event, eventGroup) => {
+      console.log(eventGroup)
+    })
   }
   componentWillUpdate(_, nextState) {
     if (nextState.locale !== this.state.locale) {

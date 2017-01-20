@@ -1,10 +1,11 @@
 'use strict'
 
-import {remote} from 'electron'
+import {remote, ipcRenderer} from 'electron'
 
 import dispatcher from '../../util/flux/dispatcher'
 import store from './store'
 import * as util from '../../util/util'
+import * as ch from '../../util/ipc.channels'
 
 export const INITIALIZE_STORE = 'initialize-store'
 export const CHANGE_EVENTGROUP_FIELD = 'change-eventgroup-field'
@@ -134,7 +135,7 @@ function saveEventGroup () {
   if (isError) {
     return remote.dialog.showErrorBox('Error', 'There are some errors on fields.')
   } else {
-    console.log('everything is okay.')
-    return //TODO: send IPC
+    ipcRenderer.send(ch.SAVE_EVENTGROUP, store.getValue('eventGroup').toJS())
+    return remote.getCurrentWindow().close()
   }
 }

@@ -11,8 +11,7 @@ export default class Body extends PresentationalComp {
       <div id='body'>
         <BodyList 
           data={this.props.data}
-          ui={this.props.ui}
-          text={this.props.text} />
+          ui={this.props.ui} />
       </div>
     )
   }

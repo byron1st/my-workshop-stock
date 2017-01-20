@@ -9,6 +9,7 @@ import dataStore from './store.data'
 import * as c from '../../util/const'
 import * as ch from '../../util/ipc.channels'
 import generateId from '../../util/id.generator'
+import getText from '../../util/locale'
 
 let ipc = {}
 
@@ -40,23 +41,23 @@ export function initialize (ipcModule) {
 /**
  * 
  * 
- * @param {Object} {eventGroupId: String, text: Object}
+ * @param {Object} {eventGroupId: String}
  */
-function deleteEventGroup (arg) {
+function deleteEventGroup (eventGroupId) {
   remote.dialog.showMessageBox({
     type: 'question',
-    buttons: [arg.text['OK'], arg.text['Cancel']],
+    buttons: [getText('OK'), getText('Cancel')],
     defaultId: 1,
-    message: arg.text['Will you delete this event?'],
+    message: getText('Will you delete this event?'),
     cancelId: 1
   }, (index) => {
     if (index === 1) {
       return
     } else {
-      let eventGroup = dataStore.getInValue(['eventGroupSet', arg.eventGroupId])
+      let eventGroup = dataStore.getInValue(['eventGroupSet', eventGroupId])
       let eventIdList = eventGroup.get('eventIdList')
       
-      let filteredEventGroupIdList = dataStore.getValue('eventGroupIdList').filter(id => id !== arg.eventGroupId)
+      let filteredEventGroupIdList = dataStore.getValue('eventGroupIdList').filter(id => id !== eventGroupId)
       let filteredEventSet = dataStore.getValue('eventSet').filter(event => {
         let id = event.get('id')
         if (eventIdList.indexOf(id) === -1) {
@@ -67,7 +68,7 @@ function deleteEventGroup (arg) {
         }
       })
 
-      dataStore.setValue('eventGroupSet', dataStore.getValue('eventGroupSet').delete(arg.eventGroupId))
+      dataStore.setValue('eventGroupSet', dataStore.getValue('eventGroupSet').delete(eventGroupId))
       dataStore.setValue('eventGroupIdList', filteredEventGroupIdList)
       dataStore.setValue('eventSet', filteredEventSet)
       dataStore.emitChange()

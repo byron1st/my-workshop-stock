@@ -7,6 +7,7 @@ import * as util from '../../util/util'
 import dispatcher from '../../util/flux/dispatcher'
 import * as c from '../../util/const'
 import * as eventActions from '../flux/actions.event'
+import getText from '../../util/locale'
 
 function _getStatusIcon (status) {
   const STATUS_ICON_NAME = {
@@ -32,17 +33,17 @@ export default class BodyList extends PresentationalComp {
             <SearchBar />
           </div>
         </div>
-        <Tab data={this.props.data} ui={this.props.ui} text={this.props.text} />
+        <Tab data={this.props.data} ui={this.props.ui} />
         <div className='ui bottom attached active tab segment'>
-          <KindSelector data={this.props.data} ui={this.props.ui} text={this.props.text} />
-          <EventGroupList data={this.props.data} ui={this.props.ui} text={this.props.text} />
+          <KindSelector data={this.props.data} ui={this.props.ui} />
+          <EventGroupList data={this.props.data} ui={this.props.ui} />
           {this.props.ui.activeTab === c.UI_TAB.DONE ? 
             <h4 className='ui dividing header' onClick={() => this._toggleArchived()}>
               {_getStatusIcon('ARCHIVED')} {this.props.ui.isArchivedVisible ? 
-                this.props.text['Hide archived'] : this.props.text['Show archived']}
+                getText('Hide archived') : getText('Show archived')}
             </h4> : ''}
           {this.props.ui.activeTab === c.UI_TAB.DONE && this.props.ui.isArchivedVisible ?
-            <ArchivedEventGroupList data={this.props.data} ui={this.props.ui} text={this.props.text} /> : ''}
+            <ArchivedEventGroupList data={this.props.data} ui={this.props.ui} /> : ''}
         </div>
       </div>
     )
@@ -63,9 +64,9 @@ class Tab extends PresentationalComp {
       let tabName = c.UI_TAB[tab]
       let tabIcon = _getStatusIcon(tab)
       if (tabName === this.props.ui.activeTab) {
-        tabView = <div key={tabName} className='active item'>{tabIcon} {this.props.text[tabName]}</div>
+        tabView = <div key={tabName} className='active item'>{tabIcon} {getText(tabName)}</div>
       } else {
-        tabView = <div key={tabName} className='item' onClick={() => this._changeActiveTab(tabName)}>{tabIcon} {this.props.text[tabName]}</div>
+        tabView = <div key={tabName} className='item' onClick={() => this._changeActiveTab(tabName)}>{tabIcon} {getText(tabName)}</div>
       }
       tabListView.push(tabView)
     })
@@ -88,9 +89,9 @@ class KindSelector extends PresentationalComp {
       <div className='ui form'>
         <div className='inline fields'>
           <div className='field'>
-            <KindRadio kind={c.EVENTGROUP_KIND.ALL} checked={activeKind === c.EVENTGROUP_KIND.ALL} text={this.props.text} />
-            <KindRadio kind={c.EVENTGROUP_KIND.SALE} checked={activeKind === c.EVENTGROUP_KIND.SALE} text={this.props.text} />
-            <KindRadio kind={c.EVENTGROUP_KIND.PRODUCTION} checked={activeKind === c.EVENTGROUP_KIND.PRODUCTION} text={this.props.text} />
+            <KindRadio kind={c.EVENTGROUP_KIND.ALL} checked={activeKind === c.EVENTGROUP_KIND.ALL} />
+            <KindRadio kind={c.EVENTGROUP_KIND.SALE} checked={activeKind === c.EVENTGROUP_KIND.SALE} />
+            <KindRadio kind={c.EVENTGROUP_KIND.PRODUCTION} checked={activeKind === c.EVENTGROUP_KIND.PRODUCTION} />
           </div>
         </div>
       </div>
@@ -103,13 +104,13 @@ class KindRadio extends Component {
     let labelText = ''
     switch (this.props.kind) {
     case c.EVENTGROUP_KIND.ALL: 
-      labelText = this.props.text['All']
+      labelText = getText('All')
       break
     case c.EVENTGROUP_KIND.PRODUCTION: 
-      labelText = this.props.text['Production']
+      labelText = getText('Production')
       break
     case c.EVENTGROUP_KIND.SALE:
-      labelText = this.props.text['Sale']
+      labelText = getText('Sale')
       break
     }
 
@@ -126,8 +127,7 @@ class KindRadio extends Component {
 }
 KindRadio.propTypes = {
   kind: PropTypes.string.isRequired,
-  checked: PropTypes.bool.isRequired,
-  text: PropTypes.object.isRequired
+  checked: PropTypes.bool.isRequired
 }
 
 class EventGroupList extends PresentationalComp {
@@ -161,7 +161,7 @@ class EventGroupList extends PresentationalComp {
     let eventGroupListView = []
     eventGroupIdList.forEach(eventGroupId => {
       let eventGroupView = <EventGroup key={eventGroupId} 
-        id={eventGroupId} data={this.props.data} ui={this.props.ui} text={this.props.text} />
+        id={eventGroupId} data={this.props.data} ui={this.props.ui} />
       eventGroupListView.push(eventGroupView)
     })
     return eventGroupListView
@@ -191,11 +191,11 @@ class EventGroup extends PresentationalComp {
     let kindView = {}
     if (eventGroup.kind === c.EVENTGROUP_KIND.SALE) {
       kindView.labelIcon = 'shop icon'
-      kindView.labelText = this.props.text['Sale']
+      kindView.labelText = getText('Sale')
       kindView.cardColor = 'blue'
     } else {
       kindView.labelIcon = 'industry icon'
-      kindView.labelText = this.props.text['Production']
+      kindView.labelText = getText('Production')
       kindView.cardColor = 'teal'
     }
 
@@ -210,7 +210,7 @@ class EventGroup extends PresentationalComp {
         <div className='content'>
           <div className='header'>
             {this._getStatusIcon(eventGroup.status)} {eventGroup.title}
-            <a href='#' onClick={() => this._removeEventGroup(this.props.id, this.props.text)}>
+            <a href='#' onClick={() => this._removeEventGroup(this.props.id)}>
               <i className='ui right floated trash icon'></i>
             </a>
           </div>
@@ -232,34 +232,34 @@ class EventGroup extends PresentationalComp {
     case c.EVENTGROUP_STATUS.READY:
       return (
         <div className='ui bottom attached small button' onClick={() => this._proceedEventGroupStatus(id)}>
-          <i className='money icon'></i> {this.props.text['Process']}
+          <i className='money icon'></i> {getText('Process')}
         </div>)
     case c.EVENTGROUP_STATUS.PROCESSING:
       return (
         <div className='ui bottom attached small two buttons'>
           <div className='ui button' onClick={() => this._undoEventGroupStatus(id)}>
-            <i className='undo icon'></i> {this.props.text['Undo']}
+            <i className='undo icon'></i> {getText('Undo')}
           </div>
           <div className='or'></div>
           <div className='ui positive button' onClick={() => this._proceedEventGroupStatus(id)}>
-            <i className='shipping icon'></i> {this.props.text['Done']}
+            <i className='shipping icon'></i> {getText('Done')}
           </div>
         </div> )
     case c.EVENTGROUP_STATUS.DONE:
       return (
         <div className='ui bottom attached small two buttons'>
           <div className='ui button' onClick={() => this._undoEventGroupStatus(id)}>
-            <i className='undo icon'></i> {this.props.text['Undo']}
+            <i className='undo icon'></i> {getText('Undo')}
           </div>
           <div className='or'></div>
           <div className='ui positive button' onClick={() => this._proceedEventGroupStatus(id)}>
-            <i className='archive icon'></i> {this.props.text['Archive']}
+            <i className='archive icon'></i> {getText('Archive')}
           </div>
         </div> )
     case c.EVENTGROUP_STATUS.ARCHIVED:
       return (
         <div className='ui bottom attached small button' onClick={() => this._undoEventGroupStatus(id)}>
-          <i className='undo icon'></i> {this.props.text['Undo']}
+          <i className='undo icon'></i> {getText('Undo')}
         </div> )
     }
   }
@@ -277,8 +277,8 @@ class EventGroup extends PresentationalComp {
   _undoEventGroupStatus (eventGroupId) {
     dispatcher.dispatch(eventActions.UNDO_EVENTGROUP_STATUS, eventGroupId)
   }
-  _removeEventGroup (id, text) { 
-    dispatcher.dispatch(eventActions.DELETE_EVENTGROUP, {eventGroupId: id, text: text})
+  _removeEventGroup (id) { 
+    dispatcher.dispatch(eventActions.DELETE_EVENTGROUP, id)
   }
 }
 EventGroup.propTypes = {

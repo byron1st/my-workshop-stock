@@ -91,9 +91,9 @@ function createMainWindow (initStore) {
 function createAddWindow (productSet) {
   let addWindow = new BrowserWindow({
     width: 800,
-    height: 600,
-    minWidth: 800,
-    minHeight: 600
+    height: 450,
+    resizable: false,
+    autoHideMenuBar: true
   })
   let addWindowId = (Date.now()).toString()
   addWindow.loadURL('file://' + __dirname + '/../addwindow/index.html')

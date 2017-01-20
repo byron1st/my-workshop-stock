@@ -24,22 +24,20 @@ export default class AddForm extends Component {
       }
     })
     return (
-      <div className='ui raised segment'>
-        <div className='ui form'>
-          <div className='fields'>
-            <TitleForm value={eventGroup.title} label='Title' />
-            <DateForm value={eventGroup.date} label='Date' />
-            <KindForm value={eventGroup.kind} label='Kind' />
-          </div>
-          <h4 className='ui dividing header'>Products</h4>
-          <EventInputForm 
-            event={eventGroup.eventList[0]}
-            idx={0}
-            productSet={this.props.data.productSet}
-            text={this.props.text} />
-          <div className='ui divider'></div>
-          {eventListView}
+      <div className='ui form'>
+        <div className='fields'>
+          <TitleForm value={eventGroup.title} label='Title' />
+          <DateForm value={eventGroup.date} label='Date' />
+          <KindForm value={eventGroup.kind} label='Kind' />
         </div>
+        <h4 className='ui dividing header'>Products</h4>
+        <EventInputForm 
+          event={eventGroup.eventList[0]}
+          idx={0}
+          productSet={this.props.data.productSet}
+          text={this.props.text} />
+        <div className='ui divider'></div>
+        {eventListView}
       </div>
     )
   }

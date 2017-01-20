@@ -30,9 +30,14 @@ function changeEventGroupField (arg) {
   let newValue
   if (arg.field === 'eventList') {
     let newEvent = store.getInValue(['eventGroup', arg.field, 0])
-    newValue = store.getInValue(['eventGroup', arg.field]).withMutations(eventList => {
-      eventList.set(0, newEvent.set('amount', 0)).push(newEvent)
-    })
+    if (newEvent.get('productId') && newEvent.get('amount') !== 0) {
+      newValue = store.getInValue(['eventGroup', arg.field]).withMutations(eventList => {
+        eventList.set(0, newEvent.set('amount', 0)).push(newEvent)
+      })
+    } else {
+      //TODO: show error message
+      return
+    }
   } else {
     newValue = arg.value
   }

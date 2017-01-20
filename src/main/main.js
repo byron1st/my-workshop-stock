@@ -24,7 +24,8 @@ const DB_FILE_LIST_LENGTH = 20
 let dbPath = ''
 let dbFileList = []
 let mainWindow = null
-let addWindow = null
+// let addWindow = null
+let addWindowSet = {}
 let closeConfirmed = false
 
 if (testMode) {
@@ -88,16 +89,18 @@ function createMainWindow (initStore) {
 }
 
 function createAddWindow (productSet) {
-  addWindow = new BrowserWindow({
+  let addWindow = new BrowserWindow({
     width: 800,
     height: 600,
     minWidth: 800,
     minHeight: 600
   })
+  let addWindowId = (Date.now()).toString()
   addWindow.loadURL('file://' + __dirname + '/../addwindow/index.html')
-  addWindow.on('closed', () => addWindow = null)
+  addWindow.on('closed', () => delete addWindowSet[addWindowId])
   addWindow.productSet = productSet
   addWindow.initLocale = getInitLocale()
+  addWindowSet[addWindowId] = addWindow
 
   if (testMode) {
     BrowserWindow.addDevToolsExtension('/Users/byron1st/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/0.15.4_0')

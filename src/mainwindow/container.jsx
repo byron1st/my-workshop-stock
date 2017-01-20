@@ -14,6 +14,7 @@ import dispatcher from '../util/flux/dispatcher'
 import initActions, {INITIALIZE_STORE} from './flux/actions'
 import * as eventActions from './flux/actions.event'
 import * as ch from '../util/ipc.channels'
+import {setLocale} from '../util/locale'
 
 import Window from './components/window'
 
@@ -35,6 +36,7 @@ class Container extends Component {
     })
 
     this.text = this._loadLocale(remote.getCurrentWindow().initLocale)
+    setLocale(remote.getCurrentWindow().initLocale)
     
     setInterval(() => ipcRenderer.send(ch.BACKUP_DATA, this._getStoreData()), BACKUP_TIME_INTERVAL)
     ipcRenderer.on(ch.EXIT, () => {

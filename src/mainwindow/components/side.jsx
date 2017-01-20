@@ -7,6 +7,7 @@ import PresentationalComp from './presentational'
 import dispatcher from '../../util/flux/dispatcher'
 import * as productActions from '../flux/actions.product'
 import * as util from '../../util/util'
+import getText from '../../util/locale'
 
 export default class Side extends PresentationalComp {
   componentDidMount () {
@@ -19,9 +20,9 @@ export default class Side extends PresentationalComp {
     return (
       <div className='ui visible right sidebar inverted vertical menu'>
         <div className='ui segment inverted'>
-          <div className='ui center aligned large header inverted'>{this.props.text['Stock']}</div>
-          <button className='ui fluid compact blue button' onClick={this._openNewProductModal}>{this.props.text['Add a New Product']}</button>
-          <NewProductModal data={this.props.data} ui={this.props.ui} text={this.props.text}/>
+          <div className='ui center aligned large header inverted'>{getText('Stock')}</div>
+          <button className='ui fluid compact blue button' onClick={this._openNewProductModal}>{getText('Add a New Product')}</button>
+          <NewProductModal data={this.props.data} ui={this.props.ui} />
         </div>
         <div className='ui segment inverted'>
           <div className='ui relaxed middle aligned divided inverted list' id='product-list'>
@@ -46,8 +47,7 @@ export default class Side extends PresentationalComp {
                 let arg = {
                   id: product.id,
                   name: $('#input' + product.id).val(),
-                  productIdList: $('#product-list').sortable('toArray'),
-                  text: this.props.text
+                  productIdList: $('#product-list').sortable('toArray')
                 }
                 dispatcher.dispatch(productActions.SAVE_PRODUCT_NAME, arg)
               }}><i className='checkmark icon'></i></div>
@@ -61,7 +61,7 @@ export default class Side extends PresentationalComp {
               dispatcher.dispatch(productActions.TOGGLE_PRODUCT_EDITABLE, arg)
             }}><i className='edit icon'></i></a> {product.name}
             <a href='#' onClick={() => {
-              dispatcher.dispatch(productActions.REMOVE_PRODUCT, {id: product.id, text: this.props.text})
+              dispatcher.dispatch(productActions.REMOVE_PRODUCT, product.id)
             }}><i className='ui right floated remove icon'></i></a>
           </div> )
       }
@@ -105,22 +105,22 @@ class NewProductModal extends PresentationalComp {
   render () {
     return (
       <div className='ui small modal' id='newProductModal'>
-        <div className='header'>{this.props.text['Add a New Product']}</div>
+        <div className='header'>{getText('Add a New Product')}</div>
         <div className='content'>
           <div className='ui form' id='modalNameForm'>
             <div className='field'>
-              <label>{this.props.text['Name']}</label>
+              <label>{getText('Name')}</label>
               <input type='text' id='newProductName' onChange={this._checkName}/>
             </div>
             <div className='ui error message'>
-              <div className='header'>{this.props.text['Duplicated Name']}</div>
-              <p>{this.props.text['There is the same name in the list.']}</p>
+              <div className='header'>{getText('Duplicated Name')}</div>
+              <p>{getText('There is the same name in the list.')}</p>
             </div>
           </div>
         </div>
         <div className='actions'>
-          <div className='ui approve primary button' onClick={this._addNewProduct} id='modalCreateBtn'>{this.props.text['Create']}</div>
-          <div className='ui cancel button'>{this.props.text['Cancel']}</div>
+          <div className='ui approve primary button' onClick={this._addNewProduct} id='modalCreateBtn'>{getText('Create')}</div>
+          <div className='ui cancel button'>{getText('Cancel')}</div>
         </div>
       </div>
     )

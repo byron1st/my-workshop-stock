@@ -8,6 +8,7 @@ import dataStore from './store.data'
 import uiStore from './store.ui'
 import * as c from '../../util/const'
 import generateId from '../../util/id.generator'
+import getText from '../../util/locale'
 
 export const ADD_NEWPRODUCT = 'add-newproduct'
 export const ISVALIDNAME_FOR_PRODUCT = 'isvalidname-for-product'
@@ -63,13 +64,13 @@ function toggleProductEditable (arg) {
 /**
  * Saves a product name.
  *
- * @param      {object}  arg     {id: string, name: string, productIdList: array<string>, text: object}
+ * @param      {object}  arg     {id: string, name: string, productIdList: array<string>}
  */
 function saveProductName (arg) {
   let product = dataStore.getValue('productSet').get(arg.id)
   if (product !== undefined) {
     if (product.get('name') !== arg.name && !isValidNameForProduct(arg.name)) {
-      return remote.dialog.showErrorBox(arg.text['Duplicated Name'], arg.text['There is the same name in the list.'])
+      return remote.dialog.showErrorBox(getText('Duplicated Name'), getText('There is the same name in the list.'))
     }
 
     dataStore.setValue('productSet', dataStore.getValue('productSet').set(arg.id, product.set('name', arg.name)))
@@ -83,32 +84,35 @@ function saveProductName (arg) {
 /**
  * Removes a product.
  *
- * @param      {object}  arg     {id: number, text: object}
+ * @param      {object}  arg     {id: number}
  */
-function removeProduct (arg) {
-  let product = dataStore.getValue('productSet').get(arg.id)
+function removeProduct (productId) {
+  let product = dataStore.getValue('productSet').get(productId)
   if (product !== undefined) {
     remote.dialog.showMessageBox({
       type: 'question',
-      buttons: [arg.text['OK'], arg.text['Cancel']],
+      buttons: [getText('OK'), getText('Cancel')],
       defaultId: 1,
-      message: arg.text['Will you delete this product? Every related event will be deleted together.'],
+      message: getText('Will you delete this product? Every related event will be deleted together.'),
       cancelId: 1
     }, (index) => {
       if (index === 1) {
         return
       } else {
-        let order = dataStore.getValue('productIdList').findKey(id => id === arg.id)
-        dataStore.setValue('productSet', dataStore.getValue('productSet').delete(arg.productIdx))
+        let order = dataStore.getValue('productIdList').findKey(id => id === productId)
+        dataStore.setValue('productSet', dataStore.getValue('productSet').delete(productId))
         dataStore.setValue('productIdList', dataStore.getValue('productIdList').splice(order, 1))
 
-        let filteredEventSet = dataStore.getValue('eventSet').filterNot(event => event.get('productId') === arg.id)
+        let filteredEventSet = dataStore.getValue('eventSet').filterNot(event => event.get('productId') === productId)
+        console.log(filteredEventSet.toJS())
         let updatedEventGroupSet = dataStore.getValue('eventGroupSet').map(eventGroup => {
-          let updatedEventIdList = eventGroup.get('eventIdList').filterNot(id => filteredEventSet.keyOf(id) === undefined)
+          let updatedEventIdList = eventGroup.get('eventIdList').filterNot(id => {
+            return filteredEventSet.find((v, k) => k === id) === undefined
+          })
           return eventGroup.set('eventIdList', updatedEventIdList)
         })
 
-        // dataStore.setValue('eventList', dataStore.getValue('eventList').filterNot(event => event.get('productId') === arg.id))
+        // dataStore.setValue('eventList', dataStore.getValue('eventList').filterNot(event => event.get('productId') === productId))
         dataStore.setValue('eventSet', filteredEventSet)
         dataStore.setValue('eventGroupSet', updatedEventGroupSet)
         dataStore.emitChange()

@@ -18,23 +18,28 @@ class Container extends Component {
     super()
     this.state = {}
   }
+
   componentWillMount () {
-    store.addChangeListener(() => this._updateState())
     actions.initialize()
-    dispatcher.dispatch(actions.INITIALIZE_STORE, remote.getCurrentWindow().productSet)
     setLocale(remote.getCurrentWindow().initLocale)
+    this._initStores()
   }
+
   render () {
     console.log(this.state)
     return (
       <Window data={this.state} />
     )
   }
+
   _updateState () {
     this.setState(store.getData())
   }
-}
-Container.propTypes = {
+
+  _initStores () {
+    store.addChangeListener(() => this._updateState())
+    dispatcher.dispatch(actions.INITIALIZE_STORE, remote.getCurrentWindow().productSet)
+  }
 }
 
 ReactDOM.render(<Container />, document.getElementById('react-container'))

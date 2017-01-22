@@ -23,18 +23,32 @@ class Container extends Component {
     super()
     this.state = {}
   }
+
   componentWillMount () {
     initActions()
-    dataStore.addChangeListener(() => this._updateState('data'))
-    uiStore.addChangeListener(() => this._updateState('ui'))
-    dispatcher.dispatch(INITIALIZE_STORE, {
-      initStore: remote.getCurrentWindow().initStore,
-      locale: remote.getCurrentWindow().initLocale
-    })
-
     setLocale(remote.getCurrentWindow().initLocale)
+    this._initStores()
+    this._initIPC()
+  }
 
+  render () {
+    console.log(this.state)
+    return (
+      <Window store={this.state} />
+    )
+  }
+
+  _updateState (storeKind) {
+    if (storeKind === 'data') {
+      this.setState({ data: dataStore.getData() })
+    } else if (storeKind === 'ui') {
+      this.setState({ ui: uiStore.getData() })
+    }
+  }
+
+  _initIPC () {
     setInterval(() => ipcRenderer.send(ch.BACKUP_DATA, this._getStoreData()), BACKUP_TIME_INTERVAL)
+
     ipcRenderer.on(ch.EXIT, () => {
       remote.dialog.showMessageBox({
         type: 'question',
@@ -48,23 +62,22 @@ class Container extends Component {
         }
       })
     })
+
     ipcRenderer.on(ch.SAVE_EVENTGROUP, (event, eventGroup) => {
       dispatcher.dispatch(eventActions.ADD_EVENTGROUP, eventGroup)
     })
   }
-  render () {
-    console.log(this.state)
-    return (
-      <Window store={this.state} />
-    )
+
+  _initStores () {
+    dataStore.addChangeListener(() => this._updateState('data'))
+    uiStore.addChangeListener(() => this._updateState('ui'))
+
+    dispatcher.dispatch(INITIALIZE_STORE, {
+      initStore: remote.getCurrentWindow().initStore,
+      locale: remote.getCurrentWindow().initLocale
+    })
   }
-  _updateState (storeKind) {
-    if (storeKind === 'data') {
-      this.setState({ data: dataStore.getData() })
-    } else if (storeKind === 'ui') {
-      this.setState({ ui: uiStore.getData() })
-    }
-  }
+
   _getStoreData () {
     // TODO: dbRevision 값은 저장이 되지 못함.
     return dataStore.getData()

@@ -25,7 +25,7 @@ export function initialize () {
 }
 
 function addNewProduct (newProductObj) {
-  if (!isValidNameForProduct(newProductObj.name)) {
+  if (!_isValidNameForProduct(newProductObj.name)) {
     return // TODO: show the error
   }
 
@@ -44,7 +44,7 @@ function addNewProduct (newProductObj) {
 }
 
 function checkName (name) {
-  uiStore.setValue('isValidNameForProduct', isValidNameForProduct(name))
+  uiStore.setValue('isValidNameForProduct', _isValidNameForProduct(name))
   uiStore.emitChange()
 }
 
@@ -69,7 +69,7 @@ function toggleProductEditable (arg) {
 function saveProductName (arg) {
   let product = dataStore.getValue('productSet').get(arg.id)
   if (product !== undefined) {
-    if (product.get('name') !== arg.name && !isValidNameForProduct(arg.name)) {
+    if (product.get('name') !== arg.name && !_isValidNameForProduct(arg.name)) {
       return remote.dialog.showErrorBox(getText('Duplicated Name'), getText('There is the same name in the list.'))
     }
 
@@ -104,7 +104,6 @@ function removeProduct (productId) {
         dataStore.setValue('productIdList', dataStore.getValue('productIdList').splice(order, 1))
 
         let filteredEventSet = dataStore.getValue('eventSet').filterNot(event => event.get('productId') === productId)
-        console.log(filteredEventSet.toJS())
         let updatedEventGroupSet = dataStore.getValue('eventGroupSet').map(eventGroup => {
           let updatedEventIdList = eventGroup.get('eventIdList').filterNot(id => {
             return filteredEventSet.find((v, k) => k === id) === undefined
@@ -121,7 +120,7 @@ function removeProduct (productId) {
   }
 }
 
-function isValidNameForProduct (name) {
+function _isValidNameForProduct (name) {
   return dataStore.getValue('productSet').find(product => {
     return product.get('name') === name
   }) === undefined

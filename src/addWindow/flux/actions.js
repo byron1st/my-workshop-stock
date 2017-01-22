@@ -28,17 +28,13 @@ function initializeStore (productSet) {
 }
 
 /**
- * 
- * 
  * @param {object} {field: string, value: string}
  */
 function changeEventGroupField (arg) {
   let newValue
   if (arg.field === 'eventList') {
     let addedEvent = store.getInValue(['eventGroup', arg.field, 0])
-    
-    if (_validateEventField('productId', addedEvent.get('productId'), 0)
-      && _validateEventField('amount', addedEvent.get('amount'), 0)) {
+    if (_validateEventField('productId', addedEvent.get('productId'), 0) && _validateEventField('amount', addedEvent.get('amount'), 0)) {
       newValue = store.getInValue(['eventGroup', arg.field]).withMutations(eventList => {
         let newEvent = addedEvent.setIn(['error', 'amount'], true)
         eventList.set(0, newEvent.set('amount', 0)).push(addedEvent)
@@ -50,7 +46,7 @@ function changeEventGroupField (arg) {
     newValue = arg.value
   }
 
-  //field validation
+  // field validation
   if (arg.field === 'title') {
     if (arg.value === '') {
       store.setInValue(['eventGroup', 'error', arg.field], true)
@@ -64,8 +60,6 @@ function changeEventGroupField (arg) {
 }
 
 /**
- * 
- * 
  * @param {object} {idx: number, field: string, value: string}
  */
 function changeEventField (arg) {
@@ -112,12 +106,11 @@ function _validateEventField (field, value, idx) {
 }
 
 function saveEventGroup () {
-  //에러 체크 => 있으면 다이얼로그 띄우고 return
-  //(id들은 mainW에서 생성)
+  // 에러 체크 => 있으면 다이얼로그 띄우고 return
+  // (id들은 mainW에서 생성)
 
   let isErrorOnEventGroup = store.getInValue(['eventGroup', 'error'])
     .reduce((prev, next) => prev || next, false)
-  
   let isErrorOnEventList
   let eventList = store.getInValue(['eventGroup', 'eventList'])
   if (eventList.size === 1) {
@@ -127,7 +120,7 @@ function saveEventGroup () {
       if (idx === 0) {
         return false
       }
-      return prev ||  next.get('error').reduce((prev, next) => prev || next, false)
+      return prev || next.get('error').reduce((prev, next) => prev || next, false)
     }, false)
   }
 

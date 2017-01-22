@@ -9,8 +9,7 @@ export default class Body extends PresentationalComp {
   render () {
     return (
       <div id='body'>
-        <BodyList 
-          data={this.props.data}
+        <BodyList data={this.props.data}
           ui={this.props.ui} />
       </div>
     )

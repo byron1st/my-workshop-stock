@@ -40,7 +40,7 @@ export function getCurrencyValue (amount) {
   if (isNegative) {
     return '-' + converted
   } else {
-    return converted  
+    return converted
   }
 }
 
@@ -55,7 +55,7 @@ export function isNumeric (n) {
 }
 
 /**
- * get a random integer number. (from the MDN site) 
+ * get a random integer number. (from the MDN site)
  */
 export function getRandomIntInclusive (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min

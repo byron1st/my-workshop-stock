@@ -1,4 +1,3 @@
-/*global $*/
 'use strict'
 
 import React from 'react'
@@ -26,7 +25,7 @@ export default class Side extends PresentationalComp {
         </div>
         <div className='ui segment inverted'>
           <div className='ui relaxed middle aligned divided inverted list' id='product-list'>
-            {this._getProductListView.call(this)}
+            {() => this._getProductListView()}
           </div>
         </div>
       </div>
@@ -40,9 +39,9 @@ export default class Side extends PresentationalComp {
       if (isEditable.call(this, id)) {
         itemContentView = (
           <div className='product'>
-            <i className='move icon product-move-handle'></i>
+            <i className='move icon product-move-handle' />
             <div className='ui inverted action small input'>
-              <input type='text' defaultValue={product.name} id={'input' + product.id}/>
+              <input type='text' defaultValue={product.name} id={'input' + product.id} />
               <div className='ui icon button' onClick={() => {
                 let arg = {
                   id: product.id,
@@ -50,20 +49,20 @@ export default class Side extends PresentationalComp {
                   productIdList: $('#product-list').sortable('toArray')
                 }
                 dispatcher.dispatch(productActions.SAVE_PRODUCT_NAME, arg)
-              }}><i className='checkmark icon'></i></div>
+              }}><i className='checkmark icon' /></div>
             </div>
-          </div> )
+          </div>)
       } else {
         itemContentView = (
           <div className='product'>
             <a href='#' onClick={() => {
               let arg = { id: product.id, editable: true }
               dispatcher.dispatch(productActions.TOGGLE_PRODUCT_EDITABLE, arg)
-            }}><i className='edit icon'></i></a> {product.name}
+            }}><i className='edit icon' /></a> {product.name}
             <a href='#' onClick={() => {
               dispatcher.dispatch(productActions.REMOVE_PRODUCT, product.id)
-            }}><i className='ui right floated remove icon'></i></a>
-          </div> )
+            }}><i className='ui right floated remove icon' /></a>
+          </div>)
       }
 
       return (
@@ -72,9 +71,9 @@ export default class Side extends PresentationalComp {
             {itemContentView}
           </div>
           <div className='extra'>
-              <span>{util.getCurrencyValue(product.stock)}</span>
+            <span>{util.getCurrencyValue(product.stock)}</span>
           </div>
-        </div> )
+        </div>)
     })
 
     function isEditable (id) {
@@ -110,7 +109,7 @@ class NewProductModal extends PresentationalComp {
           <div className='ui form' id='modalNameForm'>
             <div className='field'>
               <label>{getText('Name')}</label>
-              <input type='text' id='newProductName' onChange={this._checkName}/>
+              <input type='text' id='newProductName' onChange={this._checkName} />
             </div>
             <div className='ui error message'>
               <div className='header'>{getText('Duplicated Name')}</div>

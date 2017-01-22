@@ -9,11 +9,9 @@ export default class Window extends Component {
   render () {
     return (
       <div>
-        <Side 
-          data={this.props.store.data}
+        <Side data={this.props.store.data}
           ui={this.props.store.ui} />
-        <Body
-          data={this.props.store.data}
+        <Body data={this.props.store.data}
           ui={this.props.store.ui} />
       </div>
     )

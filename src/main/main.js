@@ -1,6 +1,6 @@
 'use strict'
 
-import {app, BrowserWindow, ipcMain, Menu/*, autoUpdater*/} from 'electron'
+import {app, BrowserWindow, ipcMain, Menu/* , autoUpdater */} from 'electron' // eslint-disable-line standard/object-curly-even-spacing
 import path from 'path'
 import fs from 'fs'
 
@@ -74,10 +74,12 @@ function createMainWindow (initStore) {
     minWidth: 995,
     minHeight: 600
   })
-  mainWindow.loadURL('file://' + __dirname + '/../mainwindow/index.html')
+  mainWindow.loadURL(path.join('file://', __dirname, '/../mainwindow/index.html'))
   mainWindow.initStore = initStore
   mainWindow.initLocale = getInitLocale()
-  mainWindow.on('closed', () => mainWindow = null)
+  mainWindow.on('closed', () => {
+    mainWindow = null
+  })
   mainWindow.on('close', event => {
     if (!closeConfirmed) {
       event.preventDefault()
@@ -99,7 +101,7 @@ function createAddWindow (productSet) {
     autoHideMenuBar: true
   })
   let addWindowId = (Date.now()).toString()
-  addWindow.loadURL('file://' + __dirname + '/../addwindow/index.html')
+  addWindow.loadURL(path.join('file://', __dirname, '/../addwindow/index.html'))
   addWindow.on('closed', () => delete addWindowSet[addWindowId])
   addWindow.productSet = productSet
   addWindow.initLocale = getInitLocale()
@@ -119,7 +121,6 @@ function getInitData () {
     productIdList: [],
     eventGroupIdList: []
   }
-  
   if (testMode) {
     prepareTestData()
   } else {
@@ -148,7 +149,9 @@ function getInitData () {
 function prepareTestData () {
   if (fs.readdirSync(dbPathForTest).length === 0) {
     let testDBData = JSON.parse(fs.readFileSync(path.join(baseDBPathForTest, 'db.test.json')).toString())
-    testDBData.eventGroupIdList.forEach(eventGroupId => testDBData.eventGroupSet[eventGroupId].date = getRandomDate())
+    testDBData.eventGroupIdList.forEach(eventGroupId => {
+      testDBData.eventGroupSet[eventGroupId].date = getRandomDate()
+    })
     testDBData.eventGroupIdList.sort((prev, next) => testDBData.eventGroupSet[next].date - testDBData.eventGroupSet[prev].date)
     saveDBFile(testDBData)
   }

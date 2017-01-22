@@ -1,4 +1,3 @@
-/*global $*/
 'use strict'
 
 import React, {Component, PropTypes} from 'react'
@@ -14,10 +13,9 @@ export default class AddForm extends Component {
     let eventGroup = this.props.data.eventGroup
     let eventListView = []
     eventGroup.eventList.forEach((event, idx) => {
-      if (idx !== 0){
+      if (idx !== 0) {
         eventListView.push(
-          <EventForm 
-            key={'event' + idx}
+          <EventForm key={'event' + idx}
             event={event}
             idx={idx}
             productSet={this.props.data.productSet} />
@@ -27,16 +25,15 @@ export default class AddForm extends Component {
     return (
       <div className='ui form'>
         <div className='fields'>
-          <TitleForm value={eventGroup.title} label={getText('Title')} error={eventGroup.error.title}/>
+          <TitleForm value={eventGroup.title} label={getText('Title')} error={eventGroup.error.title} />
           <DateForm value={eventGroup.date} label={getText('Date')} />
           <KindForm value={eventGroup.kind} label={getText('Kind')} />
         </div>
         <h4 className='ui dividing header'>{getText('Products')}</h4>
-        <EventInputForm 
-          event={eventGroup.eventList[0]}
+        <EventInputForm event={eventGroup.eventList[0]}
           idx={0}
           productSet={this.props.data.productSet} />
-        <div className='ui divider'></div>
+        <div className='ui divider' />
         {eventListView}
       </div>
     )
@@ -51,11 +48,11 @@ class TitleForm extends Component {
     return (
       <div className={'seven wide field' + (this.props.error ? ' error' : '')}>
         <label>{this.props.label}</label>
-        <input type='text' value={this.props.value} onChange={this._onChange}/>
+        <input type='text' value={this.props.value} onChange={this._onChange} />
       </div>
     )
   }
-  _onChange(e) {
+  _onChange (e) {
     dispatcher.dispatch(actions.CHANGE_EVENTGROUP_FIELD, {field: 'title', value: e.target.value})
   }
 }
@@ -66,7 +63,7 @@ TitleForm.propTypes = {
 }
 
 class DateForm extends Component {
-  componentDidMount() {
+  componentDidMount () {
     $('#date-picker').calendar({
       type: 'date',
       today: true,
@@ -78,15 +75,14 @@ class DateForm extends Component {
       }
     })
   }
-  
   render () {
     return (
       <div className='four wide field'>
         <label>{this.props.label}</label>
         <div className='ui calendar' id='date-picker'>
           <div className='ui input left icon'>
-            <i className='calendar icon'></i>
-            <input type='text' defaultValue={util.getDateString(new Date(this.props.value))}/>
+            <i className='calendar icon' />
+            <input type='text' defaultValue={util.getDateString(new Date(this.props.value))} />
           </div>
         </div>
       </div>
@@ -149,7 +145,7 @@ class EventForm extends Component {
         </div>
         <div className={'five wide field' + (this.props.event.error.amount ? ' error' : '')}>
           <label>{getText('Amount')}</label>
-          <input type='text' value={this.props.event.amount} onChange={(e) => this._onAmountChange(e)}/>
+          <input type='text' value={this.props.event.amount} onChange={(e) => this._onAmountChange(e)} />
         </div>
         {this._getButton()}
       </div>
@@ -164,7 +160,7 @@ class EventForm extends Component {
   _getButton () {
     return (
       <button className='ui icon negative button' onClick={() => this._onBtnClick()}>
-        <i className='minus icon'></i>
+        <i className='minus icon' />
       </button>
     )
   }
@@ -182,7 +178,7 @@ class EventInputForm extends EventForm {
   _getButton () {
     return (
       <button className='ui icon positive button' onClick={() => this._onBtnClick()}>
-        <i className='plus icon'></i>
+        <i className='plus icon' />
       </button>
     )
   }

@@ -25,7 +25,7 @@ export const ADD_EVENTGROUP = 'add-eventgroup'
 
 export function initialize (ipcModule) {
   ipc = ipcModule
-  ipc //TODO: should be deleted.
+  ipc // TODO: should be deleted.
 
   dispatcher.register(DELETE_EVENTGROUP, deleteEventGroup)
   dispatcher.register(SEARCH_PRODUCTNAME, searchProductName)
@@ -39,8 +39,6 @@ export function initialize (ipcModule) {
 }
 
 /**
- * 
- * 
  * @param {Object} {eventGroupId: String}
  */
 function deleteEventGroup (eventGroupId) {
@@ -56,7 +54,6 @@ function deleteEventGroup (eventGroupId) {
     } else {
       let eventGroup = dataStore.getInValue(['eventGroupSet', eventGroupId])
       let eventIdList = eventGroup.get('eventIdList')
-      
       let filteredEventGroupIdList = dataStore.getValue('eventGroupIdList').filter(id => id !== eventGroupId)
       let filteredEventSet = dataStore.getValue('eventSet').filter(event => {
         let id = event.get('id')
@@ -85,15 +82,15 @@ function proceedEventGroupStatus (eventGroupId) {
   let eventGroup = dataStore.getInValue(['eventGroupSet', eventGroupId])
   let changedEventGroup
   switch (eventGroup.get('status')) {
-  case c.EVENTGROUP_STATUS.READY:
-    changedEventGroup = eventGroup.set('status', c.EVENTGROUP_STATUS.PROCESSING)
-    break
-  case c.EVENTGROUP_STATUS.PROCESSING:
-    changedEventGroup = eventGroup.set('status', c.EVENTGROUP_STATUS.DONE)
-    break
-  case c.EVENTGROUP_STATUS.DONE:
-    changedEventGroup = eventGroup.set('status', c.EVENTGROUP_STATUS.ARCHIVED)
-    break
+    case c.EVENTGROUP_STATUS.READY:
+      changedEventGroup = eventGroup.set('status', c.EVENTGROUP_STATUS.PROCESSING)
+      break
+    case c.EVENTGROUP_STATUS.PROCESSING:
+      changedEventGroup = eventGroup.set('status', c.EVENTGROUP_STATUS.DONE)
+      break
+    case c.EVENTGROUP_STATUS.DONE:
+      changedEventGroup = eventGroup.set('status', c.EVENTGROUP_STATUS.ARCHIVED)
+      break
   }
 
   dataStore.setValue('eventGroupSet', dataStore.getValue('eventGroupSet').set(eventGroupId, changedEventGroup))
@@ -104,15 +101,15 @@ function undoEventGroupStatus (eventGroupId) {
   let eventGroup = dataStore.getInValue(['eventGroupSet', eventGroupId])
   let changedEventGroup
   switch (eventGroup.get('status')) {
-  case c.EVENTGROUP_STATUS.PROCESSING:
-    changedEventGroup = eventGroup.set('status', c.EVENTGROUP_STATUS.READY)
-    break
-  case c.EVENTGROUP_STATUS.DONE:
-    changedEventGroup = eventGroup.set('status', c.EVENTGROUP_STATUS.PROCESSING)
-    break
-  case c.EVENTGROUP_STATUS.ARCHIVED:
-    changedEventGroup = eventGroup.set('status', c.EVENTGROUP_STATUS.DONE)
-    break
+    case c.EVENTGROUP_STATUS.PROCESSING:
+      changedEventGroup = eventGroup.set('status', c.EVENTGROUP_STATUS.READY)
+      break
+    case c.EVENTGROUP_STATUS.DONE:
+      changedEventGroup = eventGroup.set('status', c.EVENTGROUP_STATUS.PROCESSING)
+      break
+    case c.EVENTGROUP_STATUS.ARCHIVED:
+      changedEventGroup = eventGroup.set('status', c.EVENTGROUP_STATUS.DONE)
+      break
   }
 
   dataStore.setValue('eventGroupSet', dataStore.getValue('eventGroupSet').set(eventGroupId, changedEventGroup))
@@ -125,12 +122,12 @@ function toggleArchived (isArchivedVisible) {
 }
 
 function changeActiveTab (tab) {
-  uiStore.setValue('activeTab', tab) 
+  uiStore.setValue('activeTab', tab)
   uiStore.emitChange()
 }
 
 function changeActiveKind (kind) {
-  uiStore.setValue('activeKind', kind) 
+  uiStore.setValue('activeKind', kind)
   uiStore.emitChange()
 }
 
@@ -159,7 +156,7 @@ function addEventGroup (transportedEventGroup) {
     _refineProductAmount(newEvent.productId, newEventGroup.kind, newEvent.amount)
   })
   newEventGroup.eventIdList = newEventIdList
-  
+
   let updatedEventGroupSet = dataStore.getValue('eventGroupSet').set(newEventGroup.id, Immutable.fromJS(newEventGroup))
   let sortedList = dataStore.getValue('eventGroupIdList').push(newEventGroup.id).sort((prev, next) => {
     if (updatedEventGroupSet.getIn([prev, 'date']) < updatedEventGroupSet.getIn([next, 'date'])) {

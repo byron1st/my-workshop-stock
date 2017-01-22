@@ -1,4 +1,4 @@
-/*global document*/
+/* global document */
 
 'use strict'
 
@@ -33,7 +33,7 @@ class Container extends Component {
     })
 
     setLocale(remote.getCurrentWindow().initLocale)
-    
+
     setInterval(() => ipcRenderer.send(ch.BACKUP_DATA, this._getStoreData()), BACKUP_TIME_INTERVAL)
     ipcRenderer.on(ch.EXIT, () => {
       remote.dialog.showMessageBox({

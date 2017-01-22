@@ -19,7 +19,6 @@ export default function initActions (ipcModule) {
 
 /**
  * Initialize the store
- * 
  * @param   arg   {Object}    {initStore: Object, initLocale: String}
  */
 function initializeStore (arg) {

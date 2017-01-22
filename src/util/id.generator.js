@@ -10,15 +10,15 @@ export default function generateId (kind) {
   let idList
 
   switch (kind) {
-  case ID_KIND.EVENT:
-    idList = eventId
-    break
-  case ID_KIND.EVENTGROUP:
-    idList = eventGroupId
-    break
-  case ID_KIND.PRODUCT:
-    idList = productId
-    break
+    case ID_KIND.EVENT:
+      idList = eventId
+      break
+    case ID_KIND.EVENTGROUP:
+      idList = eventGroupId
+      break
+    case ID_KIND.PRODUCT:
+      idList = productId
+      break
   }
 
   let id

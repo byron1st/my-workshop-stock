@@ -1,4 +1,4 @@
-/*global document*/
+/* global document */
 
 'use strict'
 
@@ -19,7 +19,7 @@ class Container extends Component {
     this.state = {}
   }
   componentWillMount () {
-    store.addChangeListener(() => this._updateState())  
+    store.addChangeListener(() => this._updateState())
     actions.initialize()
     dispatcher.dispatch(actions.INITIALIZE_STORE, remote.getCurrentWindow().productSet)
     setLocale(remote.getCurrentWindow().initLocale)

@@ -6,3 +6,4 @@ bower_components
 test/resource/db
 app
 maps
+compiled-test

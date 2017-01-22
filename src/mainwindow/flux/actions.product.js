@@ -37,7 +37,7 @@ function addNewProduct (newProductObj) {
 
   let productSet = dataStore.getValue('productSet').set(product.get('id'), product)
   let productIdList = dataStore.getValue('productIdList').push(product.get('id'))
-  
+
   dataStore.setValue('productSet', productSet)
   dataStore.setValue('productIdList', productIdList)
   dataStore.emitChange()

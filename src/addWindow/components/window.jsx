@@ -42,6 +42,7 @@ export default class Window extends Component {
       </div>
     )
   }
+
   _save () {
     dispatcher.dispatch(actions.SAVE_EVENTGROUP)
   }

@@ -8,17 +8,18 @@ import * as util from '../../util/util'
 import getText from '../../util/locale'
 
 export default ({data, ui}) => {
+  function _openModal () {
+    $('#ModalNewProduct').modal('show')
+    $('#ModalNewProduct-name').val('')
+  }
+
   return (
     <div className='ui visible right sidebar inverted vertical menu'>
       <div className='ui segment inverted'>
         <div className='ui center aligned large header inverted'>
           {getText('Stock')}
         </div>
-        <button className='ui fluid compact blue button'
-          onClick={() => {
-            $('#ModalNewProduct').modal('show')
-            $('#ModalNewProduct-name').val('')
-          }}>
+        <button className='ui fluid compact blue button' onClick={_openModal}>
           {getText('Add a New Product')}
         </button>
       </div>
@@ -52,34 +53,47 @@ const ProductList = ({productIdList, productSet, editableProductList}) => {
 }
 
 const EditableItemContent = ({product}) => {
+  function _saveChange () {
+    dispatcher.dispatch(productActions.SAVE_PRODUCT_NAME, {
+      id: product.id,
+      name: $('#input' + product.id).val(),
+      productIdList: $('#ProductList').sortable('toArray')
+    })
+  }
+
   return (
     <div className='product'>
       <i className='move icon EditableItemContent-moveHandler' />
       <div className='ui inverted action small input'>
         <input type='text' defaultValue={product.name} id={'input' + product.id} />
-        <div className='ui icon button' onClick={() => {
-          let arg = {
-            id: product.id,
-            name: $('#input' + product.id).val(),
-            productIdList: $('#ProductList').sortable('toArray')
-          }
-          dispatcher.dispatch(productActions.SAVE_PRODUCT_NAME, arg)
-        }}><i className='checkmark icon' /></div>
+        <div className='ui icon button' onClick={_saveChange}>
+          <i className='checkmark icon' />
+        </div>
       </div>
     </div>
   )
 }
 
 const ItemContent = ({product}) => {
+  function _toggleEdit () {
+    dispatcher.dispatch(productActions.TOGGLE_PRODUCT_EDITABLE, {
+      id: product.id,
+      editable: true
+    })
+  }
+
+  function _removeProduct () {
+    dispatcher.dispatch(productActions.REMOVE_PRODUCT, product.id)
+  }
+
   return (
     <div className='product'>
-      <a href='#' onClick={() => {
-        let arg = { id: product.id, editable: true }
-        dispatcher.dispatch(productActions.TOGGLE_PRODUCT_EDITABLE, arg)
-      }}><i className='edit icon' /></a> {product.name}
-      <a href='#' onClick={() => {
-        dispatcher.dispatch(productActions.REMOVE_PRODUCT, product.id)
-      }}><i className='ui right floated remove icon' /></a>
+      <a href='#' onClick={_toggleEdit}>
+        <i className='edit icon' />
+      </a> {product.name}
+      <a href='#' onClick={_removeProduct}>
+        <i className='ui right floated remove icon' />
+      </a>
     </div>
   )
 }

@@ -88,6 +88,14 @@ const EventForm = ({event, idx, productSet, isInputForm}) => {
     dispatcher.dispatch(actions.CHANGE_EVENT_FIELD, {idx: idx, field: 'amount', value: e.target.value})
   }
 
+  function _addEvent () {
+    dispatcher.dispatch(actions.CHANGE_EVENTGROUP_FIELD, {'field': 'eventList'})
+  }
+
+  function _removeEvent () {
+    dispatcher.dispatch(actions.REMOVE_EVENT, idx)
+  }
+
   return (
     <div className='fields'>
       <div className={'ten wide field' + (event.error.productId ? ' error' : '')}>
@@ -107,13 +115,11 @@ const EventForm = ({event, idx, productSet, isInputForm}) => {
       </div>
       {isInputForm
         ? (
-          <button className='ui icon positive button'
-            onClick={() => dispatcher.dispatch(actions.CHANGE_EVENTGROUP_FIELD, {'field': 'eventList'})}>
+          <button className='ui icon positive button' onClick={_addEvent}>
             <i className='plus icon' />
           </button>)
         : (
-          <button className='ui icon negative button'
-            onClick={() => dispatcher.dispatch(actions.REMOVE_EVENT, idx)}>
+          <button className='ui icon negative button' onClick={_removeEvent}>
             <i className='minus icon' />
           </button>)}
     </div>

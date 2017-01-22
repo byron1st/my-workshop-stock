@@ -1,15 +1,33 @@
 'use strict'
 
-import React from 'react'
-import PresentationalComp from './presentational'
+import React, {PropTypes, Component} from 'react'
 
 import dispatcher from '../../util/flux/dispatcher'
 import * as actions from '../flux/actions'
 import getText from '../../util/locale'
+import * as util from '../../util/util'
 
 import AddForm from './add.form'
 
-export default class Window extends PresentationalComp {
+export default class Window extends Component {
+  componentDidMount () {
+    $('#DateForm-datePicker').calendar({
+      type: 'date',
+      today: true,
+      formatter: {
+        date: (date) => {
+          dispatcher.dispatch(actions.CHANGE_EVENTGROUP_FIELD, {field: 'date', value: date})
+          return util.getDateString(new Date(date))
+        }
+      }
+    })
+    $('select.dropdown').dropdown()
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    $('select.dropdown').dropdown()
+  }
+
   render () {
     return (
       <div>
@@ -27,4 +45,7 @@ export default class Window extends PresentationalComp {
   _save () {
     dispatcher.dispatch(actions.SAVE_EVENTGROUP)
   }
+}
+Window.propTypes = {
+  data: PropTypes.object.isRequired
 }

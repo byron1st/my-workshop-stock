@@ -1,6 +1,6 @@
 'use strict'
 
-import React, {Component, PropTypes} from 'react'
+import React from 'react'
 
 import dispatcher from '../../util/flux/dispatcher'
 import * as actions from '../flux/actions'
@@ -8,181 +8,114 @@ import * as c from '../../util/const'
 import * as util from '../../util/util'
 import getText from '../../util/locale'
 
-export default class AddForm extends Component {
-  render () {
-    let eventGroup = this.props.data.eventGroup
-    let eventListView = []
-    eventGroup.eventList.forEach((event, idx) => {
-      if (idx !== 0) {
-        eventListView.push(
-          <EventForm key={'event' + idx}
+export default ({data}) => {
+  let eventGroup = data.eventGroup
+  return (
+    <div className='ui form'>
+      <div className='fields'>
+        <TitleForm value={eventGroup.title} error={eventGroup.error.title} />
+        <DateForm value={eventGroup.date} />
+        <KindForm value={eventGroup.kind} />
+      </div>
+      <h4 className='ui dividing header'>{getText('Products')}</h4>
+      <EventForm event={eventGroup.eventList[0]}
+        idx={0}
+        productSet={data.productSet}
+        isInputForm />
+      <div className='ui divider' />
+      {eventGroup.eventList.map((event, idx) => {
+        if (idx !== 0) {
+          return <EventForm key={'event' + idx}
             event={event}
             idx={idx}
-            productSet={this.props.data.productSet} />
-        )
-      }
-    })
-    return (
-      <div className='ui form'>
-        <div className='fields'>
-          <TitleForm value={eventGroup.title} label={getText('Title')} error={eventGroup.error.title} />
-          <DateForm value={eventGroup.date} label={getText('Date')} />
-          <KindForm value={eventGroup.kind} label={getText('Kind')} />
-        </div>
-        <h4 className='ui dividing header'>{getText('Products')}</h4>
-        <EventInputForm event={eventGroup.eventList[0]}
-          idx={0}
-          productSet={this.props.data.productSet} />
-        <div className='ui divider' />
-        {eventListView}
-      </div>
-    )
-  }
-}
-AddForm.propTypes = {
-  data: PropTypes.object.isRequired
+            productSet={data.productSet}
+            isInputForm={false} />
+        }
+      })}
+    </div>
+  )
 }
 
-class TitleForm extends Component {
-  render () {
-    return (
-      <div className={'seven wide field' + (this.props.error ? ' error' : '')}>
-        <label>{this.props.label}</label>
-        <input type='text' value={this.props.value} onChange={this._onChange} />
-      </div>
-    )
-  }
-  _onChange (e) {
+const TitleForm = ({value, error}) => {
+  function _onChange (e) {
     dispatcher.dispatch(actions.CHANGE_EVENTGROUP_FIELD, {field: 'title', value: e.target.value})
   }
-}
-TitleForm.propTypes = {
-  value: PropTypes.string,
-  label: PropTypes.string.isRequired,
-  error: PropTypes.bool.isRequired
+
+  return (
+    <div className={'seven wide field' + (error ? ' error' : '')}>
+      <label>{getText('Title')}</label>
+      <input type='text' value={value} onChange={_onChange} />
+    </div>
+  )
 }
 
-class DateForm extends Component {
-  componentDidMount () {
-    $('#date-picker').calendar({
-      type: 'date',
-      today: true,
-      formatter: {
-        date: (date) => {
-          dispatcher.dispatch(actions.CHANGE_EVENTGROUP_FIELD, {field: 'date', value: date})
-          return util.getDateString(new Date(date))
-        }
-      }
-    })
-  }
-  render () {
-    return (
-      <div className='four wide field'>
-        <label>{this.props.label}</label>
-        <div className='ui calendar' id='date-picker'>
-          <div className='ui input left icon'>
-            <i className='calendar icon' />
-            <input type='text' defaultValue={util.getDateString(new Date(this.props.value))} />
-          </div>
+const DateForm = ({value}) => {
+  return (
+    <div className='four wide field'>
+      <label>{getText('Date')}</label>
+      <div className='ui calendar' id='DateForm-datePicker'>
+        <div className='ui input left icon'>
+          <i className='calendar icon' />
+          <input type='text' defaultValue={util.getDateString(new Date(value))} />
         </div>
       </div>
-    )
-  }
-}
-DateForm.propTypes = {
-  value: PropTypes.object,
-  label: PropTypes.string.isRequired
+    </div>
+  )
 }
 
-class KindForm extends Component {
-  render () {
-    return (
-      <div className='five wide field'>
-        <label>{this.props.label}</label>
-        <select className='ui search dropdown' value={this.props.value} onChange={this._onChange}>
-          <option value={c.EVENTGROUP_KIND.SALE}>{getText('Sale')}</option>
-          <option value={c.EVENTGROUP_KIND.PRODUCTION}>{getText('Production')}</option>
-        </select>
-      </div>
-    )
-  }
-  _onChange (e) {
+const KindForm = ({value}) => {
+  function _onChange (e) {
     dispatcher.dispatch(actions.CHANGE_EVENTGROUP_FIELD, {field: 'kind', value: e.target.value})
   }
-}
-KindForm.propTypes = {
-  value: PropTypes.string,
-  label: PropTypes.string.isRequired
+
+  return (
+    <div className='five wide field'>
+      <label>{getText('Kind')}</label>
+      <select className='ui search dropdown' value={value} onChange={_onChange}>
+        <option value={c.EVENTGROUP_KIND.SALE}>{getText('Sale')}</option>
+        <option value={c.EVENTGROUP_KIND.PRODUCTION}>{getText('Production')}</option>
+      </select>
+    </div>
+  )
 }
 
-class EventForm extends Component {
-  componentDidMount () {
-    $('select.dropdown').dropdown()
+const EventForm = ({event, idx, productSet, isInputForm}) => {
+  function _onProductChange (e) {
+    dispatcher.dispatch(actions.CHANGE_EVENT_FIELD, {idx: idx, field: 'productId', value: e.target.value})
   }
-  render () {
-    let productListView = []
 
-    if (this.props.idx === 0) {
-      productListView.push(
-        <option value='' key={'-1'}>{getText('Select a product')}</option>
-      )
-    }
+  function _onAmountChange (e) {
+    dispatcher.dispatch(actions.CHANGE_EVENT_FIELD, {idx: idx, field: 'amount', value: e.target.value})
+  }
 
-    let productList = Object.keys(this.props.productSet)
-    productList.forEach(id => {
-      let product = this.props.productSet[id]
-      productListView.push(
-        <option value={product.id} key={product.id}>{product.name}</option>
-      )
-    })
-    return (
-      <div className='fields'>
-        <div className={'ten wide field' + (this.props.event.error.productId ? ' error' : '')}>
-          <label>{getText('Product')}</label>
-          <select className='ui search dropdown' value={this.props.event.productId} onChange={(e) => this._onProductChange(e)}>
-            {productListView}
-          </select>
-        </div>
-        <div className={'five wide field' + (this.props.event.error.amount ? ' error' : '')}>
-          <label>{getText('Amount')}</label>
-          <input type='text' value={this.props.event.amount} onChange={(e) => this._onAmountChange(e)} />
-        </div>
-        {this._getButton()}
+  return (
+    <div className='fields'>
+      <div className={'ten wide field' + (event.error.productId ? ' error' : '')}>
+        <label>{getText('Product')}</label>
+        <select className='ui search dropdown' value={event.productId} onChange={_onProductChange}>
+          {idx === 0
+            ? <option value='' key={'-1'}>{getText('Select a product')}</option> : ''}
+          {Object.keys(productSet).map(id => {
+            let product = productSet[id]
+            return <option value={product.id} key={product.id}>{product.name}</option>
+          })}
+        </select>
       </div>
-    )
-  }
-  _onProductChange (e) {
-    dispatcher.dispatch(actions.CHANGE_EVENT_FIELD, {idx: this.props.idx, field: 'productId', value: e.target.value})
-  }
-  _onAmountChange (e) {
-    dispatcher.dispatch(actions.CHANGE_EVENT_FIELD, {idx: this.props.idx, field: 'amount', value: e.target.value})
-  }
-  _getButton () {
-    return (
-      <button className='ui icon negative button' onClick={() => this._onBtnClick()}>
-        <i className='minus icon' />
-      </button>
-    )
-  }
-  _onBtnClick () {
-    dispatcher.dispatch(actions.REMOVE_EVENT, this.props.idx)
-  }
-}
-EventForm.propTypes = {
-  event: PropTypes.object.isRequired,
-  idx: PropTypes.number,
-  productSet: PropTypes.object.isRequired
-}
-
-class EventInputForm extends EventForm {
-  _getButton () {
-    return (
-      <button className='ui icon positive button' onClick={() => this._onBtnClick()}>
-        <i className='plus icon' />
-      </button>
-    )
-  }
-  _onBtnClick () {
-    dispatcher.dispatch(actions.CHANGE_EVENTGROUP_FIELD, {'field': 'eventList'})
-  }
+      <div className={'five wide field' + (event.error.amount ? ' error' : '')}>
+        <label>{getText('Amount')}</label>
+        <input type='text' value={event.amount} onChange={_onAmountChange} />
+      </div>
+      {isInputForm
+        ? (
+          <button className='ui icon positive button'
+            onClick={() => dispatcher.dispatch(actions.CHANGE_EVENTGROUP_FIELD, {'field': 'eventList'})}>
+            <i className='plus icon' />
+          </button>)
+        : (
+          <button className='ui icon negative button'
+            onClick={() => dispatcher.dispatch(actions.REMOVE_EVENT, idx)}>
+            <i className='minus icon' />
+          </button>)}
+    </div>
+  )
 }

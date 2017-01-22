@@ -145,15 +145,17 @@ function addEventGroup (transportedEventGroup) {
   }
 
   let newEventIdList = []
-  transportedEventGroup.eventList.forEach(transportedEvent => {
-    let newEvent = {
-      id: generateId(c.ID_KIND.EVENT),
-      amount: transportedEvent.amount,
-      productId: transportedEvent.productId
+  transportedEventGroup.eventList.forEach((transportedEvent, idx) => {
+    if (idx !== 0) {
+      let newEvent = {
+        id: generateId(c.ID_KIND.EVENT),
+        amount: transportedEvent.amount,
+        productId: transportedEvent.productId
+      }
+      newEventIdList.push(newEvent.id)
+      dataStore.setInValue(['eventSet', newEvent.id], Immutable.fromJS(newEvent))
+      _refineProductAmount(newEvent.productId, newEventGroup.kind, newEvent.amount)
     }
-    newEventIdList.push(newEvent.id)
-    dataStore.setInValue(['eventSet', newEvent.id], Immutable.fromJS(newEvent))
-    _refineProductAmount(newEvent.productId, newEventGroup.kind, newEvent.amount)
   })
   newEventGroup.eventIdList = newEventIdList
 

@@ -98,7 +98,10 @@ function createAddWindow (productSet) {
     width: 800,
     height: 450,
     resizable: false,
-    autoHideMenuBar: true
+    autoHideMenuBar: true,
+    webPreferences: {
+      webSecurity: false
+    }
   })
   let addWindowId = (Date.now()).toString()
   addWindow.loadURL(path.join('file://', __dirname, '/../addwindow/index.html'))

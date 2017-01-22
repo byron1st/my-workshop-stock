@@ -25,7 +25,7 @@ export default class Side extends PresentationalComp {
         </div>
         <div className='ui segment inverted'>
           <div className='ui relaxed middle aligned divided inverted list' id='product-list'>
-            {() => this._getProductListView()}
+            {this._getProductListView()}
           </div>
         </div>
       </div>

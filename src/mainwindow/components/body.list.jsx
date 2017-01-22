@@ -223,7 +223,7 @@ class EventGroup extends PresentationalComp {
             </div>
           </div>
         </div>
-        {() => this._getAttachedButtonView(eventGroup.status, eventGroup.id)}
+        {this._getAttachedButtonView(eventGroup.status, eventGroup.id)}
       </div>
     )
   }

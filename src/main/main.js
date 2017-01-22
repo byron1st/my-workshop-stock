@@ -177,7 +177,7 @@ function saveDBFile (data) {
 
 function getInitLocale () {
   let locale = app.getLocale()
-  if (c.supportLocales.indexOf(locale) === -1) {
+  if (c.LOCALE_LIST.indexOf(locale) === -1) {
     locale = 'en'
   }
   return locale

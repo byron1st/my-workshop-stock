@@ -12,11 +12,10 @@ import dispatcher from '../util/flux/dispatcher'
 import initActions, {INITIALIZE_STORE} from './flux/actions'
 import * as eventActions from './flux/actions.event'
 import * as ch from '../util/ipc.channels'
+import * as c from '../util/const'
 import getText, {setLocale} from '../util/locale'
 
 import Window from './components/window'
-
-const BACKUP_TIME_INTERVAL = 5 * 60 * 1000
 
 class Container extends Component {
   constructor () {
@@ -47,7 +46,7 @@ class Container extends Component {
   }
 
   _initIPC () {
-    setInterval(() => ipcRenderer.send(ch.BACKUP_DATA, this._getStoreData()), BACKUP_TIME_INTERVAL)
+    setInterval(() => ipcRenderer.send(ch.BACKUP_DATA, this._getStoreData()), c.BACKUP_TIME_INTERVAL)
 
     ipcRenderer.on(ch.EXIT, () => {
       remote.dialog.showMessageBox({

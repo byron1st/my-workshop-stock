@@ -1,16 +1,8 @@
 'use strict'
 
-import {Map} from 'immutable'
+export const LOCALE_LIST = ['en', 'ko']
 
-export const defaultEventValue = new Map({
-  date: new Date(),
-  amount: 0,
-  productId: '',
-  productName: '',
-  type: 'sale'
-})
-
-export const supportLocales = ['en', 'ko']
+export const BACKUP_TIME_INTERVAL = 5 * 60 * 1000
 
 export const EVENT_TYPE = {
   READY: 'event-ready',

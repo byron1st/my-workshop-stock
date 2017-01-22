@@ -106,9 +106,6 @@ function _validateEventField (field, value, idx) {
 }
 
 function saveEventGroup () {
-  // 에러 체크 => 있으면 다이얼로그 띄우고 return
-  // (id들은 mainW에서 생성)
-
   let isErrorOnEventGroup = store.getInValue(['eventGroup', 'error'])
     .reduce((prev, next) => prev || next, false)
   let isErrorOnEventList

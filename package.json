@@ -1,6 +1,6 @@
 {
   "name": "my-workshop-stock",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Only stock!",
   "main": "compiled/main/main.js",
   "author": "byron1st",

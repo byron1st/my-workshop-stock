@@ -53,3 +53,11 @@ export const EMPTY_EVENT = {
     amount: true
   }
 }
+
+export const STATUS_ICON_NAME = {
+  ALL: 'hourglass full',
+  READY: 'hourglass start',
+  PROCESSING: 'hourglass half',
+  DONE: 'hourglass end',
+  ARCHIVED: 'archive'
+}

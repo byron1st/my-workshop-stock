@@ -52,7 +52,7 @@ gulp.task('test', COMPILE_TASKS, () => {
     .pipe(electronMocha.default())
 })
 
-gulp.task('del:app', () => {
+gulp.task('del:app', ['test'], () => {
   return del.sync([PACKAGED_DEST + '/**/*'])
 })
 

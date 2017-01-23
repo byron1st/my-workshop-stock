@@ -2,29 +2,14 @@
 
 import {ID_KIND} from './const'
 
-let eventId = []
-let eventGroupId = []
-let productId = []
+let ID_LIST = {}
 
 export default function generateId (kind) {
-  let idList
-
-  switch (kind) {
-  case ID_KIND.EVENT:
-    idList = eventId
-    break
-  case ID_KIND.EVENTGROUP:
-    idList = eventGroupId
-    break
-  case ID_KIND.PRODUCT:
-    idList = productId
-    break
-  }
+  let idList = ID_LIST[kind]
 
   let id
   do {
-    let idValue = Math.floor(Math.random() * (100000 - 1)) + 1
-    id = idValue.toString()
+    id = (Math.floor(Math.random() * (100000 - 1)) + 1).toString()
   } while (idList.indexOf(id) !== -1)
 
   idList.push(id)
@@ -32,7 +17,7 @@ export default function generateId (kind) {
 }
 
 export function initIds (eventIdList, eventGroupIdList, productIdList) {
-  eventId = eventIdList.map(id => id)
-  eventGroupId = eventGroupIdList.map(id => id)
-  productId = productIdList.map(id => id)
+  ID_LIST[ID_KIND.EVENT] = eventIdList.map(id => id)
+  ID_LIST[ID_KIND.EVENTGROUP] = eventGroupIdList.map(id => id)
+  ID_LIST[ID_KIND.PRODUCT] = productIdList.map(id => id)
 }

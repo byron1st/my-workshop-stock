@@ -13,6 +13,7 @@
   "Type": "Type",
   "Sale": "Sale",
   "Production": "Production",
+  "All": "All",
   "Date": "Date",
   "History": "History",
   "Stock": "Stock",
@@ -24,5 +25,19 @@
   "Done": "Done",
   "Hide archived": "Hide archived",
   "Show archived": "Show archived",
-  "Archived": "Archived"
+  "Archived": "Archived",
+  "Process": "Process",
+  "Archive": "Archive",
+  "Undo": "Undo",
+  "uitab-all": "All",
+  "uitab-ready": "Ready",
+  "uitab-processing": "Processing",
+  "uitab-done": "Done",
+  "Save": "Save",
+  "Title": "Title",
+  "Kind": "Kind",
+  "Products": "Products",
+  "Select a product": "Select a product",
+  "Error": "Error",
+  "There are some errors on fields.": "There are some errors on fields."
 }

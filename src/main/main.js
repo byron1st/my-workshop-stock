@@ -1,6 +1,6 @@
 'use strict'
 
-import {app, BrowserWindow, ipcMain, Menu/*, autoUpdater*/} from 'electron'
+import {app, BrowserWindow, ipcMain, Menu/* , autoUpdater */} from 'electron' // eslint-disable-line standard/object-curly-even-spacing
 import path from 'path'
 import fs from 'fs'
 
@@ -24,6 +24,8 @@ const DB_FILE_LIST_LENGTH = 20
 let dbPath = ''
 let dbFileList = []
 let mainWindow = null
+// let addWindow = null
+let addWindowSet = {}
 let closeConfirmed = false
 
 if (testMode) {
@@ -47,6 +49,12 @@ ipcMain.on(ch.EXIT_CONFIRMED, (event, store) => {
 ipcMain.on(ch.BACKUP_DATA, (event, store) => {
   saveDBFile(store)
 })
+ipcMain.on(ch.OPEN_ADDWINDOW, (event, productSet) => {
+  createAddWindow(productSet)
+})
+ipcMain.on(ch.SAVE_EVENTGROUP, (event, eventGroup) => {
+  mainWindow.webContents.send(ch.SAVE_EVENTGROUP, eventGroup)
+})
 
 function initialize () {
   // let isUpdate = autoUpdater.checkForUpdates()
@@ -66,14 +74,12 @@ function createMainWindow (initStore) {
     minWidth: 995,
     minHeight: 600
   })
-  mainWindow.loadURL('file://' + __dirname + '/../mainwindow/index.html')
+  mainWindow.loadURL(path.join('file://', __dirname, '/../mainwindow/index.html'))
   mainWindow.initStore = initStore
-  let locale = app.getLocale()
-  if (c.supportLocales.indexOf(locale) === -1) {
-    locale = 'en'
-  }
-  mainWindow.initLocale = locale
-  mainWindow.on('closed', () => mainWindow = null)
+  mainWindow.initLocale = getInitLocale()
+  mainWindow.on('closed', () => {
+    mainWindow = null
+  })
   mainWindow.on('close', event => {
     if (!closeConfirmed) {
       event.preventDefault()
@@ -87,6 +93,29 @@ function createMainWindow (initStore) {
   }
 }
 
+function createAddWindow (productSet) {
+  let addWindow = new BrowserWindow({
+    width: 800,
+    height: 450,
+    resizable: false,
+    autoHideMenuBar: true,
+    webPreferences: {
+      webSecurity: false
+    }
+  })
+  let addWindowId = (Date.now()).toString()
+  addWindow.loadURL(path.join('file://', __dirname, '/../addwindow/index.html'))
+  addWindow.on('closed', () => delete addWindowSet[addWindowId])
+  addWindow.productSet = productSet
+  addWindow.initLocale = getInitLocale()
+  addWindowSet[addWindowId] = addWindow
+
+  if (testMode) {
+    BrowserWindow.addDevToolsExtension('/Users/byron1st/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/0.15.4_0')
+    addWindow.webContents.openDevTools()
+  }
+}
+
 function getInitData () {
   const EMPTY_STORE = {
     productSet: {},
@@ -95,7 +124,6 @@ function getInitData () {
     productIdList: [],
     eventGroupIdList: []
   }
-  
   if (testMode) {
     prepareTestData()
   } else {
@@ -124,7 +152,9 @@ function getInitData () {
 function prepareTestData () {
   if (fs.readdirSync(dbPathForTest).length === 0) {
     let testDBData = JSON.parse(fs.readFileSync(path.join(baseDBPathForTest, 'db.test.json')).toString())
-    testDBData.eventGroupIdList.forEach(eventGroupId => testDBData.eventGroupSet[eventGroupId].date = getRandomDate())
+    testDBData.eventGroupIdList.forEach(eventGroupId => {
+      testDBData.eventGroupSet[eventGroupId].date = getRandomDate()
+    })
     testDBData.eventGroupIdList.sort((prev, next) => testDBData.eventGroupSet[next].date - testDBData.eventGroupSet[prev].date)
     saveDBFile(testDBData)
   }
@@ -143,4 +173,12 @@ function saveDBFile (data) {
   dbFileList.unshift(newDBFilePath)
 
   fs.writeFileSync(path.join(dbPath, newDBFilePath), JSON.stringify(data))
+}
+
+function getInitLocale () {
+  let locale = app.getLocale()
+  if (c.LOCALE_LIST.indexOf(locale) === -1) {
+    locale = 'en'
+  }
+  return locale
 }

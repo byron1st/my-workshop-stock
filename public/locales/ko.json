@@ -13,6 +13,7 @@
   "Type": "타입",
   "Sale": "판매",
   "Production": "생산",
+  "All": "전부",
   "Date": "날짜",
   "History": "기록",
   "Stock": "재고",
@@ -24,5 +25,19 @@
   "Done": "완료",
   "Hide archived": "아카이브 숨기기",
   "Show archived": "아카이브 보이기",
-  "Archived": "아카이브"
+  "Archived": "아카이브",
+  "Process": "처리",
+  "Archive": "아카이브",
+  "Undo": "되돌리기",
+  "uitab-all": "전부",
+  "uitab-ready": "준비",
+  "uitab-processing": "처리중",
+  "uitab-done": "완료",
+  "Save": "저장",
+  "Title": "제목",
+  "Kind": "종류",
+  "Products": "제품들",
+  "Select a product": "제품을 선택하세요.",
+  "Error": "오류",
+  "There are some errors on fields.": "필드에 오류들이 있습니다."
 }

@@ -26,14 +26,14 @@ const menu = [
       },
       {
         label: 'Report issues',
-        click () { shell.openExternal('http://byron1st.pe.kr/?page_id=1191')}
+        click () { shell.openExternal('http://byron1st.pe.kr/?page_id=1191') }
       },
       {
         label: 'Toggle Developer Tools',
         click (item, focusedWindow) {
           if (focusedWindow) focusedWindow.webContents.toggleDevTools()
         }
-      },
+      }
     ]
   }
 ]
@@ -45,8 +45,7 @@ if (process.platform === 'darwin') {
     submenu: [
       { role: 'about' },
       { type: 'separator' },
-      { 
-        role: 'services',
+      { role: 'services',
         submenu: []
       },
       { type: 'separator' },

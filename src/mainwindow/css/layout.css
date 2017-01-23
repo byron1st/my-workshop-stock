@@ -1,9 +1,9 @@
-#body
+#Body
 {
   padding: 10px 270px 10px 10px;
 }
 
-#addBtn
+#Body-addEventgroupBtn
 {
-  padding-top: 24px;
+  margin-top: 1rem;
 }

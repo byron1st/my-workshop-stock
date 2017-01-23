@@ -1,134 +1,99 @@
-/*global $*/
 'use strict'
 
 import React from 'react'
 
-import PresentationalComp from './presentational'
 import dispatcher from '../../util/flux/dispatcher'
 import * as productActions from '../flux/actions.product'
 import * as util from '../../util/util'
+import getText from '../../util/locale'
 
-export default class Side extends PresentationalComp {
-  componentDidMount () {
-    $('#product-list').sortable({
-      handle: '.product-move-handle'
-    })
-    $('#product-list').disableSelection()
+export default ({data, ui}) => {
+  function _openModal () {
+    $('#ModalNewProduct').modal('show')
+    $('#ModalNewProduct-name').val('')
   }
-  render () {
-    return (
-      <div className='ui visible right sidebar inverted vertical menu'>
-        <div className='ui segment inverted'>
-          <div className='ui center aligned large header inverted'>{this.props.text['Stock']}</div>
-          <button className='ui fluid compact blue button' onClick={this._openNewProductModal}>{this.props.text['Add a New Product']}</button>
-          <NewProductModal data={this.props.data} ui={this.props.ui} text={this.props.text}/>
+
+  return (
+    <div className='ui visible right sidebar inverted vertical menu'>
+      <div className='ui segment inverted'>
+        <div className='ui center aligned large header inverted'>
+          {getText('Stock')}
         </div>
-        <div className='ui segment inverted'>
-          <div className='ui relaxed middle aligned divided inverted list' id='product-list'>
-            {this._getProductListView.call(this)}
-          </div>
-        </div>
+        <button className='ui fluid compact blue button' onClick={_openModal}>
+          {getText('Add a New Product')}
+        </button>
       </div>
-    )
-  }
-  _getProductListView () {
-    let data = this.props.data
-    return data.productIdList.map(id => {
-      let product = data.productSet[id]
-      let itemContentView
-      if (isEditable.call(this, id)) {
-        itemContentView = (
-          <div className='product'>
-            <i className='move icon product-move-handle'></i>
-            <div className='ui inverted action small input'>
-              <input type='text' defaultValue={product.name} id={'input' + product.id}/>
-              <div className='ui icon button' onClick={() => {
-                let arg = {
-                  id: product.id,
-                  name: $('#input' + product.id).val(),
-                  productIdList: $('#product-list').sortable('toArray'),
-                  text: this.props.text
-                }
-                dispatcher.dispatch(productActions.SAVE_PRODUCT_NAME, arg)
-              }}><i className='checkmark icon'></i></div>
-            </div>
-          </div> )
-      } else {
-        itemContentView = (
-          <div className='product'>
-            <a href='#' onClick={() => {
-              let arg = { id: product.id, editable: true }
-              dispatcher.dispatch(productActions.TOGGLE_PRODUCT_EDITABLE, arg)
-            }}><i className='edit icon'></i></a> {product.name}
-            <a href='#' onClick={() => {
-              dispatcher.dispatch(productActions.REMOVE_PRODUCT, {id: product.id, text: this.props.text})
-            }}><i className='ui right floated remove icon'></i></a>
-          </div> )
-      }
-
-      return (
-        <div className='item' key={product.id} id={product.id}>
-          <div className='middle aligned content'>
-            {itemContentView}
-          </div>
-          <div className='extra'>
-              <span>{util.getCurrencyValue(product.stock)}</span>
-          </div>
-        </div> )
-    })
-
-    function isEditable (id) {
-      return this.props.ui.editableProductList.indexOf(id) !== -1
-    }
-  }
-  _openNewProductModal () {
-    $('#newProductModal').modal('show')
-    $('#newProductName').val('')
-  }
+      <div className='ui segment inverted'>
+        <ProductList productIdList={data.productIdList}
+          productSet={data.productSet}
+          editableProductList={ui.editableProductList} />
+      </div>
+    </div>
+  )
 }
 
-class NewProductModal extends PresentationalComp {
-  componentDidMount () {
-    $('#newProductModal').modal({
-      closable: false
+const ProductList = ({productIdList, productSet, editableProductList}) => {
+  return (
+    <div className='ui relaxed middle aligned divided inverted list' id='ProductList'>
+      {productIdList.map(id => {
+        let product = productSet[id]
+        return (
+          <div className='item' key={product.id} id={product.id}>
+            <div className='middle aligned content'>
+              {editableProductList.indexOf(id) !== -1
+                ? <EditableItemContent product={product} /> : <ItemContent product={product} />}
+            </div>
+            <div className='extra'>
+              <span>{util.getCurrencyValue(product.stock)}</span>
+            </div>
+          </div>)
+      })}
+    </div>
+  )
+}
+
+const EditableItemContent = ({product}) => {
+  function _saveChange () {
+    dispatcher.dispatch(productActions.SAVE_PRODUCT_NAME, {
+      id: product.id,
+      name: $('#input' + product.id).val(),
+      productIdList: $('#ProductList').sortable('toArray')
     })
   }
-  componentDidUpdate () {
-    if (this.props.ui.isValidNameForProduct) {
-      $('#modalNameForm').removeClass('error')
-      $('#modalCreateBtn').removeClass('disabled')
-    } else {
-      $('#modalNameForm').addClass('error')
-      $('#modalCreateBtn').addClass('disabled')
-    }
-  }
-  render () {
-    return (
-      <div className='ui small modal' id='newProductModal'>
-        <div className='header'>{this.props.text['Add a New Product']}</div>
-        <div className='content'>
-          <div className='ui form' id='modalNameForm'>
-            <div className='field'>
-              <label>{this.props.text['Name']}</label>
-              <input type='text' id='newProductName' onChange={this._checkName}/>
-            </div>
-            <div className='ui error message'>
-              <div className='header'>{this.props.text['Duplicated Name']}</div>
-              <p>{this.props.text['There is the same name in the list.']}</p>
-            </div>
-          </div>
-        </div>
-        <div className='actions'>
-          <div className='ui approve primary button' onClick={this._addNewProduct} id='modalCreateBtn'>{this.props.text['Create']}</div>
-          <div className='ui cancel button'>{this.props.text['Cancel']}</div>
+
+  return (
+    <div className='product'>
+      <i className='move icon EditableItemContent-moveHandler' />
+      <div className='ui inverted action small input'>
+        <input type='text' defaultValue={product.name} id={'input' + product.id} />
+        <div className='ui icon button' onClick={_saveChange}>
+          <i className='checkmark icon' />
         </div>
       </div>
-    )
+    </div>
+  )
+}
+
+const ItemContent = ({product}) => {
+  function _toggleEdit () {
+    dispatcher.dispatch(productActions.TOGGLE_PRODUCT_EDITABLE, {
+      id: product.id,
+      editable: true
+    })
   }
-  _addNewProduct () {
-    dispatcher.dispatch(productActions.ADD_NEWPRODUCT, { name: $('#newProductName').val() })
+
+  function _removeProduct () {
+    dispatcher.dispatch(productActions.REMOVE_PRODUCT, product.id)
   }
-  _checkName (e) {
-    dispatcher.dispatch(productActions.ISVALIDNAME_FOR_PRODUCT, e.target.value)
-  }
+
+  return (
+    <div className='product'>
+      <a href='#' onClick={_toggleEdit}>
+        <i className='edit icon' />
+      </a> {product.name}
+      <a href='#' onClick={_removeProduct}>
+        <i className='ui right floated remove icon' />
+      </a>
+    </div>
+  )
 }

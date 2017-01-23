@@ -1,5 +1,8 @@
 'use strict'
 
+import Immutable, {Map} from 'immutable'
+import * as c from './const'
+
 /**
  * Gets the date string.
  *
@@ -37,7 +40,7 @@ export function getCurrencyValue (amount) {
   if (isNegative) {
     return '-' + converted
   } else {
-    return converted  
+    return converted
   }
 }
 
@@ -52,8 +55,18 @@ export function isNumeric (n) {
 }
 
 /**
- * get a random integer number. (from the MDN site) 
+ * get a random integer number. (from the MDN site)
  */
 export function getRandomIntInclusive (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+export function getEmptyEventGroup () {
+  return {
+    title: '',
+    kind: c.EVENTGROUP_KIND.SALE,
+    date: new Date(),
+    eventList: [Immutable.fromJS(c.EMPTY_EVENT)], // not IdList
+    error: Map({title: true})
+  }
 }

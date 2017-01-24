@@ -20,17 +20,13 @@ export function getDateString (date) {
  * @return     {string} currency string value
  */
 export function getCurrencyValue (amount) {
-  let isNegative = amount < 0
-  let converted
-  if (isNegative) {
-    let notNegativeAmount = amount * -1
-    converted = notNegativeAmount.toString()
-  } else {
-    converted = amount.toString()
-  }
+  const isNegative = amount < 0
 
+  let converted = isNegative ? (amount * -1).toString() : amount.toString()
   let idx = converted.indexOf('.')
-  if (idx === -1) idx = converted.length
+  if (idx === -1) {
+    idx = converted.length
+  }
   for (idx -= 3; idx > 0; idx -= 3) {
     let left = converted.substring(0, idx)
     let right = converted.substring(idx)

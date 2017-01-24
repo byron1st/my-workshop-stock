@@ -1,6 +1,6 @@
 'use strict'
 
-import {ID_KIND} from './const'
+import {ID_KIND} from '../../util/const'
 
 let ID_LIST = {}
 

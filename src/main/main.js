@@ -10,29 +10,23 @@ import * as ch from '../util/ipc.channels'
 import * as c from '../util/const'
 import * as util from '../util/util'
 
-const baseDBPathForTest = path.normalize('./test/resource')
-const dbPathForTest = path.join(baseDBPathForTest, 'db')
-const dbPathForProduction = path.join(app.getPath('userData'), 'db')
-
+const BASE_DB_PATH_FOR_TEST = path.normalize('./test/resource')
+const DB_PATH_FOR_TEST = path.join(BASE_DB_PATH_FOR_TEST, 'db')
+const DB_PATH_FOR_PRODUCTION = path.join(app.getPath('userData'), 'db')
 const DB_FILE_LIST_LENGTH = 20
+const DB_PATH = _getDBPath(testMode)
+const DB_FILE_LIST = _getDBFileList(DB_PATH)
+
 
 // import os from 'os'
 // const platform = os.platform() + '_' + os.arch()
 // const version = app.getVersion()
 // autoUpdater.setFeedURL('https://lit-bayou-78984.herokuapp.com/update/'+platform+'/'+version)
 
-let dbPath = ''
-let dbFileList = []
 let mainWindow = null
 // let addWindow = null
 let addWindowSet = {}
 let closeConfirmed = false
-
-if (testMode) {
-  dbPath = dbPathForTest
-} else {
-  dbPath = dbPathForProduction
-}
 
 app.on('ready', initialize)
 app.on('will-quit', wrapUp)
@@ -129,29 +123,29 @@ function getInitData () {
   } else {
     if (!fs.existsSync(app.getPath('userData'))) {
       return EMPTY_STORE
-    } else if (!fs.existsSync(dbPath)) {
-      fs.mkdirSync(dbPath)
+    } else if (!fs.existsSync(DB_PATH)) {
+      fs.mkdirSync(DB_PATH)
     }
   }
 
-  dbFileList = fs.readdirSync(dbPath).sort((prev, next) => {
-    if (prev < next) {
-      return 1
-    } else {
-      return -1
-    }
-  })
+  // DB_FILE_LIST = fs.readdirSync(DB_PATH).sort((prev, next) => {
+  //   if (prev < next) {
+  //     return 1
+  //   } else {
+  //     return -1
+  //   }
+  // })
 
-  if (dbFileList.length === 0) {
+  if (DB_FILE_LIST.length === 0) {
     // run at first time
     return EMPTY_STORE
   }
-  return JSON.parse(fs.readFileSync(path.join(dbPath, dbFileList[0])).toString())
+  return JSON.parse(fs.readFileSync(path.join(DB_PATH, DB_FILE_LIST[0])).toString())
 }
 
 function prepareTestData () {
-  if (fs.readdirSync(dbPathForTest).length === 0) {
-    let testDBData = JSON.parse(fs.readFileSync(path.join(baseDBPathForTest, 'db.test.json')).toString())
+  if (fs.readdirSync(DB_PATH_FOR_TEST).length === 0) {
+    let testDBData = JSON.parse(fs.readFileSync(path.join(BASE_DB_PATH_FOR_TEST, 'db.test.json')).toString())
     testDBData.eventGroupIdList.forEach(eventGroupId => {
       testDBData.eventGroupSet[eventGroupId].date = getRandomDate()
     })
@@ -166,13 +160,13 @@ function prepareTestData () {
 
 function saveDBFile (data) {
   let newDBFilePath = 'db_' + Date.now() + '.json'
-  if (dbFileList.length >= DB_FILE_LIST_LENGTH) {
-    fs.unlinkSync(path.join(dbPath, dbFileList[DB_FILE_LIST_LENGTH - 1]))
-    dbFileList.pop()
+  if (DB_FILE_LIST.length >= DB_FILE_LIST_LENGTH) {
+    fs.unlinkSync(path.join(DB_PATH, DB_FILE_LIST[DB_FILE_LIST_LENGTH - 1]))
+    DB_FILE_LIST.pop()
   }
-  dbFileList.unshift(newDBFilePath)
+  DB_FILE_LIST.unshift(newDBFilePath)
 
-  fs.writeFileSync(path.join(dbPath, newDBFilePath), JSON.stringify(data))
+  fs.writeFileSync(path.join(DB_PATH, newDBFilePath), JSON.stringify(data))
 }
 
 function getInitLocale () {
@@ -181,4 +175,23 @@ function getInitLocale () {
     locale = 'en'
   }
   return locale
+}
+
+function _getDBPath (mode) {
+  if (mode) {
+    return DB_PATH_FOR_TEST
+  } else {
+    return DB_PATH_FOR_PRODUCTION
+  }
+}
+
+function _getDBFileList (path) {
+  return fs.readdirSync(path)
+    .sort((prev, next) => {
+      if (prev < next) {
+        return 1
+      } else {
+        return -1
+      }
+    })
 }

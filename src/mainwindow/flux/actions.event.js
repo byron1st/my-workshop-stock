@@ -8,7 +8,7 @@ import uiStore from './store.ui'
 import dataStore from './store.data'
 import * as c from '../../util/const'
 import * as ch from '../../util/ipc.channels'
-import generateId from '../../util/id.generator'
+import generateId from '../util/id.generator'
 import getText from '../../util/locale'
 
 let ipc = {}

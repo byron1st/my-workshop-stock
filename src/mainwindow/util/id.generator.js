@@ -1,18 +1,16 @@
 'use strict'
 
-import {ID_KIND} from './const'
+import {ID_KIND} from '../../util/const'
 
 let ID_LIST = {}
 
 export default function generateId (kind) {
-  let idList = ID_LIST[kind]
-
   let id
   do {
     id = (Math.floor(Math.random() * (100000 - 1)) + 1).toString()
-  } while (idList.indexOf(id) !== -1)
+  } while (ID_LIST[kind].indexOf(id) !== -1)
 
-  idList.push(id)
+  ID_LIST[kind].push(id)
   return id
 }
 

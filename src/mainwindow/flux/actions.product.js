@@ -7,7 +7,7 @@ import dispatcher from '../../util/flux/dispatcher'
 import dataStore from './store.data'
 import uiStore from './store.ui'
 import * as c from '../../util/const'
-import generateId from '../../util/id.generator'
+import generateId from '../util/id.generator'
 import getText from '../../util/locale'
 
 export const ADD_NEWPRODUCT = 'add-newproduct'

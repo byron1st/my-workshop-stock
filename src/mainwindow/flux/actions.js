@@ -5,7 +5,7 @@ import Immutable from 'immutable'
 import dispatcher from '../../util/flux/dispatcher'
 import dataStore from './store.data'
 import uiStore from './store.ui'
-import {initIds} from '../../util/id.generator'
+import {initIds} from '../util/id.generator'
 import * as eventActions from './actions.event'
 import * as productActions from './actions.product'
 
